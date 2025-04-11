@@ -21,9 +21,12 @@ require_once "load_nacionalidades.php";
 // Definir variables e inicializar con valores vacíos
 $prefijo = $tomo = $asiento = $cedula = $nombre1 = $nombre2 = $apellido1 = $apellido2 = $apellidoc = "";
 $genero = $estado_civil = $tipo_sangre = $usa_ac = $f_nacimiento = $celular = $telefono = $correo = "";
-$provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $nacionalidad = $f_contra = $cargo = $departamento = $estado = "";
+$provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $f_contra = $cargo = $departamento = $estado = "";
 $error = "";
 $success = "";
+
+// Establecer nacionalidad de Panamá por defecto (código "PAN")
+$nacionalidad = "PAN";
 
 // Calcular fecha máxima para ser mayor de edad (18 años atrás desde hoy)
 $maxDate = date('Y-m-d', strtotime('-18 years'));
