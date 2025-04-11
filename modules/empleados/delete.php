@@ -20,28 +20,78 @@ require_once "../../config/db.php";
 // Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Eliminar el empleado después de la confirmación
-    $sql = "DELETE FROM empleados WHERE cedula = ?";
-    
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        // Vincular las variables a la consulta preparada como parámetros
-        mysqli_stmt_bind_param($stmt, "s", $param_cedula);
+    try {
+        // Iniciar una transacción para garantizar integridad de datos
+        mysqli_begin_transaction($conn);
         
-        // Asignar parámetros
+        // Obtener todos los datos del empleado antes de eliminarlo
+        $sql_select = "SELECT *, NOW() AS f_eliminacion FROM empleados WHERE cedula = ?";
+        $stmt_select = mysqli_prepare($conn, $sql_select);
+        mysqli_stmt_bind_param($stmt_select, "s", $param_cedula);
         $param_cedula = trim($_POST["cedula"]);
+        mysqli_stmt_execute($stmt_select);
+        $result = mysqli_stmt_get_result($stmt_select);
         
-        // Intentar ejecutar la consulta preparada
-        if (mysqli_stmt_execute($stmt)) {
+        // Verificar si se encontró el empleado
+        if ($empleado = mysqli_fetch_assoc($result)) {
+            // Insertar en la tabla e_eliminados
+            $sql_insert = "INSERT INTO e_eliminados (
+                cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, 
+                apellidoc, genero, estado_civil, tipo_sangre, usa_ac, f_nacimiento, 
+                celular, telefono, correo, provincia, distrito, corregimiento, 
+                calle, casa, comunidad, nacionalidad, f_contra, cargo, departamento, estado, f_eliminacion
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW()
+            )";
+            
+            $stmt_insert = mysqli_prepare($conn, $sql_insert);
+            
+            mysqli_stmt_bind_param($stmt_insert, "sssssssssiisissssssssssssssi", 
+                $empleado['cedula'], $empleado['prefijo'], $empleado['tomo'], $empleado['asiento'],
+                $empleado['nombre1'], $empleado['nombre2'], $empleado['apellido1'], $empleado['apellido2'],
+                $empleado['apellidoc'], $empleado['genero'], $empleado['estado_civil'], $empleado['tipo_sangre'],
+                $empleado['usa_ac'], $empleado['f_nacimiento'], $empleado['celular'], $empleado['telefono'],
+                $empleado['correo'], $empleado['provincia'], $empleado['distrito'], $empleado['corregimiento'],
+                $empleado['calle'], $empleado['casa'], $empleado['comunidad'], $empleado['nacionalidad'],
+                $empleado['f_contra'], $empleado['cargo'], $empleado['departamento'], $empleado['estado']
+            );
+            
+            // Ejecutar la inserción
+            if (!mysqli_stmt_execute($stmt_insert)) {
+                throw new Exception("Error al archivar el empleado: " . mysqli_stmt_error($stmt_insert));
+            }
+            mysqli_stmt_close($stmt_insert);
+            
+            // Ahora eliminar el registro de la tabla original
+            $sql = "DELETE FROM empleados WHERE cedula = ?";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $param_cedula);
+            
+            // Intentar ejecutar la consulta preparada
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception("Error al eliminar el empleado: " . mysqli_stmt_error($stmt));
+            }
+            
+            // Confirmar la transacción si todo fue exitoso
+            mysqli_commit($conn);
+            
             // Redireccionar a la página de listado con mensaje de éxito
             header("location: list.php?deleted=1");
             exit();
         } else {
-            // Si hay un error en la eliminación
-            header("location: list.php?error=1&message=" . urlencode("Error al eliminar el empleado: " . mysqli_error($conn)));
-            exit();
+            throw new Exception("No se encontró el empleado a eliminar.");
         }
+    } catch (Exception $e) {
+        // Deshacer la transacción si hubo algún problema
+        mysqli_rollback($conn);
         
-        // Cerrar sentencia
-        mysqli_stmt_close($stmt);
+        // Redirigir con mensaje de error
+        header("location: list.php?error=1&message=" . urlencode("Error: " . $e->getMessage()));
+        exit();
+    } finally {
+        // Cerrar sentencias si no se cerraron antes
+        if (isset($stmt) && $stmt) mysqli_stmt_close($stmt);
+        if (isset($stmt_select) && $stmt_select) mysqli_stmt_close($stmt_select);
     }
 } else {
     // Verificar si existe el parámetro cedula en la URL

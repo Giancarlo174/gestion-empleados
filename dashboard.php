@@ -15,7 +15,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 $totalEmpleados = 0;
 $totalActivos = 0;
 $totalInactivos = 0;
-$totalDepartamentos = 0;
 
 // Total de empleados
 $result = mysqli_query($conn, "SELECT COUNT(*) as total FROM empleados");
@@ -38,13 +37,6 @@ if ($result) {
     $totalInactivos = $row['total'];
 }
 
-// Total de departamentos
-$result = mysqli_query($conn, "SELECT COUNT(*) as total FROM departamento");
-if ($result) {
-    $row = mysqli_fetch_assoc($result);
-    $totalDepartamentos = $row['total'];
-}
-
 // Verificar si es un empleado regular para mostrar solo su información
 if (!$_SESSION["is_admin"]) {
     $cedula = $_SESSION["cedula"];
@@ -61,8 +53,8 @@ include "includes/header.php";
 </div>
 
 <div class="row">
-    <div class="col-md-3 mb-4">
-        <div class="card text-white bg-primary">
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-primary h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -79,8 +71,8 @@ include "includes/header.php";
         </div>
     </div>
     
-    <div class="col-md-3 mb-4">
-        <div class="card text-white bg-success">
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-success h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -97,8 +89,8 @@ include "includes/header.php";
         </div>
     </div>
     
-    <div class="col-md-3 mb-4">
-        <div class="card text-white bg-warning">
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-warning h-100">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -114,76 +106,13 @@ include "includes/header.php";
             </div>
         </div>
     </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="card-title">Departamentos</h6>
-                        <h2 class="card-text"><?php echo $totalDepartamentos; ?></h2>
-                    </div>
-                    <i class="fas fa-building fa-3x"></i>
-                </div>
-            </div>
-            <div class="card-footer d-flex align-items-center justify-content-between">
-                <span class="text-white">Total departamentos</span>
-                <i class="fas fa-building"></i>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="row mt-4">
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h5>Últimos Empleados Agregados</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Cédula</th>
-                                <th>Nombre</th>
-                                <th>Departamento</th>
-                                <th>Fecha Contratación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Consultar los últimos 5 empleados agregados
-                            $sql = "SELECT e.cedula, e.nombre1, e.apellido1, d.nombre as departamento, e.f_contra 
-                                    FROM empleados e 
-                                    LEFT JOIN departamento d ON e.departamento = d.codigo 
-                                    ORDER BY e.f_contra DESC LIMIT 5";
-                            $result = mysqli_query($conn, $sql);
-                            
-                            if (mysqli_num_rows($result) > 0) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<tr>";
-                                    echo "<td>" . $row['cedula'] . "</td>";
-                                    echo "<td>" . $row['nombre1'] . " " . $row['apellido1'] . "</td>";
-                                    echo "<td>" . $row['departamento'] . "</td>";
-                                    echo "<td>" . date('d/m/Y', strtotime($row['f_contra'])) . "</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='4' class='text-center'>No hay empleados registrados</td></tr>";
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5>Distribución por Departamento</h5>
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Distribución por Departamento</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

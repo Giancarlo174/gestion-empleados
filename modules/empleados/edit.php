@@ -170,8 +170,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     $correo = trim($_POST["correo"]);
-    if (!empty($correo) && !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-        $error = "Por favor ingrese un correo electrónico válido.";
+    if (!empty($correo)) {
+        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+            $error = "Por favor ingrese un correo electrónico válido.";
+        } else {
+            // Verificar si el correo ya existe para otro empleado
+            $sql_check_email = "SELECT cedula FROM empleados WHERE correo = ? AND cedula != ?";
+            $stmt_check = mysqli_prepare($conn, $sql_check_email);
+            mysqli_stmt_bind_param($stmt_check, "ss", $correo, $cedula_original);
+            mysqli_stmt_execute($stmt_check);
+            mysqli_stmt_store_result($stmt_check);
+            
+            if (mysqli_stmt_num_rows($stmt_check) > 0) {
+                $error = "El correo electrónico ya está siendo utilizado por otro empleado.";
+            }
+            mysqli_stmt_close($stmt_check);
+        }
     }
     
     // Ubicación

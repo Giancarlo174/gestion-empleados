@@ -20,36 +20,30 @@ require_once "../../config/db.php";
 // Definir variables e inicializar con valores vacíos
 $id = $cedula = $correo_institucional = "";
 $success = $error = "";
-$is_self_deletion = false;
 
 // Verificar si existe el parámetro id en la URL
 if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
+    // Obtener el parámetro id
     $id = trim($_GET["id"]);
     
-    // Verificar si el administrador está intentando eliminarse a sí mismo
-    if ($_SESSION["id"] == $id) {
-        $is_self_deletion = true;
-    }
-    
-    // Preparar consulta para obtener los datos del usuario
-    $sql = "SELECT * FROM usuarios WHERE id = ?";
+    // Preparar la consulta para obtener información del usuario
+    $sql = "SELECT id, cedula, contraseña, correo_institucional FROM usuarios WHERE id = ?";
     
     if ($stmt = mysqli_prepare($conn, $sql)) {
-        // Vincular variables a la consulta como parámetros
+        // Vincular el id como parámetro
         mysqli_stmt_bind_param($stmt, "i", $id);
         
-        // Ejecutar consulta
+        // Ejecutar la consulta
         if (mysqli_stmt_execute($stmt)) {
             $result = mysqli_stmt_get_result($stmt);
             
             if (mysqli_num_rows($result) == 1) {
+                // Obtener los datos del usuario
                 $row = mysqli_fetch_assoc($result);
-                
-                // Asignar valores
                 $cedula = $row["cedula"];
                 $correo_institucional = $row["correo_institucional"];
             } else {
-                // URL no contiene un ID válido
+                // No se encontró el usuario
                 header("location: list.php");
                 exit();
             }
@@ -58,57 +52,85 @@ if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
             exit();
         }
         
-        // Cerrar sentencia
         mysqli_stmt_close($stmt);
     }
 } else {
-    // URL no contiene parámetro ID
+    // Si no se proporcionó un id
     header("location: list.php");
     exit();
 }
 
 // Procesar eliminación cuando se envía el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Confirmar que se recibió el ID del usuario
+    // Comprobar si se recibió el ID
     if (isset($_POST["id"]) && !empty($_POST["id"])) {
-        $id = $_POST["id"];
-        $is_self = (isset($_POST["is_self"]) && $_POST["is_self"] == "1");
-        
-        // Eliminar el usuario
-        $sql_delete = "DELETE FROM usuarios WHERE id = ?";
-        
-        if ($stmt_delete = mysqli_prepare($conn, $sql_delete)) {
-            // Vincular variables a la consulta como parámetros
-            mysqli_stmt_bind_param($stmt_delete, "i", $id);
+        try {
+            // Iniciar una transacción
+            mysqli_begin_transaction($conn);
             
-            // Ejecutar la consulta
-            if (mysqli_stmt_execute($stmt_delete)) {
-                if ($is_self) {
-                    // Si es auto-eliminación, destruir la sesión y redirigir al login
-                    session_start();
+            // Obtener datos completos del usuario
+            $sql_select = "SELECT *, NOW() AS f_eliminacion FROM usuarios WHERE id = ?";
+            $stmt_select = mysqli_prepare($conn, $sql_select);
+            mysqli_stmt_bind_param($stmt_select, "i", $_POST["id"]);
+            mysqli_stmt_execute($stmt_select);
+            $result = mysqli_stmt_get_result($stmt_select);
+            
+            if ($usuario = mysqli_fetch_assoc($result)) {
+                // Insertar en la tabla u_eliminados
+                $sql_insert = "INSERT INTO u_eliminados (id, cedula, contraseña, correo_institucional, f_eliminacion) 
+                              VALUES (?, ?, ?, ?, NOW())";
+                
+                $stmt_insert = mysqli_prepare($conn, $sql_insert);
+                mysqli_stmt_bind_param($stmt_insert, "isss", 
+                    $usuario['id'], $usuario['cedula'], $usuario['contraseña'], $usuario['correo_institucional']
+                );
+                
+                // Ejecutar la inserción
+                if (!mysqli_stmt_execute($stmt_insert)) {
+                    throw new Exception("Error al archivar el usuario: " . mysqli_stmt_error($stmt_insert));
+                }
+                mysqli_stmt_close($stmt_insert);
+                
+                // Comprobar si el usuario está intentando eliminarse a sí mismo
+                $es_usuario_actual = ($_POST["id"] == $_SESSION["id"]);
+                
+                // Eliminar de la tabla usuarios
+                $sql_delete = "DELETE FROM usuarios WHERE id = ?";
+                $stmt_delete = mysqli_prepare($conn, $sql_delete);
+                mysqli_stmt_bind_param($stmt_delete, "i", $_POST["id"]);
+                
+                if (!mysqli_stmt_execute($stmt_delete)) {
+                    throw new Exception("Error al eliminar el usuario: " . mysqli_stmt_error($stmt_delete));
+                }
+                mysqli_stmt_close($stmt_delete);
+                
+                // Confirmar la transacción
+                mysqli_commit($conn);
+                
+                // Si el usuario eliminó su propia cuenta, cerrar sesión
+                if ($es_usuario_actual) {
                     session_unset();
                     session_destroy();
-                    
-                    // Redirigir a la página de login con un mensaje
-                    header("location: /ds6/index.php?account_deleted=1");
+                    header("location: /ds6/index.php?cuenta_eliminada=1");
                     exit();
                 } else {
-                    $success = "Administrador eliminado correctamente.";
-                    
-                    // Redirigir después de 2 segundos
-                    header("refresh:2;url=list.php?deleted=1");
+                    // Redireccionar a la lista con mensaje de éxito
+                    header("location: list.php?deleted=1");
+                    exit();
                 }
             } else {
-                $error = "Error al eliminar el administrador: " . mysqli_error($conn);
+                throw new Exception("No se encontró el usuario a eliminar.");
             }
+        } catch (Exception $e) {
+            // Deshacer la transacción si hubo algún problema
+            mysqli_rollback($conn);
             
-            // Cerrar sentencia
-            mysqli_stmt_close($stmt_delete);
-        } else {
-            $error = "Error al preparar la consulta: " . mysqli_error($conn);
+            $error = $e->getMessage();
+        } finally {
+            // Cerrar sentencias si no se cerraron antes
+            if (isset($stmt_select) && $stmt_select) mysqli_stmt_close($stmt_select);
+            if (isset($stmt_delete) && $stmt_delete) mysqli_stmt_close($stmt_delete);
         }
-    } else {
-        $error = "ID de administrador no válido.";
     }
 }
 
@@ -145,15 +167,7 @@ include "../../includes/header.php";
         <div class="mb-4">
             <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
             <h2 class="mt-3">¿Está seguro que desea eliminar este administrador?</h2>
-            <?php if ($is_self_deletion): ?>
-                <div class="alert alert-danger mt-3">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    <strong>ADVERTENCIA:</strong> Está a punto de eliminar su propia cuenta de administrador.
-                    <p class="mb-0 mt-2">Al confirmar, su sesión será cerrada y perderá acceso al sistema.</p>
-                </div>
-            <?php else: ?>
-                <p class="lead text-muted">Esta acción no se puede deshacer.</p>
-            <?php endif; ?>
+            <p class="lead text-muted">Esta acción no se puede deshacer.</p>
         </div>
         
         <div class="alert alert-warning">
@@ -165,16 +179,9 @@ include "../../includes/header.php";
         
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id=" . $id); ?>" method="post">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
-            <?php if ($is_self_deletion): ?>
-                <input type="hidden" name="is_self" value="1">
-                <button type="submit" class="btn btn-danger btn-lg">
-                    <i class="fas fa-trash"></i> Eliminar Mi Cuenta
-                </button>
-            <?php else: ?>
-                <button type="submit" class="btn btn-danger btn-lg">
-                    <i class="fas fa-trash"></i> Eliminar Administrador
-                </button>
-            <?php endif; ?>
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash"></i> Eliminar Administrador
+            </button>
             <a href="list.php" class="btn btn-secondary btn-lg ms-2">
                 <i class="fas fa-times"></i> Cancelar
             </a>

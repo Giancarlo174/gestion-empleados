@@ -166,13 +166,16 @@ include "../../includes/header.php";
                         <label class="form-label fw-bold">Estado Civil:</label>
                         <p>
                             <?php 
-                                switch ($employee_data['estado_civil']) {
-                                    case 1: echo 'Soltero/a'; break;
-                                    case 2: echo 'Casado/a'; break;
-                                    case 3: echo 'Divorciado/a'; break;
-                                    case 4: echo 'Viudo/a'; break;
-                                    case 5: echo 'Unión libre'; break;
-                                    default: echo 'No especificado';
+                                if ($employee_data['estado_civil'] === 0) {
+                                    echo 'Soltero/a';
+                                } elseif ($employee_data['estado_civil'] == 1) {
+                                    echo 'Casado/a';
+                                } elseif ($employee_data['estado_civil'] == 2) {
+                                    echo 'Viudo/a'; 
+                                } elseif ($employee_data['estado_civil'] == 3) {
+                                    echo 'Divorciado/a';
+                                } else {
+                                    echo 'No especificado';
                                 }
                             ?>
                         </p>
@@ -188,10 +191,6 @@ include "../../includes/header.php";
                     <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold">Tipo de Sangre:</label>
                         <p><?php echo !empty($employee_data['tipo_sangre']) ? htmlspecialchars($employee_data['tipo_sangre']) : 'No especificado'; ?></p>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold">Usa Lentes:</label>
-                        <p><?php echo $employee_data['usa_ac'] == 1 ? 'Sí' : 'No'; ?></p>
                     </div>
                 </div>
             </div>
