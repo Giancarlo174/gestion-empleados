@@ -86,7 +86,7 @@ include "includes/header.php";
                         <strong>Agregar Usuario:</strong> Permite crear un nuevo usuario asociado a un empleado existente.
                     </li>
                     <li>
-                        <strong>Editar Usuario:</strong> Permite actualizar la información de acceso de un usuario.
+                        <strong>Editar Administrador:</strong> Permite actualizar la información de acceso de un usuario.
                     </li>
                     <li>
                         <strong>Eliminar Usuario:</strong> Permite eliminar una cuenta de usuario sin afectar los datos del empleado asociado.

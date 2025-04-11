@@ -26,8 +26,8 @@ $success = $error = "";
 if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
     $id = trim($_GET["id"]);
     
-    // Preparar consulta
-    $sql = "SELECT u.*, e.nombre1, e.apellido1 FROM usuarios u LEFT JOIN empleados e ON u.cedula = e.cedula WHERE u.id = ?";
+    // Preparar consulta - remover la unión con la tabla empleados
+    $sql = "SELECT * FROM usuarios WHERE id = ?";
     
     if ($stmt = mysqli_prepare($conn, $sql)) {
         // Vincular variables a la consulta como parámetros
@@ -43,7 +43,6 @@ if (isset($_GET["id"]) && !empty(trim($_GET["id"]))) {
                 // Asignar valores
                 $cedula = $row["cedula"];
                 $correo_institucional = $row["correo_institucional"];
-                $nombre_empleado = !empty($row["nombre1"]) ? $row["nombre1"] . " " . $row["apellido1"] : "No vinculado a empleado";
             } else {
                 // URL no contiene un ID válido
                 header("location: list.php");
@@ -97,7 +96,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!empty($contrasena)) {
             $sql = "UPDATE usuarios SET correo_institucional = ?, contraseña = ? WHERE id = ?";
             if ($stmt = mysqli_prepare($conn, $sql)) {
-                mysqli_stmt_bind_param($stmt, "ssi", $correo_institucional, $contrasena, $id);
+                // Hash de la contraseña antes de almacenarla
+                $hashed_password = password_hash($contrasena, PASSWORD_DEFAULT);
+                mysqli_stmt_bind_param($stmt, "ssi", $correo_institucional, $hashed_password, $id);
             }
         } else {
             // Si no se cambió la contraseña
@@ -128,7 +129,7 @@ include "../../includes/header.php";
 ?>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Editar Usuario</h1>
+    <h1 class="h2">Editar Administrador</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <a href="list.php" class="btn btn-sm btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Volver a la Lista
@@ -152,10 +153,10 @@ include "../../includes/header.php";
 
 <div class="card">
     <div class="card-body">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id=' . $id; ?>" method="post" class="needs-validation" novalidate>
+        <form id="formularioEditar" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id=' . $id; ?>" method="post" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label for="cedula" class="form-label">Empleado</label>
-                <input type="text" class="form-control" id="cedula" name="cedula" value="<?php echo htmlspecialchars($cedula . ' - ' . $nombre_empleado); ?>" disabled>
+                <label for="cedula" class="form-label">Cédula</label>
+                <input type="text" class="form-control" id="cedula" name="cedula" value="<?php echo htmlspecialchars($cedula); ?>" disabled>
             </div>
             
             <div class="mb-3">
@@ -168,7 +169,12 @@ include "../../includes/header.php";
             
             <div class="mb-3">
                 <label for="contrasena" class="form-label">Nueva Contraseña (dejar en blanco para mantener la actual)</label>
-                <input type="password" class="form-control <?php echo (!empty($contrasena_err)) ? 'is-invalid' : ''; ?>" id="contrasena" name="contrasena">
+                <div class="input-group">
+                    <input type="password" class="form-control <?php echo (!empty($contrasena_err)) ? 'is-invalid' : ''; ?>" id="contrasena" name="contrasena">
+                    <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback">
                     <?php echo $contrasena_err; ?>
                 </div>
@@ -176,8 +182,8 @@ include "../../includes/header.php";
             </div>
             
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="fas fa-save"></i> Actualizar Usuario
+                <button type="button" id="btnPreGuardar" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Actualizar Administrador
                 </button>
                 <a href="list.php" class="btn btn-secondary btn-lg ms-2">
                     <i class="fas fa-times"></i> Cancelar
@@ -186,6 +192,104 @@ include "../../includes/header.php";
         </form>
     </div>
 </div>
+
+<!-- Modal de confirmación para actualizar administrador -->
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalConfirmacionLabel">
+                    <i class="fas fa-save me-2"></i> Confirmar Actualización
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-edit fa-4x text-primary mb-3"></i>
+                    <h4>¿Está seguro que desea actualizar este administrador?</h4>
+                    <p class="text-muted">Al confirmar, los datos del administrador serán actualizados en el sistema.</p>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-id-card fa-2x text-secondary me-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Cédula</h6>
+                        <div class="fw-bold"><?php echo htmlspecialchars($cedula); ?></div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-envelope fa-2x text-secondary me-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-0">Correo</h6>
+                        <div id="confirmEmail" class="fw-bold"><?php echo htmlspecialchars($correo_institucional); ?></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button type="button" id="btnConfirmarGuardado" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password visibility toggle
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordField = document.querySelector('#contrasena');
+    
+    togglePassword.addEventListener('click', function() {
+        // Toggle the type attribute
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        
+        // Toggle the eye / eye-slash icon
+        this.querySelector('i').classList.toggle('fa-eye');
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+    
+    // Modal de confirmación para actualizar administrador
+    const formulario = document.getElementById('formularioEditar');
+    const btnPreGuardar = document.getElementById('btnPreGuardar');
+    const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
+    const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+    
+    // Actualizar el correo en el modal de confirmación cuando cambia
+    const correoInput = document.getElementById('correo_institucional');
+    if (correoInput) {
+        correoInput.addEventListener('input', function() {
+            document.getElementById('confirmEmail').textContent = this.value;
+        });
+    }
+    
+    // Manejar el clic en el botón de pre-guardar
+    btnPreGuardar.addEventListener('click', function() {
+        // Validar formulario antes de mostrar modal
+        if (formulario.checkValidity()) {
+            // Mostrar el modal
+            modalConfirmacion.show();
+        } else {
+            // Si no es válido, activar las validaciones visuales
+            formulario.classList.add('was-validated');
+        }
+    });
+    
+    // Manejar el clic en el botón de confirmación
+    btnConfirmarGuardado.addEventListener('click', function() {
+        // Ocultar el modal y enviar el formulario
+        modalConfirmacion.hide();
+        formulario.submit();
+    });
+});
+</script>
 
 <?php 
 // Cerrar conexión

@@ -24,33 +24,22 @@ $inicio = ($pagina - 1) * $registros_por_pagina;
 
 // Condición de búsqueda
 $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
-$where = " WHERE 1=1";
+$where = "";
 
 if (!empty($busqueda)) {
     $busqueda = mysqli_real_escape_string($conn, $busqueda);
-    $where .= " AND (u.cedula LIKE '%$busqueda%' OR u.correo_institucional LIKE '%$busqueda%')";
+    $where = "WHERE nombre LIKE '%$busqueda%' OR codigo LIKE '%$busqueda%'";
 }
 
 // Consultar total de registros con filtros
-$sql_total = "SELECT COUNT(*) as total FROM usuarios u $where";
+$sql_total = "SELECT COUNT(*) as total FROM departamento $where";
 $result_total = mysqli_query($conn, $sql_total);
-
-if ($result_total) {
-    $row_total = mysqli_fetch_assoc($result_total);
-    $total_registros = $row_total['total'];
-} else {
-    $total_registros = 0;
-}
-
+$row_total = mysqli_fetch_assoc($result_total);
+$total_registros = $row_total['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
-// Consultar datos de usuarios
-$sql = "SELECT u.* 
-        FROM usuarios u 
-        $where 
-        ORDER BY u.id ASC 
-        LIMIT $inicio, $registros_por_pagina";
-
+// Consultar datos de departamentos
+$sql = "SELECT * FROM departamento $where ORDER BY nombre ASC LIMIT $inicio, $registros_por_pagina";
 $result = mysqli_query($conn, $sql);
 
 // Incluir header
@@ -58,11 +47,11 @@ include "../../includes/header.php";
 ?>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Lista de Administradores</h1>
+    <h1 class="h2">Lista de Departamentos</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
             <a href="add.php" class="btn btn-sm btn-outline-secondary">
-                <i class="fas fa-user-plus"></i> Nuevo Administrador
+                <i class="fas fa-plus"></i> Nuevo Departamento
             </a>
             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                 <i class="fas fa-print"></i> Imprimir
@@ -76,7 +65,7 @@ include "../../includes/header.php";
         <form action="" method="GET" class="row g-3">
             <div class="col-md-8">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Buscar por cédula o correo" name="busqueda" value="<?php echo htmlspecialchars($busqueda); ?>">
+                    <input type="text" class="form-control" placeholder="Buscar por nombre o código" name="busqueda" value="<?php echo htmlspecialchars($busqueda); ?>">
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search"></i> Buscar
                     </button>
@@ -94,23 +83,21 @@ include "../../includes/header.php";
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>ID</th>
-                <th>Cédula</th>
-                <th>Correo Institucional</th>
+                <th>Código</th>
+                <th>Nombre de Departamento</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
             <tr>
-                <td><?php echo htmlspecialchars($row['id']); ?></td>
-                <td><?php echo htmlspecialchars($row['cedula']); ?></td>
-                <td><?php echo htmlspecialchars($row['correo_institucional']); ?></td>
+                <td><?php echo htmlspecialchars($row['codigo']); ?></td>
+                <td><?php echo htmlspecialchars($row['nombre']); ?></td>
                 <td>
-                    <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
+                    <a href="edit.php?codigo=<?php echo $row['codigo']; ?>" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="delete.php?id=<?php echo $row['id']; ?>" class="btn btn-danger btn-sm delete-confirm" data-bs-toggle="tooltip" title="Eliminar">
+                    <a href="delete.php?codigo=<?php echo $row['codigo']; ?>" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar">
                         <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
@@ -121,6 +108,7 @@ include "../../includes/header.php";
 </div>
 
 <!-- Paginación -->
+<?php if ($total_paginas > 1): ?>
 <nav aria-label="Navegación de páginas">
     <ul class="pagination justify-content-center">
         <li class="page-item <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
@@ -132,11 +120,6 @@ include "../../includes/header.php";
         
         <?php
         $rango = 2;
-        // Asegurar que $total_paginas sea un número entero válido
-        if (!isset($total_paginas) || !is_numeric($total_paginas)) {
-            $total_paginas = 1;
-        }
-        
         for ($i = max(1, $pagina - $rango); $i <= min($pagina + $rango, $total_paginas); $i++) {
             echo '<li class="page-item ' . (($i == $pagina) ? 'active' : '') . '">';
             echo '<a class="page-link" href="?pagina=' . $i . '&busqueda=' . urlencode($busqueda) . '">' . $i . '</a>';
@@ -152,10 +135,11 @@ include "../../includes/header.php";
         </li>
     </ul>
 </nav>
+<?php endif; ?>
 
 <?php else: ?>
 <div class="alert alert-info">
-    <i class="fas fa-info-circle"></i> No se encontraron registros.
+    <i class="fas fa-info-circle"></i> No se encontraron departamentos.
 </div>
 <?php endif; ?>
 
@@ -165,9 +149,7 @@ include "../../includes/header.php";
 
 <?php 
 // Cerrar conexión
-if (isset($conn) && $conn) {
-    mysqli_close($conn);
-}
+mysqli_close($conn);
 // Incluir footer
 include "../../includes/footer.php";
 ?>

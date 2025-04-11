@@ -12,16 +12,16 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
 require_once "config/db.php";
 
 // Definir variables e inicializar con valores vacíos
-$username = $password = $email = "";
-$username_err = $password_err = $email_err = $login_err = "";
+$email = $password = "";
+$email_err = $password_err = $login_err = "";
 
 // Procesar datos del formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validar nombre de usuario (cédula)
-    if (empty(trim($_POST["username"]))) {
-        $username_err = "Por favor ingrese su cédula.";
+    // Validar correo institucional
+    if (empty(trim($_POST["email"]))) {
+        $email_err = "Por favor ingrese su correo institucional.";
     } else {
-        $username = trim($_POST["username"]);
+        $email = trim($_POST["email"]);
     }
     
     // Validar contraseña
@@ -31,24 +31,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = trim($_POST["password"]);
     }
     
-    // Validar correo institucional
-    if (empty(trim($_POST["email"]))) {
-        $email_err = "Por favor ingrese su correo institucional.";
-    } else {
-        $email = trim($_POST["email"]);
-    }
-    
     // Validar credenciales
-    if (empty($username_err) && empty($password_err) && empty($email_err)) {
+    if (empty($email_err) && empty($password_err)) {
         // Preparar declaración select
-        $sql = "SELECT id, cedula, contraseña, correo_institucional FROM usuarios WHERE cedula = ? AND correo_institucional = ?";
+        $sql = "SELECT id, cedula, contraseña, correo_institucional FROM usuarios WHERE correo_institucional = ?";
         
         if ($stmt = mysqli_prepare($conn, $sql)) {
             // Vincular variables a la declaración preparada como parámetros
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_email);
+            mysqli_stmt_bind_param($stmt, "s", $param_email);
             
             // Establecer parámetros
-            $param_username = $username;
             $param_email = $email;
             
             // Intentar ejecutar la declaración preparada
@@ -56,12 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Almacenar resultado
                 mysqli_stmt_store_result($stmt);
                 
-                // Verificar si existe el usuario con la cédula y correo especificados
+                // Verificar si existe el usuario con el correo especificado
                 if (mysqli_stmt_num_rows($stmt) == 1) {                    
                     // Vincular variables a los resultados
                     mysqli_stmt_bind_result($stmt, $id, $cedula, $hashed_password, $correo_institucional);
                     if (mysqli_stmt_fetch($stmt)) {
-                        if ($password == $hashed_password) { // En un entorno real, usar password_verify()
+                        // Utilizar password_verify para comprobar la contraseña
+                        if (password_verify($password, $hashed_password)) {
                             // La contraseña es correcta, iniciar nueva sesión
                             session_start();
                             
@@ -84,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
                     }
                 } else {
-                    // El usuario no existe o el correo no coincide
+                    // El usuario no existe
                     $login_err = "Credenciales incorrectas. Por favor, verifique sus datos.";
                 }
             } else {
@@ -119,6 +112,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p>Inicie sesión para continuar</p>
             </div>
             
+            <?php if (isset($_GET['account_deleted']) && $_GET['account_deleted'] == 1): ?>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Cuenta eliminada:</strong> Su cuenta de administrador ha sido eliminada correctamente.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php endif; ?>
+            
             <?php 
             if(!empty($login_err)){
                 echo '<div class="alert alert-danger">' . $login_err . '</div>';
@@ -126,15 +127,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ?>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Cédula</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                        <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>" placeholder="Ingrese su cédula">
-                    </div>
-                    <span class="invalid-feedback"><?php echo $username_err; ?></span>
-                </div>
-                
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Institucional</label>
                     <div class="input-group">
@@ -148,7 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="password" class="form-label">Contraseña</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" placeholder="Ingrese su contraseña">
+                        <input type="password" name="password" id="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" placeholder="Ingrese su contraseña">
+                        <button class="btn btn-outline-secondary toggle-password" type="button" tabindex="-1">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                     <span class="invalid-feedback"><?php echo $password_err; ?></span>
                 </div>
@@ -160,5 +155,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password visibility toggle
+        const togglePassword = document.querySelector('.toggle-password');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            // Toggle the password field type
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            // Toggle the icon
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+    });
+    </script>
 </body>
 </html>

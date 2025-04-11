@@ -2,21 +2,36 @@
     <div class="position-sticky pt-3">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link" href="/ds6/dashboard.php">
-                    <i class="fas fa-home"></i> Dashboard
+                <a class="nav-link <?php echo ($modulo == 'dashboard') ? 'active' : ''; ?>" aria-current="page" href="/ds6/dashboard.php">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/ds6/modules/empleados/list.php">
-                    <i class="fas fa-users"></i> Empleados
+                <a class="nav-link <?php echo ($modulo == 'empleados') ? 'active' : ''; ?>" href="/ds6/modules/empleados/list.php">
+                    <i class="fas fa-users"></i>
+                    Empleados
                 </a>
             </li>
-            <?php if ($isAdmin): ?>
-            <li class="nav-item">
-                <a class="nav-link" href="/ds6/modules/usuarios/list.php">
-                    <i class="fas fa-user-shield"></i> Usuarios
-                </a>
-            </li>
+            <?php if ($_SESSION["is_admin"]): ?>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo ($modulo == 'departamentos') ? 'active' : ''; ?>" href="/ds6/modules/departamentos/list.php">
+                        <i class="fas fa-building"></i>
+                        Departamentos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo ($modulo == 'cargos') ? 'active' : ''; ?>" href="/ds6/modules/cargos/list.php">
+                        <i class="fas fa-briefcase"></i>
+                        Cargos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo ($modulo == 'usuarios') ? 'active' : ''; ?>" href="/ds6/modules/usuarios/list.php">
+                        <i class="fas fa-user-shield"></i>
+                        Administradores
+                    </a>
+                </li>
             <?php endif; ?>
         </ul>
         
@@ -32,7 +47,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/ds6/modules/usuarios/add.php">
-                    <i class="fas fa-plus-circle"></i> Nuevo Usuario
+                    <i class="fas fa-plus-circle"></i> Nuevo Administrador
                 </a>
             </li>
         </ul>

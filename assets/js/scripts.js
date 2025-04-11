@@ -15,15 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Popover(popoverTriggerEl);
     });
 
-    // Confirmar eliminación
-    document.querySelectorAll('.delete-confirm').forEach(button => {
-        button.addEventListener('click', function(e) {
-            if (!confirm('¿Está seguro de que desea eliminar este registro?')) {
-                e.preventDefault();
-            }
-        });
-    });
-
     // Validación de formularios
     const forms = document.querySelectorAll('.needs-validation');
     Array.prototype.slice.call(forms).forEach(function (form) {

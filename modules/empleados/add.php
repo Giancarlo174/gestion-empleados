@@ -468,7 +468,7 @@ include "../../includes/header.php";
             
             <div class="text-center mt-4">
                 <button type="button" id="btnPreGuardar" class="btn btn-primary btn-lg">
-                    <i class="fas fa-save"></i> Guardar Empleado
+                    <i class="fas fa-save"></i> Agregar Empleado
                 </button>
                 <a href="list.php" class="btn btn-secondary btn-lg ms-2">
                     <i class="fas fa-times"></i> Cancelar
