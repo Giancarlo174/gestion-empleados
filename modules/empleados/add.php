@@ -190,7 +190,7 @@ include "../../includes/header.php";
 
 <div class="card">
     <div class="card-body">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="needs-validation" id="formularioEmpleado" novalidate onsubmit="return confirmarGuardado()">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" class="needs-validation" id="formularioEmpleado" novalidate>
             <div class="row mb-4">
                 <div class="col-12">
                     <h4 class="mb-3">Información Personal</h4>
@@ -464,7 +464,7 @@ include "../../includes/header.php";
             </div>
             
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="button" id="btnPreGuardar" class="btn btn-primary btn-lg">
                     <i class="fas fa-save"></i> Guardar Empleado
                 </button>
                 <a href="list.php" class="btn btn-secondary btn-lg ms-2">
@@ -472,6 +472,59 @@ include "../../includes/header.php";
                 </a>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal de confirmación para guardar empleado -->
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalConfirmacionLabel">
+                    <i class="fas fa-save me-2"></i> Confirmar Guardado
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-4x text-primary mb-3"></i>
+                    <h4>¿Está seguro que desea guardar este empleado?</h4>
+                    <p class="text-muted">Al confirmar, los datos del empleado serán registrados en el sistema.</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-id-card fa-2x text-secondary me-2"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">Cédula</h6>
+                                <div id="confirmCedula" class="fw-bold"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-user fa-2x text-secondary me-2"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0">Nombre</h6>
+                                <div id="confirmNombre" class="fw-bold"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button type="button" id="btnConfirmarGuardado" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Confirmar Guardado
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1051,6 +1104,43 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar cargos al inicio si hay departamento seleccionado
     cargarCargos('<?php echo $departamento; ?>');
     <?php endif; ?>
+
+    // Modal de confirmación para guardar empleado
+    const formulario = document.getElementById('formularioEmpleado');
+    const btnPreGuardar = document.getElementById('btnPreGuardar');
+    const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
+    const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+    
+    // Manejar el clic en el botón de pre-guardar
+    btnPreGuardar.addEventListener('click', function() {
+        // Validar formulario antes de mostrar modal
+        if (formulario.checkValidity()) {
+            // Mostrar resumen de datos en el modal
+            const prefijo = document.getElementById('prefijo').value;
+            const tomo = document.getElementById('tomo').value;
+            const asiento = document.getElementById('asiento').value;
+            const cedula = `${prefijo}-${tomo}-${asiento}`;
+            
+            const nombre1 = document.getElementById('nombre1').value;
+            const apellido1 = document.getElementById('apellido1').value;
+            
+            document.getElementById('confirmCedula').textContent = cedula;
+            document.getElementById('confirmNombre').textContent = `${nombre1} ${apellido1}`;
+            
+            // Mostrar el modal
+            modalConfirmacion.show();
+        } else {
+            // Si no es válido, activar las validaciones visuales
+            formulario.classList.add('was-validated');
+        }
+    });
+    
+    // Manejar el clic en el botón de confirmación
+    btnConfirmarGuardado.addEventListener('click', function() {
+        // Ocultar el modal y enviar el formulario
+        modalConfirmacion.hide();
+        formulario.submit();
+    });
 });
 </script>
 
