@@ -111,6 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
     // 1. Recuperar la cédula original (guardada en hidden)
     $cedula_original_post = $_POST['cedula_original'];
 
+    // Variable para almacenar los campos modificados para auditoría
+    $campos_modificados = array();
+
     // --- RECAPTURA DE DATOS CON FALLBACK A ORIGINALES ---
     // Solo recapturar campos que el usuario puede editar
 
@@ -120,6 +123,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
         $tomo    = isset($_POST['tomo']) && trim($_POST['tomo']) !== '' ? trim($_POST['tomo']) : $original_tomo;
         $asiento = isset($_POST['asiento']) && trim($_POST['asiento']) !== '' ? trim($_POST['asiento']) : $original_asiento;
         $cedula_nueva = $prefijo . "-" . $tomo . "-" . $asiento;
+        
+    
     } else {
         $prefijo = $original_prefijo;
         $tomo = $original_tomo;
@@ -129,31 +134,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
 
     // Datos básicos (Todos pueden editar)
     $nombre1 = isset($_POST["nombre1"]) && trim($_POST["nombre1"]) !== '' ? trim($_POST["nombre1"]) : $original_nombre1;
+    if ($nombre1 !== $original_nombre1) {
+        $campos_modificados['nombre1'] = $original_nombre1;
+    }
+    
     $nombre2 = isset($_POST["nombre2"]) ? trim($_POST["nombre2"]) : $original_nombre2; // Puede ser vacío
+    if ($nombre2 !== $original_nombre2) {
+        $campos_modificados['nombre2'] = $original_nombre2;
+    }
+    
     $apellido1 = isset($_POST["apellido1"]) && trim($_POST["apellido1"]) !== '' ? trim($_POST["apellido1"]) : $original_apellido1;
+    if ($apellido1 !== $original_apellido1) {
+        $campos_modificados['apellido1'] = $original_apellido1;
+    }
+    
     $apellido2 = isset($_POST["apellido2"]) ? trim($_POST["apellido2"]) : $original_apellido2; // Puede ser vacío
+    if ($apellido2 !== $original_apellido2) {
+        $campos_modificados['apellido2'] = $original_apellido2;
+    }
 
     // Campos que influyen en lógica condicional (Todos pueden editar)
     $genero = isset($_POST["genero"]) && $_POST["genero"] !== '' ? (int)$_POST["genero"] : $original_genero;
+    if ($genero !== $original_genero) {
+        $campos_modificados['genero'] = $original_genero;
+    }
+    
     $estado_civil = isset($_POST["estado_civil"]) && $_POST["estado_civil"] !== '' ? (int)$_POST["estado_civil"] : $original_estado_civil;
+    if ($estado_civil !== $original_estado_civil) {
+        $campos_modificados['estado_civil'] = $original_estado_civil;
+    }
+    
     $usa_ac = isset($_POST["usa_ac"]) ? 1 : 0;
+    if ($usa_ac !== $original_usa_ac) {
+        $campos_modificados['usa_ac'] = $original_usa_ac;
+    }
 
     // Apellido de casada (depende de genero, estado civil, usa_ac)
     $temp_apellidoc = isset($_POST['apellidoc']) ? trim($_POST['apellidoc']) : $original_apellidoc;
     if ($genero == 0 && $estado_civil == 1 && $usa_ac == 1) {
         $apellidoc = $temp_apellidoc;
+        if ($apellidoc !== $original_apellidoc) {
+            $campos_modificados['apellidoc'] = $original_apellidoc;
+        }
     } else {
         $apellidoc = ""; // Limpiar si no aplica
+        if ($original_apellidoc !== "") {
+            $campos_modificados['apellidoc'] = $original_apellidoc;
+        }
     }
 
     // tipo_sangre (Todos pueden editar)
     $tipo_sangre = isset($_POST['tipo_sangre']) && $_POST['tipo_sangre'] !== '' ? trim($_POST['tipo_sangre']) : $original_tipo_sangre;
+    if ($tipo_sangre !== $original_tipo_sangre) {
+        $campos_modificados['tipo_sangre'] = $original_tipo_sangre;
+    }
+    
     if (empty($tipo_sangre)) { $error = "Por favor seleccione un tipo de sangre."; }
 
     // f_nacimiento (Todos pueden editar)
     $f_nacimiento_input = isset($_POST['f_nacimiento']) ? trim($_POST['f_nacimiento']) : '';
     if (!empty($f_nacimiento_input)) {
         $f_nacimiento = $f_nacimiento_input;
+        if ($f_nacimiento !== $original_f_nacimiento) {
+            $campos_modificados['f_nacimiento'] = $original_f_nacimiento;
+        }
+        
         // Validar mayoría de edad
         $birthDate = new DateTime($f_nacimiento);
         $today = new DateTime();
@@ -164,15 +209,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
     }
 
     // Contacto (Todos pueden editar, excepto correo para empleados)
-    $celular = isset($_POST["celular"]) && trim($_POST["celular"]) !== '' ? trim($_POST["celular"]) : $original_celular;
+    $celular_post = isset($_POST["celular"]) ? trim($_POST["celular"]) : '';
+
+    // Check if there's a real change
+    if (($celular_post === '' && empty($original_celular)) || $celular_post == $original_celular) {
+        // No change detected
+        $celular = $original_celular;
+    } else {
+        // Change detected
+        $celular = $celular_post;
+        $campos_modificados['celular'] = $original_celular;
+    }
+    
     if (!empty($celular) && (!is_numeric($celular) || strlen($celular) > 8)) { $error = "El celular debe ser un número de máximo 8 dígitos."; }
 
-    $telefono = isset($_POST["telefono"]) ? trim($_POST["telefono"]) : $original_telefono; // Puede ser vacío
+    $telefono_post = isset($_POST["telefono"]) ? trim($_POST["telefono"]) : '';
+
+    // Check if there's a real change
+    if (($telefono_post === '' && empty($original_telefono)) || $telefono_post == $original_telefono) {
+        // No change detected
+        $telefono = $original_telefono;
+    } else {
+        // Change detected
+        $telefono = $telefono_post;
+        $campos_modificados['telefono'] = $original_telefono;
+    }
+    
     if (!empty($telefono) && (!is_numeric($telefono) || strlen($telefono) > 7)) { $error = "El teléfono debe ser un número de máximo 7 dígitos."; }
 
     // Correo (Solo admin puede editar)
     if ($is_admin) {
         $correo = isset($_POST["correo"]) && trim($_POST["correo"]) !== '' ? trim($_POST["correo"]) : $original_correo;
+        if ($correo !== $original_correo) {
+            $campos_modificados['correo'] = $original_correo;
+        }
+        
         if (!empty($correo) && !filter_var($correo, FILTER_VALIDATE_EMAIL)) { $error = "Por favor ingrese un correo electrónico válido."; }
     } else {
         $correo = $original_correo; // Mantener correo original si no es admin
@@ -180,19 +251,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
 
     // Ubicación (Todos pueden editar)
     $provincia = isset($_POST["provincia"]) && $_POST["provincia"] !== '' ? trim($_POST["provincia"]) : $original_provincia;
+    if ($provincia !== $original_provincia) {
+        $campos_modificados['provincia'] = $original_provincia;
+    }
+    
     $distrito = isset($_POST["distrito"]) && $_POST["distrito"] !== '' ? trim($_POST["distrito"]) : $original_distrito;
+    if ($distrito !== $original_distrito) {
+        $campos_modificados['distrito'] = $original_distrito;
+    }
+    
     $corregimiento = isset($_POST["corregimiento"]) && $_POST["corregimiento"] !== '' ? trim($_POST["corregimiento"]) : $original_corregimiento;
+    if ($corregimiento !== $original_corregimiento) {
+        $campos_modificados['corregimiento'] = $original_corregimiento;
+    }
+    
     $calle = isset($_POST["calle"]) ? trim($_POST["calle"]) : $original_calle; // Puede ser vacío
+    if ($calle !== $original_calle) {
+        $campos_modificados['calle'] = $original_calle;
+    }
+    
     $casa = isset($_POST["casa"]) ? trim($_POST["casa"]) : $original_casa; // Puede ser vacío
+    if ($casa !== $original_casa) {
+        $campos_modificados['casa'] = $original_casa;
+    }
+    
     $comunidad = isset($_POST["comunidad"]) ? trim($_POST["comunidad"]) : $original_comunidad; // Puede ser vacío
+    if ($comunidad !== $original_comunidad) {
+        $campos_modificados['comunidad'] = $original_comunidad;
+    }
+    
     $nacionalidad = isset($_POST["nacionalidad"]) && $_POST["nacionalidad"] !== '' ? trim($_POST["nacionalidad"]) : $original_nacionalidad;
+    if ($nacionalidad !== $original_nacionalidad) {
+        $campos_modificados['nacionalidad'] = $original_nacionalidad;
+    }
 
     // Información laboral (Solo admin puede editar)
     if ($is_admin) {
         $f_contra = isset($_POST["f_contra"]) && trim($_POST["f_contra"]) !== '' ? trim($_POST["f_contra"]) : $original_f_contra;
+        if ($f_contra !== $original_f_contra) {
+            $campos_modificados['f_contra'] = $original_f_contra;
+        }
+        
         $departamento = isset($_POST['departamento']) && $_POST['departamento'] !== '' ? str_pad(trim($_POST['departamento']), 2, '0', STR_PAD_LEFT) : $original_departamento;
+        if ($departamento !== $original_departamento) {
+            $campos_modificados['departamento'] = $original_departamento;
+        }
+        
         $cargo = isset($_POST['cargo']) && $_POST['cargo'] !== '' ? str_pad(trim($_POST['cargo']), 2, '0', STR_PAD_LEFT) : $original_cargo;
+        if ($cargo !== $original_cargo) {
+            $campos_modificados['cargo'] = $original_cargo;
+        }
+        
         $estado = isset($_POST["estado"]) && $_POST["estado"] !== '' ? $_POST["estado"] : $original_estado;
+        if ($estado !== $original_estado) {
+            $campos_modificados['estado'] = $original_estado;
+        }
     } else {
         // Mantener valores originales si no es admin
         $f_contra = $original_f_contra;
@@ -234,6 +347,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
 
             if (mysqli_stmt_execute($stmt_update)) {
                 $success = "Información del empleado actualizada correctamente.";
+                
+                // Registrar auditoría si hay campos modificados
+                if (!empty($campos_modificados) && !$is_admin) {
+                    // Convertir el array de campos modificados a JSON
+                    $json_modificados = json_encode($campos_modificados, JSON_UNESCAPED_UNICODE);
+                    
+                    // Insertar registro en la tabla de auditoría
+                    $sql_audit = "INSERT INTO e_auditoria (cedula, editado, fecha) VALUES (?, ?, NOW())";
+                    if ($stmt_audit = mysqli_prepare($conn, $sql_audit)) {
+                        mysqli_stmt_bind_param($stmt_audit, "ss", $cedula_session, $json_modificados);
+                        
+                        if (!mysqli_stmt_execute($stmt_audit)) {
+                            // No mostramos error al usuario, pero podemos registrarlo en un log
+                            error_log("Error al guardar auditoría: " . mysqli_error($conn));
+                        }
+                        
+                        mysqli_stmt_close($stmt_audit);
+                    }
+                }
+                
                 // Actualizar la cédula en la variable $cedula si cambió (para mostrar en el form)
                 $cedula = $cedula_nueva;
                 // Actualizar también las variables originales para que el form muestre los datos guardados
@@ -1259,8 +1392,6 @@ function mostrarBanderaNacionalidad(select) {
     const countryCode = select.value.toLowerCase();
     
     
-    // Actualizar el contenedor con la imagen de la bandera
-    flagContainer.innerHTML = `<img src="${flagUrl}" alt="Bandera" class="img-fluid" style="max-height: 24px;">`;
 }
 </script>
 
