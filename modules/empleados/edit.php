@@ -8,20 +8,23 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-// Verificar si es administrador
-if (!$_SESSION["is_admin"]) {
-    $cedula_session = $_SESSION["cedula"];
-    $cedula_requested = isset($_GET["cedula"]) ? $_GET["cedula"] : "";
-    
-    // Si no es administrador, solo puede ver su propia información
-    if ($cedula_session !== $cedula_requested) {
-        header("location: /ds6/dashboard.php");
-        exit;
-    }
-}
-
-// Incluir archivo de configuración
+// Incluir archivo de configuración y funciones
 require_once "../../config/db.php";
+require_once "load_nacionalidades.php"; // Para cargar nacionalidades
+
+// Determinar si el usuario es admin
+$is_admin = isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] === true;
+$cedula_session = $_SESSION["cedula"]; // Cédula del usuario logueado
+
+// Obtener la cédula del empleado a editar desde GET
+$cedula_original_get = isset($_GET["cedula"]) ? trim($_GET["cedula"]) : '';
+
+// Verificar permisos: Admin puede editar a cualquiera, empleado solo a sí mismo
+if (!$is_admin && $cedula_session !== $cedula_original_get) {
+    // Si no es admin y la cédula no coincide, redirigir o mostrar error
+    header("location: /ds6/modules/empleados/profile.php?error=permission_denied");
+    exit;
+}
 
 // Definir variables e inicializar con valores vacíos
 $prefijo = $tomo = $asiento = $nombre1 = $nombre2 = $apellido1 = $apellido2 = $apellidoc = "";
@@ -29,16 +32,15 @@ $genero = $estado_civil = $tipo_sangre = $usa_ac = $f_nacimiento = $celular = $t
 $provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $nacionalidad = $f_contra = $cargo = $departamento = $estado = "";
 $error = "";
 $success = "";
+
+// Variables para guardar los datos originales
 $original_prefijo = $original_tomo = $original_asiento = $original_nombre1 = $original_nombre2 = $original_apellido1 = $original_apellido2 = $original_apellidoc = "";
 $original_genero = $original_estado_civil = $original_tipo_sangre = $original_usa_ac = $original_f_nacimiento = $original_celular = $original_telefono = $original_correo = "";
 $original_provincia = $original_distrito = $original_corregimiento = $original_calle = $original_casa = $original_comunidad = $original_nacionalidad = $original_f_contra = $original_cargo = $original_departamento = $original_estado = "";
-$cedula_original_get = "";
+$cedula = $cedula_original_get; // Usar la cédula de GET como base
 
-// Verificar si existe el parámetro cedula en la URL
-if (isset($_GET["cedula"]) && !empty(trim($_GET["cedula"]))) {
-    // Obtener el parámetro de cedula
-    $cedula_original_get = trim($_GET["cedula"]);
-
+// Verificar si existe el parámetro cedula en la URL y no está vacío
+if (!empty($cedula_original_get)) {
     // Preparar la consulta para obtener los datos del empleado
     $sql = "SELECT * FROM empleados WHERE cedula = ?";
 
@@ -48,273 +50,206 @@ if (isset($_GET["cedula"]) && !empty(trim($_GET["cedula"]))) {
             $result = mysqli_stmt_get_result($stmt);
             if (mysqli_num_rows($result) == 1) {
                 $row = mysqli_fetch_assoc($result);
-                // Asignar valores originales a variables $original_...
-                $original_prefijo = $row["prefijo"];
-                $original_tomo = $row["tomo"];
-                $original_asiento = $row["asiento"];
-                $original_nombre1 = $row["nombre1"];
-                $original_nombre2 = $row["nombre2"];
-                $original_apellido1 = $row["apellido1"];
-                $original_apellido2 = $row["apellido2"];
-                $original_apellidoc = $row["apellidoc"];
-                $original_genero = $row["genero"];
-                $original_estado_civil = $row["estado_civil"];
-                $original_tipo_sangre = $row["tipo_sangre"];
-                $original_usa_ac = $row["usa_ac"];
-                $original_f_nacimiento = $row["f_nacimiento"];
-                $original_celular = $row["celular"];
-                $original_telefono = $row["telefono"];
-                $original_correo = $row["correo"];
-                $original_provincia = $row["provincia"];
-                $original_distrito = $row["distrito"];
-                $original_corregimiento = $row["corregimiento"];
-                $original_calle = $row["calle"];
-                $original_casa = $row["casa"];
-                $original_comunidad = $row["comunidad"];
-                $original_nacionalidad = $row["nacionalidad"];
-                $original_f_contra = $row["f_contra"];
-                $original_cargo = $row["cargo"];
-                $original_departamento = $row["departamento"];
-                $original_estado = $row["estado"];
-
-                // Asignar también a las variables principales para mostrar en el form la primera vez
-                $prefijo = $original_prefijo;
-                $tomo = $original_tomo;
-                $asiento = $original_asiento;
-                $nombre1 = $original_nombre1;
-                $nombre2 = $original_nombre2;
-                $apellido1 = $original_apellido1;
-                $apellido2 = $original_apellido2;
-                $apellidoc = $original_apellidoc;
-                $genero = $original_genero;
-                $estado_civil = $original_estado_civil;
-                $tipo_sangre = $original_tipo_sangre;
-                $usa_ac = $original_usa_ac;
-                $f_nacimiento = $original_f_nacimiento;
-                $celular = $original_celular;
-                $telefono = $original_telefono;
-                $correo = $original_correo;
-                $provincia = $original_provincia;
-                $distrito = $original_distrito;
-                $corregimiento = $original_corregimiento;
-                $calle = $original_calle;
-                $casa = $original_casa;
-                $comunidad = $original_comunidad;
-                $nacionalidad = $original_nacionalidad;
-                $f_contra = $original_f_contra;
-                $cargo = $original_cargo;
-                $departamento = $original_departamento;
-                $estado = $original_estado;
-                $cedula = $cedula_original_get;
-
+                // Asignar valores a las variables y a las originales
+                $prefijo = $original_prefijo = $row['prefijo'];
+                $tomo = $original_tomo = $row['tomo'];
+                $asiento = $original_asiento = $row['asiento'];
+                $nombre1 = $original_nombre1 = $row['nombre1'];
+                $nombre2 = $original_nombre2 = $row['nombre2'];
+                $apellido1 = $original_apellido1 = $row['apellido1'];
+                $apellido2 = $original_apellido2 = $row['apellido2'];
+                $apellidoc = $original_apellidoc = $row['apellidoc'];
+                $genero = $original_genero = $row['genero'];
+                $estado_civil = $original_estado_civil = $row['estado_civil'];
+                $tipo_sangre = $original_tipo_sangre = $row['tipo_sangre'];
+                $usa_ac = $original_usa_ac = $row['usa_ac'];
+                $f_nacimiento = $original_f_nacimiento = $row['f_nacimiento'];
+                $celular = $original_celular = $row['celular'];
+                $telefono = $original_telefono = $row['telefono'];
+                $correo = $original_correo = $row['correo'];
+                $provincia = $original_provincia = $row['provincia'];
+                $distrito = $original_distrito = $row['distrito'];
+                $corregimiento = $original_corregimiento = $row['corregimiento'];
+                $calle = $original_calle = $row['calle'];
+                $casa = $original_casa = $row['casa'];
+                $comunidad = $original_comunidad = $row['comunidad'];
+                $nacionalidad = $original_nacionalidad = $row['nacionalidad'];
+                $f_contra = $original_f_contra = $row['f_contra'];
+                $cargo = $original_cargo = $row['cargo'];
+                $departamento = $original_departamento = $row['departamento'];
+                $estado = $original_estado = $row['estado'];
             } else {
                 // No se encontró el empleado
-                header("location: list.php");
-                exit();
+                $error = "No se encontró un empleado con la cédula proporcionada.";
             }
         } else {
-            echo "Error al ejecutar la consulta: " . mysqli_error($conn);
-            exit();
+            $error = "Error al ejecutar la consulta: " . mysqli_error($conn);
         }
         mysqli_stmt_close($stmt);
+    } else {
+         $error = "Error al preparar la consulta: " . mysqli_error($conn);
     }
 } else {
-    // No se proporcionó la cedula
-    header("location: list.php");
-    exit();
+    // No se proporcionó la cedula o está vacía
+    $error = "No se especificó la cédula del empleado a editar.";
 }
 
 // Calcular fecha máxima para ser mayor de edad (18 años atrás desde hoy)
 $maxDate = date('Y-m-d', strtotime('-18 years'));
 
-// Cargar listas necesarias
-// Nacionalidades
+// Cargar listas necesarias (Nacionalidades, Provincias, Departamentos)
 $query_nacionalidades = "SELECT * FROM nacionalidad ORDER BY pais";
 $result_nacionalidades = mysqli_query($conn, $query_nacionalidades);
-if (!$result_nacionalidades) {
-    $error = "Error al cargar nacionalidades: " . mysqli_error($conn);
-}
-
-// Provincias
 $query_provincias = "SELECT * FROM provincia ORDER BY nombre_provincia";
 $result_provincias = mysqli_query($conn, $query_provincias);
-if (!$result_provincias) {
-    $error = "Error al cargar provincias: " . mysqli_error($conn);
-}
-
-// Departamentos
 $query_departamentos = "SELECT * FROM departamento ORDER BY nombre";
 $result_departamentos = mysqli_query($conn, $query_departamentos);
-if (!$result_departamentos) {
-    $error = "Error al cargar departamentos: " . mysqli_error($conn);
-}
 
 // Procesar datos del formulario cuando se envía
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($error)) {
 
     // 1. Recuperar la cédula original (guardada en hidden)
     $cedula_original_post = $_POST['cedula_original'];
 
     // --- RECAPTURA DE DATOS CON FALLBACK A ORIGINALES ---
+    // Solo recapturar campos que el usuario puede editar
 
-    // Construir la nueva cédula (si cambió)
-    $prefijo = isset($_POST['prefijo']) && trim($_POST['prefijo']) !== '' ? trim($_POST['prefijo']) : $original_prefijo;
-    $tomo    = isset($_POST['tomo']) && trim($_POST['tomo']) !== '' ? trim($_POST['tomo']) : $original_tomo;
-    $asiento = isset($_POST['asiento']) && trim($_POST['asiento']) !== '' ? trim($_POST['asiento']) : $original_asiento;
-    $cedula_nueva = $prefijo . "-" . $tomo . "-" . $asiento;
+    // Datos de cédula (Solo admin puede cambiar)
+    if ($is_admin) {
+        $prefijo = isset($_POST['prefijo']) && trim($_POST['prefijo']) !== '' ? trim($_POST['prefijo']) : $original_prefijo;
+        $tomo    = isset($_POST['tomo']) && trim($_POST['tomo']) !== '' ? trim($_POST['tomo']) : $original_tomo;
+        $asiento = isset($_POST['asiento']) && trim($_POST['asiento']) !== '' ? trim($_POST['asiento']) : $original_asiento;
+        $cedula_nueva = $prefijo . "-" . $tomo . "-" . $asiento;
+    } else {
+        $prefijo = $original_prefijo;
+        $tomo = $original_tomo;
+        $asiento = $original_asiento;
+        $cedula_nueva = $cedula_original_post; // Cédula no cambia para empleado
+    }
 
-    // Datos básicos
+    // Datos básicos (Todos pueden editar)
     $nombre1 = isset($_POST["nombre1"]) && trim($_POST["nombre1"]) !== '' ? trim($_POST["nombre1"]) : $original_nombre1;
-    $nombre2 = isset($_POST["nombre2"]) ? trim($_POST["nombre2"]) : $original_nombre2;
+    $nombre2 = isset($_POST["nombre2"]) ? trim($_POST["nombre2"]) : $original_nombre2; // Puede ser vacío
     $apellido1 = isset($_POST["apellido1"]) && trim($_POST["apellido1"]) !== '' ? trim($_POST["apellido1"]) : $original_apellido1;
-    $apellido2 = isset($_POST["apellido2"]) ? trim($_POST["apellido2"]) : $original_apellido2;
+    $apellido2 = isset($_POST["apellido2"]) ? trim($_POST["apellido2"]) : $original_apellido2; // Puede ser vacío
 
-    // Campos que influyen en lógica condicional
+    // Campos que influyen en lógica condicional (Todos pueden editar)
     $genero = isset($_POST["genero"]) && $_POST["genero"] !== '' ? (int)$_POST["genero"] : $original_genero;
     $estado_civil = isset($_POST["estado_civil"]) && $_POST["estado_civil"] !== '' ? (int)$_POST["estado_civil"] : $original_estado_civil;
     $usa_ac = isset($_POST["usa_ac"]) ? 1 : 0;
 
-    // tipo_sangre: Usar POST si se envió y no está vacío, si no, el original.
-    $tipo_sangre = isset($_POST['tipo_sangre']) && $_POST['tipo_sangre'] !== '' ? trim($_POST['tipo_sangre']) : $original_tipo_sangre;
-    if (empty($tipo_sangre)) {
-        $error = "Por favor seleccione un tipo de sangre.";
-    }
-
-    // f_nacimiento: Usar POST si se envió y no está vacío, si no, el original.
-    $f_nacimiento_input = isset($_POST['f_nacimiento']) ? trim($_POST['f_nacimiento']) : '';
-    if (!empty($f_nacimiento_input)) {
-        if (strtotime($f_nacimiento_input)) {
-            $f_nacimiento = date('Y-m-d', strtotime($f_nacimiento_input));
-            $birthDate = new DateTime($f_nacimiento);
-            $today = new DateTime();
-            $age = $today->diff($birthDate)->y;
-            if ($age < 18) {
-                $error = empty($error) ? "El empleado debe ser mayor de edad." : $error . " El empleado debe ser mayor de edad.";
-                $f_nacimiento = $original_f_nacimiento;
-            }
-        } else {
-            $error = empty($error) ? "Fecha de nacimiento inválida." : $error . " Fecha de nacimiento inválida.";
-            $f_nacimiento = $original_f_nacimiento;
-        }
-    } else {
-        $f_nacimiento = $original_f_nacimiento;
-    }
-
-    // departamento: Usar POST si se envió y no está vacío, aplicar padding. Si no, el original.
-    $departamento = isset($_POST['departamento']) && $_POST['departamento'] !== '' ? str_pad(trim($_POST['departamento']), 2, '0', STR_PAD_LEFT) : $original_departamento;
-    if (empty($departamento)) {
-         $error = empty($error) ? "Seleccione un departamento." : $error . " Seleccione un departamento.";
-    }
-
-    // cargo: Lógica similar a departamento
-    $cargo = isset($_POST['cargo']) && $_POST['cargo'] !== '' ? str_pad(trim($_POST['cargo']), 2, '0', STR_PAD_LEFT) : $original_cargo;
-     if (empty($cargo)) {
-         $error = empty($error) ? "Seleccione un cargo." : $error . " Seleccione un cargo.";
-    }
-
-    // apellidoc: Determinar valor base (POST o original) y luego aplicar condición.
-    $temp_apellidoc = $original_apellidoc;
-    if (isset($_POST['apellidoc'])) {
-        $temp_apellidoc = trim($_POST['apellidoc']);
-    }
+    // Apellido de casada (depende de genero, estado civil, usa_ac)
+    $temp_apellidoc = isset($_POST['apellidoc']) ? trim($_POST['apellidoc']) : $original_apellidoc;
     if ($genero == 0 && $estado_civil == 1 && $usa_ac == 1) {
         $apellidoc = $temp_apellidoc;
     } else {
-        $apellidoc = "";
+        $apellidoc = ""; // Limpiar si no aplica
     }
 
-    // Otros campos (asegurar fallback similar)
+    // tipo_sangre (Todos pueden editar)
+    $tipo_sangre = isset($_POST['tipo_sangre']) && $_POST['tipo_sangre'] !== '' ? trim($_POST['tipo_sangre']) : $original_tipo_sangre;
+    if (empty($tipo_sangre)) { $error = "Por favor seleccione un tipo de sangre."; }
+
+    // f_nacimiento (Todos pueden editar)
+    $f_nacimiento_input = isset($_POST['f_nacimiento']) ? trim($_POST['f_nacimiento']) : '';
+    if (!empty($f_nacimiento_input)) {
+        $f_nacimiento = $f_nacimiento_input;
+        // Validar mayoría de edad
+        $birthDate = new DateTime($f_nacimiento);
+        $today = new DateTime();
+        $age = $today->diff($birthDate)->y;
+        if ($age < 18) { $error = "El empleado debe ser mayor de edad (al menos 18 años)."; }
+    } else {
+        $f_nacimiento = $original_f_nacimiento; // Mantener original si no se envía
+    }
+
+    // Contacto (Todos pueden editar, excepto correo para empleados)
     $celular = isset($_POST["celular"]) && trim($_POST["celular"]) !== '' ? trim($_POST["celular"]) : $original_celular;
-    $telefono = isset($_POST["telefono"]) ? trim($_POST["telefono"]) : $original_telefono;
-    $correo = isset($_POST["correo"]) && trim($_POST["correo"]) !== '' ? trim($_POST["correo"]) : $original_correo;
+    if (!empty($celular) && (!is_numeric($celular) || strlen($celular) > 8)) { $error = "El celular debe ser un número de máximo 8 dígitos."; }
+
+    $telefono = isset($_POST["telefono"]) ? trim($_POST["telefono"]) : $original_telefono; // Puede ser vacío
+    if (!empty($telefono) && (!is_numeric($telefono) || strlen($telefono) > 7)) { $error = "El teléfono debe ser un número de máximo 7 dígitos."; }
+
+    // Correo (Solo admin puede editar)
+    if ($is_admin) {
+        $correo = isset($_POST["correo"]) && trim($_POST["correo"]) !== '' ? trim($_POST["correo"]) : $original_correo;
+        if (!empty($correo) && !filter_var($correo, FILTER_VALIDATE_EMAIL)) { $error = "Por favor ingrese un correo electrónico válido."; }
+    } else {
+        $correo = $original_correo; // Mantener correo original si no es admin
+    }
+
+    // Ubicación (Todos pueden editar)
     $provincia = isset($_POST["provincia"]) && $_POST["provincia"] !== '' ? trim($_POST["provincia"]) : $original_provincia;
     $distrito = isset($_POST["distrito"]) && $_POST["distrito"] !== '' ? trim($_POST["distrito"]) : $original_distrito;
     $corregimiento = isset($_POST["corregimiento"]) && $_POST["corregimiento"] !== '' ? trim($_POST["corregimiento"]) : $original_corregimiento;
-    $calle = isset($_POST["calle"]) ? trim($_POST["calle"]) : $original_calle;
-    $casa = isset($_POST["casa"]) ? trim($_POST["casa"]) : $original_casa;
-    $comunidad = isset($_POST["comunidad"]) ? trim($_POST["comunidad"]) : $original_comunidad;
+    $calle = isset($_POST["calle"]) ? trim($_POST["calle"]) : $original_calle; // Puede ser vacío
+    $casa = isset($_POST["casa"]) ? trim($_POST["casa"]) : $original_casa; // Puede ser vacío
+    $comunidad = isset($_POST["comunidad"]) ? trim($_POST["comunidad"]) : $original_comunidad; // Puede ser vacío
     $nacionalidad = isset($_POST["nacionalidad"]) && $_POST["nacionalidad"] !== '' ? trim($_POST["nacionalidad"]) : $original_nacionalidad;
-    $f_contra = isset($_POST["f_contra"]) && trim($_POST["f_contra"]) !== '' ? trim($_POST["f_contra"]) : $original_f_contra;
-    $estado = isset($_POST["estado"]) && $_POST["estado"] !== '' ? $_POST["estado"] : $original_estado;
 
-    // Verificar si la cédula nueva ya existe (solo si cambió)
-    if ($cedula_nueva !== $cedula_original_post) {
-        $sql_check_cedula = "SELECT cedula FROM empleados WHERE cedula = ?";
-        if ($stmt_check_ced = mysqli_prepare($conn, $sql_check_cedula)) {
-            mysqli_stmt_bind_param($stmt_check_ced, "s", $cedula_nueva);
-            mysqli_stmt_execute($stmt_check_ced);
-            mysqli_stmt_store_result($stmt_check_ced);
-            if (mysqli_stmt_num_rows($stmt_check_ced) > 0) {
-                $error = empty($error) ? "La nueva cédula ya existe." : $error . " La nueva cédula ya existe.";
+    // Información laboral (Solo admin puede editar)
+    if ($is_admin) {
+        $f_contra = isset($_POST["f_contra"]) && trim($_POST["f_contra"]) !== '' ? trim($_POST["f_contra"]) : $original_f_contra;
+        $departamento = isset($_POST['departamento']) && $_POST['departamento'] !== '' ? str_pad(trim($_POST['departamento']), 2, '0', STR_PAD_LEFT) : $original_departamento;
+        $cargo = isset($_POST['cargo']) && $_POST['cargo'] !== '' ? str_pad(trim($_POST['cargo']), 2, '0', STR_PAD_LEFT) : $original_cargo;
+        $estado = isset($_POST["estado"]) && $_POST["estado"] !== '' ? $_POST["estado"] : $original_estado;
+    } else {
+        // Mantener valores originales si no es admin
+        $f_contra = $original_f_contra;
+        $departamento = $original_departamento;
+        $cargo = $original_cargo;
+        $estado = $original_estado;
+    }
+
+    // Verificar si la cédula nueva ya existe (solo si cambió y es admin)
+    if ($is_admin && $cedula_nueva !== $cedula_original_post) {
+        $sql_check = "SELECT cedula FROM empleados WHERE cedula = ?";
+        if ($stmt_check = mysqli_prepare($conn, $sql_check)) {
+            mysqli_stmt_bind_param($stmt_check, "s", $cedula_nueva);
+            mysqli_stmt_execute($stmt_check);
+            mysqli_stmt_store_result($stmt_check);
+            if (mysqli_stmt_num_rows($stmt_check) > 0) {
+                $error = "El nuevo número de cédula ('$cedula_nueva') ya existe en el sistema.";
             }
-            mysqli_stmt_close($stmt_check_ced);
+            mysqli_stmt_close($stmt_check);
         }
     }
 
-    // Si no hay error, procedemos con el UPDATE
+    // Si no hay errores, actualizar el empleado
     if (empty($error)) {
-        $sql = "UPDATE empleados
-                SET cedula=?,
-                    prefijo=?, tomo=?, asiento=?,
-                    nombre1=?, nombre2=?, apellido1=?, apellido2=?, apellidoc=?,
-                    genero=?, estado_civil=?, tipo_sangre=?, usa_ac=?, f_nacimiento=?,
-                    celular=?, telefono=?, correo=?, provincia=?, distrito=?, corregimiento=?,
-                    calle=?, casa=?, comunidad=?, nacionalidad=?, f_contra=?, cargo=?,
-                    departamento=?, estado=?
-                WHERE cedula=?";
+        $sql_update = "UPDATE empleados SET
+                        cedula=?, prefijo=?, tomo=?, asiento=?, nombre1=?, nombre2=?, apellido1=?, apellido2=?, apellidoc=?,
+                        genero=?, estado_civil=?, tipo_sangre=?, usa_ac=?, f_nacimiento=?, celular=?, telefono=?, correo=?,
+                        provincia=?, distrito=?, corregimiento=?, calle=?, casa=?, comunidad=?, nacionalidad=?,
+                        f_contra=?, cargo=?, departamento=?, estado=?
+                       WHERE cedula=?";
 
-        if ($stmt = mysqli_prepare($conn, $sql)) {
-            mysqli_stmt_bind_param(
-                $stmt,
-                "sssssssssiisisissssssssssssss",
-                $cedula_nueva,
-                $prefijo, $tomo, $asiento,
-                $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc,
-                $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento,
-                $celular, $telefono, $correo, $provincia, $distrito, $corregimiento,
-                $calle, $casa, $comunidad, $nacionalidad,
+        if ($stmt_update = mysqli_prepare($conn, $sql_update)) {
+             mysqli_stmt_bind_param($stmt_update, "sssssssssiisissssssssssssssis",
+                $cedula_nueva, $prefijo, $tomo, $asiento, $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc,
+                $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento, $celular, $telefono, $correo,
+                $provincia, $distrito, $corregimiento, $calle, $casa, $comunidad, $nacionalidad,
                 $f_contra, $cargo, $departamento, $estado,
-                $cedula_original_post
-            );
+                $cedula_original_post); // Condición WHERE usa la cédula original
 
-            if (mysqli_stmt_execute($stmt)) {
-                $success = "Empleado actualizado correctamente.";
+            if (mysqli_stmt_execute($stmt_update)) {
+                $success = "Información del empleado actualizada correctamente.";
+                // Actualizar la cédula en la variable $cedula si cambió (para mostrar en el form)
                 $cedula = $cedula_nueva;
-                $original_prefijo = $prefijo;
-                $original_tomo = $tomo;
-                $original_asiento = $asiento;
-                $original_nombre1 = $nombre1;
-                $original_nombre2 = $nombre2;
-                $original_apellido1 = $apellido1;
-                $original_apellido2 = $apellido2;
-                $original_apellidoc = $apellidoc;
-                $original_genero = $genero;
-                $original_estado_civil = $estado_civil;
-                $original_tipo_sangre = $tipo_sangre;
-                $original_usa_ac = $usa_ac;
-                $original_f_nacimiento = $f_nacimiento;
-                $original_celular = $celular;
-                $original_telefono = $telefono;
-                $original_correo = $correo;
-                $original_provincia = $provincia;
-                $original_distrito = $distrito;
-                $original_corregimiento = $corregimiento;
-                $original_calle = $calle;
-                $original_casa = $casa;
-                $original_comunidad = $comunidad;
-                $original_nacionalidad = $nacionalidad;
-                $original_f_contra = $f_contra;
-                $original_cargo = $cargo;
-                $original_departamento = $departamento;
-                $original_estado = $estado;
-                $cedula_original_get = $cedula_nueva;
+                // Actualizar también las variables originales para que el form muestre los datos guardados
+                $original_prefijo = $prefijo; $original_tomo = $tomo; $original_asiento = $asiento;
+                $original_nombre1 = $nombre1; $original_nombre2 = $nombre2; $original_apellido1 = $apellido1; $original_apellido2 = $apellido2; $original_apellidoc = $apellidoc;
+                $original_genero = $genero; $original_estado_civil = $estado_civil; $original_tipo_sangre = $tipo_sangre; $original_usa_ac = $usa_ac; $original_f_nacimiento = $f_nacimiento;
+                $original_celular = $celular; $original_telefono = $telefono; $original_correo = $correo;
+                $original_provincia = $provincia; $original_distrito = $distrito; $original_corregimiento = $corregimiento; $original_calle = $calle; $original_casa = $casa; $original_comunidad = $comunidad; $original_nacionalidad = $nacionalidad;
+                $original_f_contra = $f_contra; $original_cargo = $cargo; $original_departamento = $departamento; $original_estado = $estado;
 
             } else {
                 $error = "Error al actualizar el empleado: " . mysqli_error($conn);
             }
-            mysqli_stmt_close($stmt);
+            mysqli_stmt_close($stmt_update);
         } else {
-             $error = "Error al preparar la consulta UPDATE: " . mysqli_error($conn);
+             $error = "Error al preparar la consulta de actualización: " . mysqli_error($conn);
         }
     }
 }
@@ -324,11 +259,17 @@ include "../../includes/header.php";
 ?>
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Editar Empleado</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <a href="list.php" class="btn btn-sm btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Volver a la Lista
-        </a>
+     <h1 class="h2">Editar <?php echo $is_admin ? 'Empleado' : '(Mi Perfil)'; ?></h1>
+     <div class="btn-toolbar mb-2 mb-md-0">
+        <?php if ($is_admin): ?>
+            <a href="list.php" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a la Lista
+            </a>
+        <?php else: ?>
+             <a href="profile.php" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Mi Perfil
+            </a>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -340,84 +281,73 @@ include "../../includes/header.php";
 <?php endif; ?>
 
 <?php if (!empty($success)): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="fas fa-check-circle"></i> <?php echo $success; ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>
 
+<?php if (!empty($cedula)): // Solo mostrar el formulario si se cargó un empleado ?>
 <div class="card">
     <div class="card-body">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?cedula=' . $cedula; ?>" method="post" class="needs-validation" id="formularioEmpleado" novalidate>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?cedula=' . urlencode($cedula_original_get)); ?>" method="post" class="needs-validation" id="formularioEmpleado" novalidate>
+            <!-- Campo oculto para guardar la cédula original -->
+            <input type="hidden" name="cedula_original" value="<?php echo htmlspecialchars($cedula_original_get); ?>">
+
             <div class="row mb-4">
                 <div class="col-12">
                     <h4 class="mb-3">Información Personal</h4>
                 </div>
-                
-                <div class="col-md-3 mb-3">
-                    <label for="cedula" class="form-label">Cédula</label>
-                    <input type="text" class="form-control" id="cedula" value="<?php echo $cedula; ?>" disabled>
+
+                <!-- Datos de cédula (deshabilitado si no es admin) -->
+                <div class="col-md-6 mb-3">
+                    <label for="prefijo" class="form-label">Cédula *</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="prefijo" name="prefijo" value="<?php echo htmlspecialchars($prefijo); ?>" maxlength="6" required placeholder="8" <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                        <span class="input-group-text">-</span>
+                        <input type="text" class="form-control" id="tomo" name="tomo" value="<?php echo htmlspecialchars($tomo); ?>" maxlength="4" required placeholder="1234" <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                        <span class="input-group-text">-</span>
+                        <input type="text" class="form-control" id="asiento" name="asiento" value="<?php echo htmlspecialchars($asiento); ?>" maxlength="6" required placeholder="123456" <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                    </div>
+                    <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">La cédula no puede ser modificada.</small>
+                    <?php else: ?>
+                        <div class="form-text text-muted">Ingrese el número de cédula completo con el formato correcto.</div>
+                        <div id="cedula-error" class="text-danger"></div> <!-- Error message container -->
+                    <?php endif; ?>
                 </div>
 
-                <!-- Campo oculto con la cédula actual -->
-<input type="hidden" name="cedula_original" value="<?php echo $cedula; ?>">
-                
-                <div class="col-md-3 mb-3">
-                    <label for="prefijo" class="form-label">Prefijo *</label>
-                    <input type="text" class="form-control" id="prefijo" name="prefijo" value="<?php echo $prefijo; ?>" maxlength="3" required placeholder="8">
-                    <div id="cedula-error" class="text-danger"></div>
-                </div>
-                
-                <div class="col-md-3 mb-3">
-                    <label for="tomo" class="form-label">Tomo *</label>
-                    <input type="text" class="form-control" id="tomo" name="tomo" value="<?php echo $tomo; ?>" maxlength="4" required placeholder="1234">
-                    
-                </div>
-                
-                <div class="col-md-3 mb-3">
-                    <label for="asiento" class="form-label">Asiento *</label>
-                    <input type="text" class="form-control" id="asiento" name="asiento" value="<?php echo $asiento; ?>" maxlength="6" required placeholder="123456">
-                </div>
-                
-                <div class="col-md-6 mb-3">
+                <!-- Resto de campos de Información Personal (habilitados) -->
+                 <div class="col-md-6 mb-3">
                     <label for="nombre1" class="form-label">Primer Nombre *</label>
-                    <input type="text" class="form-control" id="nombre1" name="nombre1" value="<?php echo $nombre1; ?>" maxlength="25" required>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                    <input type="text" class="form-control" id="nombre1" name="nombre1" value="<?php echo htmlspecialchars($nombre1); ?>" maxlength="25" required>
+                    <div class="invalid-feedback">Este campo es requerido y solo debe contener letras, espacios o un guión.</div>
                 </div>
-                
                 <div class="col-md-6 mb-3">
                     <label for="nombre2" class="form-label">Segundo Nombre</label>
-                    <input type="text" class="form-control" id="nombre2" name="nombre2" value="<?php echo $nombre2; ?>" maxlength="25">
+                    <input type="text" class="form-control" id="nombre2" name="nombre2" value="<?php echo htmlspecialchars($nombre2); ?>" maxlength="25">
+                     <div class="invalid-feedback">Solo debe contener letras, espacios o un guión.</div>
                 </div>
-                
-                <div class="col-md-4 mb-3">
+                <div class="col-md-6 mb-3">
                     <label for="apellido1" class="form-label">Primer Apellido *</label>
-                    <input type="text" class="form-control" id="apellido1" name="apellido1" value="<?php echo $apellido1; ?>" maxlength="25" required>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                    <input type="text" class="form-control" id="apellido1" name="apellido1" value="<?php echo htmlspecialchars($apellido1); ?>" maxlength="25" required>
+                     <div class="invalid-feedback">Este campo es requerido y solo debe contener letras, espacios o un guión.</div>
                 </div>
-                
                 <div class="col-md-6 mb-3">
                     <label for="apellido2" class="form-label">Segundo Apellido</label>
-                    <input type="text" class="form-control" id="apellido2" name="apellido2" value="<?php echo $apellido2; ?>" maxlength="25">
+                    <input type="text" class="form-control" id="apellido2" name="apellido2" value="<?php echo htmlspecialchars($apellido2); ?>" maxlength="25">
+                     <div class="invalid-feedback">Solo debe contener letras, espacios o un guión.</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
+                 <div class="col-md-3 mb-3">
                     <label for="genero" class="form-label">Género *</label>
                     <select class="form-select" id="genero" name="genero" required onchange="mostrarApellidoCasada()">
                         <option value="" disabled>Seleccione...</option>
                         <option value="1" <?php if ($genero == 1) echo "selected"; ?>>Masculino</option>
                         <option value="0" <?php if ($genero == 0) echo "selected"; ?>>Femenino</option>
                     </select>
-                    <div class="invalid-feedback">
-                        Seleccione un género.
-                    </div>
+                    <div class="invalid-feedback">Seleccione un género.</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
+                 <div class="col-md-3 mb-3">
                     <label for="estado_civil" class="form-label">Estado Civil *</label>
                     <select class="form-select" id="estado_civil" name="estado_civil" required onchange="mostrarApellidoCasada()">
                         <option value="" disabled>Seleccione...</option>
@@ -426,28 +356,24 @@ include "../../includes/header.php";
                         <option value="2" <?php if ($estado_civil == 2) echo "selected"; ?>>Viudo/a</option>
                         <option value="3" <?php if ($estado_civil == 3) echo "selected"; ?>>Divorciado/a</option>
                     </select>
-                    <div class="invalid-feedback">
-                        Seleccione un estado civil.
-                    </div>
+                    <div class="invalid-feedback">Seleccione un estado civil.</div>
                 </div>
-                
-                <!-- Campo de apellido de casada (inicialmente oculto) -->
-                <div class="col-md-6" id="seccion_apellido_casada" style="display: none;">
+                 <!-- Campo de apellido de casada (inicialmente oculto) -->
+                <div class="col-md-6" id="seccion_apellido_casada" style="display: <?php echo ($genero == 0 && $estado_civil == 1) ? 'block' : 'none'; ?>;">
                     <div class="mb-3">
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="usa_ac" name="usa_ac" value="1" <?php if ($usa_ac == 1) echo "checked"; ?> onchange="toggleApellidoCasada()">
                             <label class="form-check-label" for="usa_ac">¿Usa apellido de casada?</label>
                         </div>
-                        <!-- Añadir div campo_apellido_casada que falta -->
                         <div id="campo_apellido_casada" style="display: <?php echo ($usa_ac == 1) ? 'block' : 'none'; ?>;">
                             <label for="apellidoc" class="form-label">Apellido de Casada</label>
-                            <input type="text" class="form-control" id="apellidoc" name="apellidoc" value="<?php echo $apellidoc; ?>" maxlength="25">
+                            <input type="text" class="form-control" id="apellidoc" name="apellidoc" value="<?php echo htmlspecialchars($apellidoc); ?>" maxlength="25">
                             <small class="form-text text-muted">Ingrese el apellido del esposo</small>
+                            <div class="invalid-feedback">Solo debe contener letras, espacios o un guión.</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
+                 <div class="col-md-3 mb-3">
                     <label for="tipo_sangre" class="form-label">Tipo de Sangre *</label>
                     <select class="form-select" id="tipo_sangre" name="tipo_sangre" required>
                         <option value="" disabled>Seleccione...</option>
@@ -460,244 +386,164 @@ include "../../includes/header.php";
                         <option value="O+" <?php if ($tipo_sangre == "O+") echo "selected"; ?>>O+</option>
                         <option value="O-" <?php if ($tipo_sangre == "O-") echo "selected"; ?>>O-</option>
                     </select>
-                    <div class="invalid-feedback">
-                        Seleccione un tipo de sangre.
-                    </div>
+                    <div class="invalid-feedback">Seleccione un tipo de sangre.</div>
                 </div>
-                
-                <div class="col-md-3 mb-3">
+                 <div class="col-md-3 mb-3">
                     <label for="f_nacimiento" class="form-label">Fecha de Nacimiento *</label>
-                    <input type="date" class="form-control" id="f_nacimiento" name="f_nacimiento" value="<?php echo $f_nacimiento; ?>" max="<?php echo $maxDate; ?>" required>
-                    <div class="invalid-feedback">
-                        Debe ser mayor de edad (18 años mínimo).
-                    </div>
+                    <input type="date" class="form-control" id="f_nacimiento" name="f_nacimiento" value="<?php echo htmlspecialchars($f_nacimiento); ?>" max="<?php echo $maxDate; ?>" required>
+                    <div class="invalid-feedback">Debe ser mayor de edad (18 años mínimo).</div>
                 </div>
-
-                <div class="col-md-3 mb-3">
+                 <div class="col-md-3 mb-3">
                     <label for="nacionalidad" class="form-label">Nacionalidad *</label>
-                    <select class="form-select select2-nacionalidad" id="nacionalidad" name="nacionalidad" required>
-                        <?php if (!empty($nacionalidad)): 
-                            // Si ya hay una nacionalidad seleccionada, obtener sus datos
-                            $sql_nac = "SELECT codigo, pais FROM nacionalidad WHERE codigo = ?";
-                            $stmt_nac = mysqli_prepare($conn, $sql_nac);
-                            mysqli_stmt_bind_param($stmt_nac, "s", $nacionalidad);
-                            mysqli_stmt_execute($stmt_nac);
-                            $result_nac = mysqli_stmt_get_result($stmt_nac);
-                            $nac_data = mysqli_fetch_assoc($result_nac);
-                        ?>
-                            <option value="<?php echo $nac_data['codigo']; ?>" selected>
-                                <?php echo htmlspecialchars($nac_data['pais']); ?>
-                            </option>
-                        <?php else: ?>
-                            <option value="">Seleccione una nacionalidad</option>
-                        <?php endif; ?>
-                        
-                        <?php
-                        // Cargar todas las nacionalidades
-                        $sql_todas_nac = "SELECT codigo, pais FROM nacionalidad ORDER BY pais";
-                        $result_todas_nac = mysqli_query($conn, $sql_todas_nac);
-                        while ($row_nac = mysqli_fetch_assoc($result_todas_nac)) {
-                            if ($row_nac['codigo'] != $nacionalidad) {
-                                echo '<option value="' . $row_nac['codigo'] . '">' . htmlspecialchars($row_nac['pais']) . '</option>';
-                            }
-                        }
-                        ?>
+                    <select class="form-select nacionalidad-select" id="nacionalidad" name="nacionalidad" required>
+                        <?php echo loadNacionalidades($conn, $nacionalidad); // Asegúrate que esta función exista y funcione ?>
                     </select>
-                    <div class="invalid-feedback">
-                        Seleccione una nacionalidad.
-                    </div>
+                    <div class="invalid-feedback">Seleccione una nacionalidad.</div>
+                     <div id="flag-container-nacionalidad" class="flag-container"></div> <!-- Contenedor para la bandera -->
                 </div>
             </div>
-            
-            <!-- Sección de Información de Contacto -->
+
+            <!-- Información de Contacto (habilitados, excepto correo para empleados) -->
             <div class="row mb-4">
-                <div class="col-12">
-                    <h4 class="mb-3">Información de Contacto</h4>
-                </div>
-                
-                <div class="col-md-4 mb-3">
+                 <div class="col-12"><h4 class="mb-3">Información de Contacto</h4></div>
+                 <div class="col-md-4 mb-3">
                     <label for="celular" class="form-label">Celular *</label>
-                    <input type="text" class="form-control" id="celular" name="celular" value="<?php echo $celular; ?>" maxlength="8" required>
-                    <div class="invalid-feedback">
-                        Ingrese un número de celular válido.
-                    </div>
+                    <input type="text" class="form-control" id="celular" name="celular" value="<?php echo htmlspecialchars($celular); ?>" maxlength="8" required>
+                    <div class="invalid-feedback">Ingrese un número de celular válido (máximo 8 dígitos).</div>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="telefono" class="form-label">Teléfono Fijo</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" value="<?php echo $telefono; ?>" maxlength="7">
-                    <div class="invalid-feedback">
-                        Ingrese un número de teléfono válido (máximo 7 dígitos).
-                    </div>
+                    <input type="text" class="form-control" id="telefono" name="telefono" value="<?php echo htmlspecialchars($telefono); ?>" maxlength="7">
+                    <div class="invalid-feedback">Ingrese un número de teléfono válido (máximo 7 dígitos).</div>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="correo" class="form-label">Correo Electrónico *</label>
-                    <input type="email" class="form-control" id="correo" name="correo" value="<?php echo $correo; ?>" maxlength="40" required>
-                    <div class="invalid-feedback">
-                        Ingrese un correo electrónico válido.
-                    </div>
+                    <input type="email" class="form-control" id="correo" name="correo" value="<?php echo htmlspecialchars($correo); ?>" maxlength="40" required <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                    <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">El correo electrónico no puede ser modificado.</small>
+                    <?php else: ?>
+                        <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+                    <?php endif; ?>
                 </div>
             </div>
-            
-            <!-- Sección de Ubicación -->
+
+            <!-- Información de Ubicación (habilitados) -->
             <div class="row mb-4">
-                <div class="col-12">
-                    <h4 class="mb-3">Información de Ubicación</h4>
-                </div>
-                
-                <div class="col-md-4 mb-3">
+                 <div class="col-12"><h4 class="mb-3">Información de Ubicación</h4></div>
+                 <div class="col-md-4 mb-3">
                     <label for="provincia" class="form-label">Provincia *</label>
                     <select class="form-select" id="provincia" name="provincia" required>
                         <option value="">Seleccione una provincia...</option>
                         <?php
-                        $query_provincias = "SELECT * FROM provincia ORDER BY nombre_provincia";
-                        $result_provincias = mysqli_query($conn, $query_provincias);
-                        while ($row_prov = mysqli_fetch_assoc($result_provincias)) {
-                            $selected = ($provincia == $row_prov['codigo_provincia']) ? 'selected' : '';
-                            echo "<option value='" . $row_prov['codigo_provincia'] . "' $selected>" . $row_prov['nombre_provincia'] . "</option>";
+                        if (isset($result_provincias) && $result_provincias) {
+                            mysqli_data_seek($result_provincias, 0);
+                            while ($row_p = mysqli_fetch_assoc($result_provincias)) {
+                                $selected = ($provincia == $row_p['codigo_provincia']) ? 'selected' : '';
+                                echo "<option value='" . $row_p['codigo_provincia'] . "' $selected>" . htmlspecialchars($row_p['nombre_provincia']) . "</option>";
+                            }
                         }
                         ?>
                     </select>
-                    <div class="invalid-feedback">
-                        Por favor seleccione una provincia.
-                    </div>
+                    <div class="invalid-feedback">Por favor seleccione una provincia.</div>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="distrito" class="form-label">Distrito *</label>
-                    <select class="form-select" id="distrito" name="distrito" required>
+                    <select class="form-select" id="distrito" name="distrito" required <?php echo empty($provincia) ? 'disabled' : ''; ?>>
                         <option value="">Seleccione un distrito...</option>
-                        <?php if (!empty($distrito) && !empty($provincia)): 
-                            // Cargar los distritos si ya hay uno seleccionado
-                            $sql_dist = "SELECT codigo_distrito, nombre_distrito FROM distrito WHERE codigo_provincia = ? ORDER BY nombre_distrito";
-                            $stmt_dist = mysqli_prepare($conn, $sql_dist);
-                            mysqli_stmt_bind_param($stmt_dist, "s", $provincia);
-                            mysqli_stmt_execute($stmt_dist);
-                            $result_dist = mysqli_stmt_get_result($stmt_dist);
-                            while ($row_dist = mysqli_fetch_assoc($result_dist)) {
-                                $selected_dist = ($distrito == $row_dist['codigo_distrito']) ? 'selected' : '';
-                                echo "<option value='" . $row_dist['codigo_distrito'] . "' $selected_dist>" . $row_dist['nombre_distrito'] . "</option>";
-                            }
-                        endif; ?>
+                        <!-- Opciones se cargan con JS -->
                     </select>
-                    <div class="invalid-feedback">
-                        Por favor seleccione un distrito.
-                    </div>
+                    <div class="invalid-feedback">Por favor seleccione un distrito.</div>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="corregimiento" class="form-label">Corregimiento *</label>
-                    <select class="form-select" id="corregimiento" name="corregimiento" required>
+                    <select class="form-select" id="corregimiento" name="corregimiento" required <?php echo empty($distrito) ? 'disabled' : ''; ?>>
                         <option value="">Seleccione un corregimiento...</option>
-                        <?php if (!empty($corregimiento) && !empty($provincia) && !empty($distrito)): 
-                            // Cargar los corregimientos si ya hay uno seleccionado
-                            $sql_correg = "SELECT codigo_corregimiento, nombre_corregimiento FROM corregimiento 
-                                          WHERE codigo_provincia = ? AND codigo_distrito = ? ORDER BY nombre_corregimiento";
-                            $stmt_correg = mysqli_prepare($conn, $sql_correg);
-                            mysqli_stmt_bind_param($stmt_correg, "ss", $provincia, $distrito);
-                            mysqli_stmt_execute($stmt_correg);
-                            $result_correg = mysqli_stmt_get_result($stmt_correg);
-                            while ($row_correg = mysqli_fetch_assoc($result_correg)) {
-                                $selected_correg = ($corregimiento == $row_correg['codigo_corregimiento']) ? 'selected' : '';
-                                echo "<option value='" . $row_correg['codigo_corregimiento'] . "' $selected_correg>" . $row_correg['nombre_corregimiento'] . "</option>";
-                            }
-                        endif; ?>
+                         <!-- Opciones se cargan con JS -->
                     </select>
-                    <div class="invalid-feedback">
-                        Por favor seleccione un corregimiento.
-                    </div>
+                    <div class="invalid-feedback">Por favor seleccione un corregimiento.</div>
                 </div>
-                
-                <div class="col-md-4 mb-3">
+                 <div class="col-md-4 mb-3">
                     <label for="calle" class="form-label">Calle</label>
-                    <input type="text" class="form-control" id="calle" name="calle" value="<?php echo $calle; ?>" maxlength="30">
+                    <input type="text" class="form-control" id="calle" name="calle" value="<?php echo htmlspecialchars($calle); ?>" maxlength="30">
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="casa" class="form-label">Casa/Apto</label>
-                    <input type="text" class="form-control" id="casa" name="casa" value="<?php echo $casa; ?>" maxlength="10">
+                    <input type="text" class="form-control" id="casa" name="casa" value="<?php echo htmlspecialchars($casa); ?>" maxlength="10">
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="comunidad" class="form-label">Comunidad/Urbanización</label>
-                    <input type="text" class="form-control" id="comunidad" name="comunidad" value="<?php echo $comunidad; ?>" maxlength="25">
+                    <input type="text" class="form-control" id="comunidad" name="comunidad" value="<?php echo htmlspecialchars($comunidad); ?>" maxlength="25">
                 </div>
             </div>
-            
-            <!-- Sección de Información Laboral -->
+
+            <!-- Información Laboral (deshabilitado si no es admin) -->
             <div class="row mb-4">
                 <div class="col-12">
                     <h4 class="mb-3">Información Laboral</h4>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="f_contra" class="form-label">Fecha de Contratación *</label>
-                    <input type="date" class="form-control" id="f_contra" name="f_contra" value="<?php echo $f_contra; ?>" required>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                    <input type="date" class="form-control" id="f_contra" name="f_contra" value="<?php echo htmlspecialchars($f_contra); ?>" required <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                     <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">Campo no modificable.</small>
+                    <?php else: ?>
+                        <div class="invalid-feedback">Este campo es requerido.</div>
+                    <?php endif; ?>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="departamento" class="form-label">Departamento *</label>
-                    <select class="form-select" id="departamento" name="departamento" required>
+                    <select class="form-select" id="departamento" name="departamento" required <?php echo !$is_admin ? 'disabled' : ''; ?>>
                         <option value="">Seleccione...</option>
-                        <?php
-                        $query_departamentos = "SELECT * FROM departamento ORDER BY nombre";
-                        $result_departamentos = mysqli_query($conn, $query_departamentos);
-                        while ($row_dep = mysqli_fetch_assoc($result_departamentos)) {
-                            $selected = ($departamento == $row_dep['codigo']) ? 'selected' : '';
-                            echo "<option value='" . $row_dep['codigo'] . "' $selected>" . $row_dep['nombre'] . "</option>";
+                         <?php
+                        if (isset($result_departamentos) && $result_departamentos) {
+                            mysqli_data_seek($result_departamentos, 0);
+                            while ($row_d = mysqli_fetch_assoc($result_departamentos)) {
+                                $selected = ($departamento == $row_d['codigo']) ? 'selected' : '';
+                                echo "<option value='" . $row_d['codigo'] . "' $selected>" . htmlspecialchars($row_d['nombre']) . "</option>";
+                            }
                         }
                         ?>
                     </select>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                     <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">Campo no modificable.</small>
+                    <?php else: ?>
+                        <div class="invalid-feedback">Este campo es requerido.</div>
+                    <?php endif; ?>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="cargo" class="form-label">Cargo *</label>
-                    <select class="form-select" id="cargo" name="cargo" required>
-                        <option value="">Seleccione un cargo...</option>
-                        <?php if (!empty($departamento)): 
-                            // Cargar los cargos si hay un departamento seleccionado
-                            $sql_cargo = "SELECT codigo, nombre FROM cargo WHERE dep_codigo = ? ORDER BY nombre";
-                            $stmt_cargo = mysqli_prepare($conn, $sql_cargo);
-                            mysqli_stmt_bind_param($stmt_cargo, "s", $departamento);
-                            mysqli_stmt_execute($stmt_cargo);
-                            $result_cargo = mysqli_stmt_get_result($stmt_cargo);
-                            while ($row_cargo = mysqli_fetch_assoc($result_cargo)) {
-                                $selected = ($cargo == $row_cargo['codigo']) ? 'selected' : '';
-                                echo "<option value='" . $row_cargo['codigo'] . "' $selected>" . htmlspecialchars($row_cargo['nombre']) . "</option>";
-                            }
-                            mysqli_stmt_close($stmt_cargo);
-                        endif; ?>
+                    <select class="form-select" id="cargo" name="cargo" required <?php echo (empty($departamento) || !$is_admin) ? 'disabled' : ''; ?>>
+                        <option value="">Seleccione un departamento primero...</option>
+                         <!-- Opciones se cargan con JS -->
                     </select>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                     <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">Campo no modificable.</small>
+                    <?php else: ?>
+                        <div class="invalid-feedback">Este campo es requerido.</div>
+                    <?php endif; ?>
                 </div>
-                
                 <div class="col-md-4 mb-3">
                     <label for="estado" class="form-label">Estado *</label>
-                    <select class="form-select" id="estado" name="estado" required>
-                        <option value="">Seleccione...</option>
+                    <select class="form-select" id="estado" name="estado" required <?php echo !$is_admin ? 'disabled' : ''; ?>>
+                        <option value="" disabled>Seleccione...</option>
                         <option value="1" <?php if ($estado == 1) echo "selected"; ?>>Activo</option>
                         <option value="0" <?php if ($estado == 0) echo "selected"; ?>>Inactivo</option>
                     </select>
-                    <div class="invalid-feedback">
-                        Este campo es requerido.
-                    </div>
+                     <?php if (!$is_admin): ?>
+                        <small class="form-text text-muted">Campo no modificable.</small>
+                    <?php else: ?>
+                        <div class="invalid-feedback">Este campo es requerido.</div>
+                    <?php endif; ?>
                 </div>
             </div>
-            
+
+            <!-- NO incluir campos de contraseña aquí -->
+
             <div class="text-center mt-4">
-            <button type="button" id="btnPreGuardar" class="btn btn-primary btn-lg">
-                <i class="fas fa-save"></i> Actualizar Empleado
+                <button type="button" id="btnPreGuardar" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Guardar Cambios
                 </button>
-                <a href="list.php" class="btn btn-secondary btn-lg ms-2">
+                 <a href="<?php echo $is_admin ? 'list.php' : 'profile.php'; ?>" class="btn btn-secondary btn-lg ms-2">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
@@ -705,21 +551,21 @@ include "../../includes/header.php";
     </div>
 </div>
 
-<!-- Modal de confirmación para guardar empleado -->
+<!-- Modal de confirmación -->
 <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="modalConfirmacionLabel">
-                    <i class="fas fa-save me-2"></i> Confirmar Guardado
+                    <i class="fas fa-save me-2"></i> Confirmar Cambios
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-4">
-                    <i class="fas fa-user-plus fa-4x text-primary mb-3"></i>
-                    <h4>¿Está seguro que desea guardar este empleado?</h4>
-                    <p class="text-muted">Al confirmar, los datos del empleado serán registrados en el sistema.</p>
+                    <i class="fas fa-user-edit fa-4x text-primary mb-3"></i>
+                    <h4>¿Está seguro que desea guardar los cambios realizados?</h4>
+                    <p class="text-muted">Al confirmar, los datos del empleado serán actualizados en el sistema.</p>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-2">
@@ -758,259 +604,254 @@ include "../../includes/header.php";
     </div>
 </div>
 
-<script>
-// Función para confirmar el guardado
-function confirmarGuardado() {
-    // Primero verificamos si el formulario es válido
-    if (!document.getElementById('formularioEmpleado').checkValidity()) {
-        // Si no es válido, permitir que continúe con la validación nativa del navegador
-        return true;
-    }
-    
-    // Si es válido, mostrar confirmación
-    return confirm('¿Está seguro que desea guardar este empleado?');
-}
+<?php else: ?>
+    <?php if (empty($error)): // Si no hay error pero tampoco cédula ?>
+        <div class="alert alert-warning">No se ha especificado un empleado para editar.</div>
+    <?php endif; ?>
+<?php endif; ?>
 
+
+<script>
 // Función para mostrar/ocultar la sección de apellido de casada
 function mostrarApellidoCasada() {
     const genero = document.getElementById('genero').value;
     const estadoCivil = document.getElementById('estado_civil').value;
     const seccionApellidoCasada = document.getElementById('seccion_apellido_casada');
-    
-    // Mostrar sección solo si es mujer (0) y casada (1)
+    const campoApellidoCasada = document.getElementById('campo_apellido_casada');
+    const inputApellidoCasada = document.getElementById('apellidoc');
+    const checkboxUsaAc = document.getElementById('usa_ac');
+
     if (genero === '0' && estadoCivil === '1') {
         seccionApellidoCasada.style.display = 'block';
-        // Verificar si usa apellido de casada
-        toggleApellidoCasada();
+        toggleApellidoCasada(); // Llama a la función para mostrar/ocultar el input basado en el checkbox
     } else {
         seccionApellidoCasada.style.display = 'none';
-        if (document.getElementById('campo_apellido_casada')) {
-            document.getElementById('campo_apellido_casada').style.display = 'none';
-        }
-        if (document.getElementById('apellidoc')) {
-            document.getElementById('apellidoc').value = '';
-        }
-        if (document.getElementById('usa_ac')) {
-            document.getElementById('usa_ac').checked = false;
-        }
+        if (campoApellidoCasada) campoApellidoCasada.style.display = 'none';
+        if (inputApellidoCasada) inputApellidoCasada.value = ''; // Limpiar valor
+        if (checkboxUsaAc) checkboxUsaAc.checked = false; // Desmarcar checkbox
     }
 }
 
-// Función para mostrar/ocultar el campo de apellido de casada
+// Función para mostrar/ocultar el campo de apellido de casada basado en el checkbox
 function toggleApellidoCasada() {
     const usaApellidoCasada = document.getElementById('usa_ac').checked;
     const campoApellidoCasada = document.getElementById('campo_apellido_casada');
-    
+    const inputApellidoCasada = document.getElementById('apellidoc');
+
     if (campoApellidoCasada) {
         if (usaApellidoCasada) {
             campoApellidoCasada.style.display = 'block';
         } else {
             campoApellidoCasada.style.display = 'none';
-            if (document.getElementById('apellidoc')) {
-                document.getElementById('apellidoc').value = '';
-            }
+            if (inputApellidoCasada) inputApellidoCasada.value = ''; // Limpiar valor si se desmarca
         }
     }
 }
 
-// Ejecutar al cargar la página para configurar los campos iniciales
+// Función para mostrar mensajes de error en campos específicos
+function mostrarErrorCampo(campo, mensaje) {
+    campo.setCustomValidity(mensaje);
+    
+    // Mostrar mensaje de error debajo del campo
+    let errorElement = campo.nextElementSibling;
+    
+    // Si el siguiente elemento no es un div de mensaje de error, crear uno nuevo
+    if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
+        errorElement = document.createElement('div');
+        errorElement.classList.add('invalid-feedback');
+        campo.parentNode.insertBefore(errorElement, campo.nextSibling);
+    }
+    
+    errorElement.textContent = mensaje;
+    campo.classList.add('is-invalid');
+    
+    // Limpiar el error después de 3 segundos
+    setTimeout(function() {
+        campo.classList.remove('is-invalid');
+        campo.setCustomValidity('');
+    }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    mostrarApellidoCasada();
-    
-    // Validar que la fecha de nacimiento sea al menos 18 años atrás
-    const inputFechaNacimiento = document.getElementById('f_nacimiento');
-    
-    inputFechaNacimiento.addEventListener('input', function() {
-        const fechaNacimiento = new Date(this.value);
-        const hoy = new Date();
-        let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-        const m = hoy.getMonth() - fechaNacimiento.getMonth();
-        
-        if (m < 0 || (m === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-            edad--;
-        }
-        
-        if (edad < 18) {
-            this.setCustomValidity('Debe ser mayor de edad (18 años mínimo)');
-        } else {
-            this.setCustomValidity('');
-        }
-    });
+    const isAdmin = <?php echo json_encode($is_admin); ?>;
 
-    // Primera parte de la cédula (prefijo)
-    const prefijoInput = document.getElementById('prefijo');
-    const tomoInput = document.getElementById('tomo');
-    const asientoInput = document.getElementById('asiento');
-    const cedulaError = document.getElementById('cedula-error');
-    
-    prefijoInput.addEventListener('keydown', function(e) {
-        // Permitir teclas de navegación y edición
-        if (e.key === 'Backspace' || e.key === 'Delete' || 
-            e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
-            e.key === 'Tab' || e.key === 'Enter' || 
-            e.ctrlKey || e.metaKey) {
-            return;
-        }
-        
-        // Bloquear espacio y caracteres especiales
-        if (e.key === ' ' || 
-            e.key === '+' || e.key === '´' || e.key === '`' || 
-            e.key === '¨' || e.key === '^' || e.key === '~' || 
-            e.key === '!' || e.key === '@' || e.key === '#' || 
-            e.key === '$' || e.key === '%' || e.key === '&' || 
-            e.key === '*' || e.key === '(' || e.key === ')' || 
-            e.key === '-' || e.key === '_' || e.key === '=' || 
-            e.key === '[' || e.key === ']' || e.key === '{' || 
-            e.key === '}' || e.key === '|' || e.key === '\\' || 
-            e.key === ';' || e.key === ':' || e.key === '\'' || 
-            e.key === '"' || e.key === ',' || e.key === '.' || 
-            e.key === '<' || e.key === '>' || e.key === '/' || 
-            e.key === '?') {
-            e.preventDefault();
-            cedulaError.textContent = 'Carácter no permitido en la cédula';
-            return;
-        }
-        
-        // Verificar si es una letra minúscula y convertirla a mayúscula
-        let tecla = e.key;
-        if (/^[a-z]$/.test(tecla)) {
-            e.preventDefault();
-            tecla = tecla.toUpperCase();
+    // --- Validaciones de Cédula (Solo para Admin) ---
+    if (isAdmin) {
+        const prefijoInput = document.getElementById('prefijo');
+        const tomoInput = document.getElementById('tomo');
+        const asientoInput = document.getElementById('asiento');
+        const cedulaError = document.getElementById('cedula-error');
+
+        if (prefijoInput && tomoInput && asientoInput && cedulaError) {
+            prefijoInput.addEventListener('keydown', function(e) {
+                // Permitir teclas de navegación y edición
+                if (e.key === 'Backspace' || e.key === 'Delete' || 
+                    e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
+                    e.key === 'Tab' || e.key === 'Enter' || 
+                    e.ctrlKey || e.metaKey) {
+                    return;
+                }
+                
+                // Bloquear espacio y caracteres especiales
+                if (e.key === ' ' || 
+                    e.key === '+' || e.key === '´' || e.key === '`' || 
+                    e.key === '¨' || e.key === '^' || e.key === '~' || 
+                    e.key === '!' || e.key === '@' || e.key === '#' || 
+                    e.key === '$' || e.key === '%' || e.key === '&' || 
+                    e.key === '*' || e.key === '(' || e.key === ')' || 
+                    e.key === '-' || e.key === '_' || e.key === '=' || 
+                    e.key === '[' || e.key === ']' || e.key === '{' || 
+                    e.key === '}' || e.key === '|' || e.key === '\\' || 
+                    e.key === ';' || e.key === ':' || e.key === '\'' || 
+                    e.key === '"' || e.key === ',' || e.key === '.' || 
+                    e.key === '<' || e.key === '>' || e.key === '/' || 
+                    e.key === '?') {
+                    e.preventDefault();
+                    cedulaError.textContent = 'Carácter no permitido en la cédula';
+                    return;
+                }
+                
+                // Verificar si es una letra minúscula y convertirla a mayúscula
+                let tecla = e.key;
+                if (/^[a-z]$/.test(tecla)) {
+                    e.preventDefault();
+                    tecla = tecla.toUpperCase();
+                    
+                    // Añadir la letra mayúscula al valor actual
+                    const currentValue = this.value;
+                    const newValueWithUppercase = currentValue + tecla;
+                    
+                    // Expresiones regulares para validar el prefijo
+                    const validPrefixes = [
+                        /^[PE]$/, // P, PE
+                        /^E$/, // E
+                        /^N$/, // N
+                        /^[23456789]$/, // Dígitos del 2-9
+                        /^[23456789][AP]$/, // Dígito 2-9 seguido de A o P
+                        /^1[0123]?$/, // Número del 1-13
+                        /^1[0123]?[AP]$/, // 1-13 seguido de A o P
+                        /^[23456789](AV|PI)?$/, // 2-9 seguido opcionalmente de AV o PI
+                        /^1[0123]?(AV|PI)?$/ // 1-13 seguido opcionalmente de AV o PI
+                    ];
+                    
+                    // Verificar si el nuevo valor con mayúscula es válido
+                    const isValidUppercase = validPrefixes.some(regex => regex.test(newValueWithUppercase));
+                    
+                    if (isValidUppercase) {
+                        // Si es válido, actualizar el campo con la letra mayúscula
+                        this.value = newValueWithUppercase;
+                        cedulaError.textContent = '';
+                    } else {
+                        cedulaError.textContent = 'Prefijo de cédula inválido. Ejemplos válidos: 8, PE, E, N, 8A, 8AV, 13, etc.';
+                    }
+                    return;
+                }
+                
+                const currentValue = this.value;
+                const newValue = currentValue + e.key;
+                
+                // Expresiones regulares para validar el prefijo según las reglas panameñas
+                const validPrefixes = [
+                    /^[PE]$/, // P, PE
+                    /^E$/, // E
+                    /^N$/, // N
+                    /^[23456789]$/, // Dígitos del 2-9
+                    /^[23456789][AP]$/, // Dígito 2-9 seguido de A o P
+                    /^1[0123]?$/, // Número del 1-13
+                    /^1[0123]?[AP]$/, // 1-13 seguido de A o P
+                    /^[23456789](AV|PI)?$/, // 2-9 seguido opcionalmente de AV o PI
+                    /^1[0123]?(AV|PI)?$/ // 1-13 seguido opcionalmente de AV o PI
+                ];
+                
+                // Verificar si el nuevo valor cumple con alguna de las expresiones válidas
+                const isValid = validPrefixes.some(regex => regex.test(newValue));
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    cedulaError.textContent = 'Prefijo de cédula inválido. Ejemplos válidos: 8, PE, E, N, 8A, 8AV, 13, etc.';
+                } else {
+                    cedulaError.textContent = '';
+                }
+            });
             
-            // Añadir la letra mayúscula al valor actual
-            const currentValue = this.value;
-            const newValueWithUppercase = currentValue + tecla;
-            
-            // Expresiones regulares para validar el prefijo
-            const validPrefixes = [
-                /^[PE]$/, // P, PE
-                /^E$/, // E
-                /^N$/, // N
-                /^[23456789]$/, // Dígitos del 2-9
-                /^[23456789][AP]$/, // Dígito 2-9 seguido de A o P
-                /^1[0123]?$/, // Número del 1-13
-                /^1[0123]?[AP]$/, // 1-13 seguido de A o P
-                /^[23456789](AV|PI)?$/, // 2-9 seguido opcionalmente de AV o PI
-                /^1[0123]?(AV|PI)?$/ // 1-13 seguido opcionalmente de AV o PI
-            ];
-            
-            // Verificar si el nuevo valor con mayúscula es válido
-            const isValidUppercase = validPrefixes.some(regex => regex.test(newValueWithUppercase));
-            
-            if (isValidUppercase) {
-                // Si es válido, actualizar el campo con la letra mayúscula
-                this.value = newValueWithUppercase;
+            // Segunda parte de la cédula (tomo)
+            tomoInput.addEventListener('keydown', function(e) {
+                // Permitir teclas de navegación y edición
+                if (e.key === 'Backspace' || e.key === 'Delete' || 
+                    e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
+                    e.key === 'Tab' || e.key === 'Enter' || 
+                    e.ctrlKey || e.metaKey) {
+                    return;
+                }
+                
+                // Bloquear cualquier caracter que no sea un dígito
+                if (!/^\d$/.test(e.key) || (this.value.length >= 4) || 
+                    e.key === ' ' || e.key === '+' || e.key === '´' || 
+                    e.key === '`' || e.key === '¨' || e.key === '^' || 
+                    e.key === '~' || e.key.length > 1) {
+                    e.preventDefault();
+                    cedulaError.textContent = 'El tomo debe contener solo dígitos numéricos (1-4 dígitos)';
+                    return;
+                }
+                
                 cedulaError.textContent = '';
-            } else {
-                cedulaError.textContent = 'Prefijo de cédula inválido. Ejemplos válidos: 8, PE, E, N, 8A, 8AV, 13, etc.';
-            }
-            return;
+            });
+            
+            // Tercera parte de la cédula (asiento)
+            asientoInput.addEventListener('keydown', function(e) {
+                // Permitir teclas de navegación y edición
+                if (e.key === 'Backspace' || e.key === 'Delete' || 
+                    e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
+                    e.key === 'Tab' || e.key === 'Enter' || 
+                    e.ctrlKey || e.metaKey) {
+                    return;
+                }
+                
+                // Bloquear cualquier caracter que no sea un dígito
+                if (!/^\d$/.test(e.key) || (this.value.length >= 6) || 
+                    e.key === ' ' || e.key === '+' || e.key === '´' || 
+                    e.key === '`' || e.key === '¨' || e.key === '^' || 
+                    e.key === '~' || e.key.length > 1) {
+                    e.preventDefault();
+                    cedulaError.textContent = 'El asiento debe contener solo dígitos numéricos (1-6 dígitos)';
+                    return;
+                }
+                
+                cedulaError.textContent = '';
+            });
+            
+            // Agregar validación en el evento input para limpiar caracteres no válidos
+            prefijoInput.addEventListener('input', function() {
+                // Limpiar caracteres no válidos si se pegaron
+                const cleanValue = this.value.replace(/[^A-Z0-9]/g, '');
+                if (cleanValue !== this.value) {
+                    this.value = cleanValue;
+                    cedulaError.textContent = 'Se han eliminado caracteres no permitidos';
+                }
+            });
+            
+            tomoInput.addEventListener('input', function() {
+                // Limpiar caracteres no válidos si se pegaron
+                const cleanValue = this.value.replace(/\D/g, '');
+                if (cleanValue !== this.value) {
+                    this.value = cleanValue;
+                    cedulaError.textContent = 'El tomo debe contener solo dígitos';
+                }
+            });
+            
+            asientoInput.addEventListener('input', function() {
+                // Limpiar caracteres no válidos si se pegaron
+                const cleanValue = this.value.replace(/\D/g, '');
+                if (cleanValue !== this.value) {
+                    this.value = cleanValue;
+                    cedulaError.textContent = 'El asiento debe contener solo dígitos';
+                }
+            });
         }
-        
-        const currentValue = this.value;
-        const newValue = currentValue + e.key;
-        
-        // Expresiones regulares para validar el prefijo según las reglas panameñas
-        const validPrefixes = [
-            /^[PE]$/, // P, PE
-            /^E$/, // E
-            /^N$/, // N
-            /^[23456789]$/, // Dígitos del 2-9
-            /^[23456789][AP]$/, // Dígito 2-9 seguido de A o P
-            /^1[0123]?$/, // Número del 1-13
-            /^1[0123]?[AP]$/, // 1-13 seguido de A o P
-            /^[23456789](AV|PI)?$/, // 2-9 seguido opcionalmente de AV o PI
-            /^1[0123]?(AV|PI)?$/ // 1-13 seguido opcionalmente de AV o PI
-        ];
-        
-        // Verificar si el nuevo valor cumple con alguna de las expresiones válidas
-        const isValid = validPrefixes.some(regex => regex.test(newValue));
-        
-        if (!isValid) {
-            e.preventDefault();
-            cedulaError.textContent = 'Prefijo de cédula inválido. Ejemplos válidos: 8, PE, E, N, 8A, 8AV, 13, etc.';
-        } else {
-            cedulaError.textContent = '';
-        }
-    });
-    
-    // Segunda parte de la cédula (tomo)
-    tomoInput.addEventListener('keydown', function(e) {
-        // Permitir teclas de navegación y edición
-        if (e.key === 'Backspace' || e.key === 'Delete' || 
-            e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
-            e.key === 'Tab' || e.key === 'Enter' || 
-            e.ctrlKey || e.metaKey) {
-            return;
-        }
-        
-        // Bloquear cualquier caracter que no sea un dígito
-        if (!/^\d$/.test(e.key) || (this.value.length >= 4) || 
-            e.key === ' ' || e.key === '+' || e.key === '´' || 
-            e.key === '`' || e.key === '¨' || e.key === '^' || 
-            e.key === '~' || e.key.length > 1) {
-            e.preventDefault();
-            cedulaError.textContent = 'El tomo debe contener solo dígitos numéricos (1-4 dígitos)';
-            return;
-        }
-        
-        cedulaError.textContent = '';
-    });
-    
-    // Tercera parte de la cédula (asiento)
-    asientoInput.addEventListener('keydown', function(e) {
-        // Permitir teclas de navegación y edición
-        if (e.key === 'Backspace' || e.key === 'Delete' || 
-            e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
-            e.key === 'Tab' || e.key === 'Enter' || 
-            e.ctrlKey || e.metaKey) {
-            return;
-        }
-        
-        // Bloquear cualquier caracter que no sea un dígito
-        if (!/^\d$/.test(e.key) || (this.value.length >= 6) || 
-            e.key === ' ' || e.key === '+' || e.key === '´' || 
-            e.key === '`' || e.key === '¨' || e.key === '^' || 
-            e.key === '~' || e.key.length > 1) {
-            e.preventDefault();
-            cedulaError.textContent = 'El asiento debe contener solo dígitos numéricos (1-6 dígitos)';
-            return;
-        }
-        
-        cedulaError.textContent = '';
-    });
-    
-    // Agregar validación en el evento input para limpiar caracteres no válidos
-    prefijoInput.addEventListener('input', function() {
-        // Limpiar caracteres no válidos si se pegaron
-        const cleanValue = this.value.replace(/[^A-Z0-9]/g, '');
-        if (cleanValue !== this.value) {
-            this.value = cleanValue;
-            cedulaError.textContent = 'Se han eliminado caracteres no permitidos';
-        }
-    });
-    
-    tomoInput.addEventListener('input', function() {
-        // Limpiar caracteres no válidos si se pegaron
-        const cleanValue = this.value.replace(/\D/g, '');
-        if (cleanValue !== this.value) {
-            this.value = cleanValue;
-            cedulaError.textContent = 'El tomo debe contener solo dígitos';
-        }
-    });
-    
-    asientoInput.addEventListener('input', function() {
-        // Limpiar caracteres no válidos si se pegaron
-        const cleanValue = this.value.replace(/\D/g, '');
-        if (cleanValue !== this.value) {
-            this.value = cleanValue;
-            cedulaError.textContent = 'El asiento debe contener solo dígitos';
-        }
-    });
+    }
 
-    // Validación para campos de nombres y apellidos
+    // --- Validación para campos de nombres y apellidos (Siempre aplica) ---
     const camposTexto = document.querySelectorAll('#nombre1, #nombre2, #apellido1, #apellido2, #apellidoc');
-    
     camposTexto.forEach(function(campo) {
         // Validación al presionar una tecla
         campo.addEventListener('keydown', function(e) {
@@ -1079,10 +920,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Validación para campos de solo números (celular y teléfono)
+
+    // --- Validación para campos de solo números (celular y teléfono) (Siempre aplica) ---
     const camposNumeros = document.querySelectorAll('#celular, #telefono');
-    
     camposNumeros.forEach(function(campo) {
         // Validación al presionar una tecla
         campo.addEventListener('keydown', function(e) {
@@ -1130,41 +970,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Función para mostrar mensajes de error en campos específicos
-    function mostrarErrorCampo(campo, mensaje) {
-        campo.setCustomValidity(mensaje);
-        
-        // Mostrar mensaje de error debajo del campo
-        let errorElement = campo.nextElementSibling;
-        
-        // Si el siguiente elemento no es un div de mensaje de error, crear uno nuevo
-        if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
-            errorElement = document.createElement('div');
-            errorElement.classList.add('invalid-feedback');
-            campo.parentNode.insertBefore(errorElement, campo.nextSibling);
-        }
-        
-        errorElement.textContent = mensaje;
-        campo.classList.add('is-invalid');
-        
-        // Limpiar el error después de 3 segundos
-        setTimeout(function() {
-            campo.classList.remove('is-invalid');
-            campo.setCustomValidity('');
-        }, 3000);
-    }
-
-    // Cargar distritos cuando se selecciona una provincia
+    // --- Carga dinámica de Selects (Siempre aplica) ---
     const provinciaSelect = document.getElementById('provincia');
     const distritoSelect = document.getElementById('distrito');
     const corregimientoSelect = document.getElementById('corregimiento');
+    const departamentoSelect = document.getElementById('departamento');
+    const cargoSelect = document.getElementById('cargo');
 
-    // Función para cargar distritos
-    function cargarDistritos(provinciaId) {
+    // Función para cargar distritos (adaptada para edit.php)
+    function cargarDistritos(provinciaId, distritoSeleccionado = null) {
         // Mostrar indicador de carga
         distritoSelect.innerHTML = '<option value="">Cargando distritos...</option>';
-        corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
-        corregimientoSelect.disabled = true;
         
         // Hacer la petición AJAX
         fetch('get_distritos.php?provincia=' + provinciaId)
@@ -1189,6 +1005,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Habilitar el selector
                     distritoSelect.disabled = false;
+                    
+                    // Si hay un valor previamente seleccionado
+                    if (distritoSeleccionado) {
+                        distritoSelect.value = distritoSeleccionado;
+                        cargarCorregimientos(provinciaId, distritoSeleccionado, '<?php echo $corregimiento; ?>');
+                    }
                 } else {
                     console.log('No se encontraron distritos');
                 }
@@ -1199,8 +1021,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Función para cargar corregimientos
-    function cargarCorregimientos(provinciaId, distritoId) {
+    // Función para cargar corregimientos (adaptada para edit.php)
+    function cargarCorregimientos(provinciaId, distritoId, corregimientoSeleccionado = null) {
         // Mostrar indicador de carga
         corregimientoSelect.innerHTML = '<option value="">Cargando corregimientos...</option>';
         
@@ -1227,6 +1049,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Habilitar el selector
                     corregimientoSelect.disabled = false;
+                    
+                    // Si hay un valor previamente seleccionado
+                    if (corregimientoSeleccionado) {
+                        corregimientoSelect.value = corregimientoSeleccionado;
+                    }
                 } else {
                     console.log('No se encontraron corregimientos');
                 }
@@ -1237,51 +1064,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Agregar evento change a provincia
-    provinciaSelect.addEventListener('change', function() {
-        // Resetear y deshabilitar selectores dependientes
-        distritoSelect.innerHTML = '<option value="">Seleccione un distrito...</option>';
-        corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
-        distritoSelect.disabled = true;
-        corregimientoSelect.disabled = true;
-        
-        // Si hay un valor seleccionado, cargar distritos
-        if (this.value) {
-            cargarDistritos(this.value);
-        }
-    });
-
-    // Agregar evento change a distrito
-    distritoSelect.addEventListener('change', function() {
-        // Resetear y deshabilitar selector de corregimiento
-        corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
-        corregimientoSelect.disabled = true;
-        
-        // Si hay un valor seleccionado, cargar corregimientos
-        if (this.value) {
-            cargarCorregimientos(provinciaSelect.value, this.value);
-        }
-    });
-
-    // Inicialización: Si hay provincia seleccionada, cargar distritos y corregimientos
-    <?php if (!empty($provincia) && !empty($distrito) && !empty($corregimiento)): ?>
-    // Cargar distritos y corregimientos al inicio si hay valores seleccionados
-    cargarDistritos('<?php echo $provincia; ?>');
-    setTimeout(function() {
-        distritoSelect.value = '<?php echo $distrito; ?>';
-        cargarCorregimientos('<?php echo $provincia; ?>', '<?php echo $distrito; ?>');
-        setTimeout(function() {
-            corregimientoSelect.value = '<?php echo $corregimiento; ?>';
-        }, 500); // Esperar a que se carguen los corregimientos
-    }, 500); // Esperar a que se carguen los distritos
-    <?php endif; ?>
-
-    // Cargar cargos cuando se selecciona un departamento
-    const departamentoSelect = document.getElementById('departamento');
-    const cargoSelect = document.getElementById('cargo');
-
-    // Función para cargar cargos
-    function cargarCargos(departamentoId) {
+    // Función para cargar cargos (adaptada para edit.php)
+    function cargarCargos(departamentoId, cargoSeleccionado = null) {
         // Mostrar indicador de carga
         cargoSelect.innerHTML = '<option value="">Cargando cargos...</option>';
         
@@ -1306,13 +1090,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         cargoSelect.appendChild(option);
                     });
                     
-                    // Habilitar el selector
-                    cargoSelect.disabled = false;
+                    // Habilitar el selector sólo si es admin
+                    cargoSelect.disabled = !isAdmin;
                     
                     // Si hay un valor previamente seleccionado
-                    <?php if (!empty($cargo)): ?>
-                    cargoSelect.value = '<?php echo $cargo; ?>';
-                    <?php endif; ?>
+                    if (cargoSeleccionado) {
+                        cargoSelect.value = cargoSeleccionado;
+                    }
                 } else {
                     console.log('No se encontraron cargos para este departamento');
                     cargoSelect.innerHTML = '<option value="">No hay cargos disponibles</option>';
@@ -1324,66 +1108,165 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Agregar evento change a departamento
-    departamentoSelect.addEventListener('change', function() {
-        // Resetear y deshabilitar selector de cargo
-        cargoSelect.innerHTML = '<option value="">Seleccione un cargo...</option>';
-        cargoSelect.disabled = true;
-        
-        // Si hay un valor seleccionado, cargar cargos
-        if (this.value) {
-            cargarCargos(this.value);
-        }
-    });
+    // Event Listeners para selects dependientes (Siempre aplica)
+    if (provinciaSelect) {
+        provinciaSelect.addEventListener('change', function() {
+            // Resetear y deshabilitar selectores dependientes
+            distritoSelect.innerHTML = '<option value="">Seleccione un distrito...</option>';
+            corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
+            distritoSelect.disabled = true;
+            corregimientoSelect.disabled = true;
+            
+            // Si hay un valor seleccionado, cargar distritos
+            if (this.value) {
+                cargarDistritos(this.value);
+            }
+        });
+    }
+    
+    if (distritoSelect) {
+        distritoSelect.addEventListener('change', function() {
+            // Resetear y deshabilitar selector de corregimiento
+            corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
+            corregimientoSelect.disabled = true;
+            
+            // Si hay un valor seleccionado, cargar corregimientos
+            if (this.value) {
+                cargarCorregimientos(provinciaSelect.value, this.value);
+            }
+        });
+    }
+    
+    if (departamentoSelect) {
+        departamentoSelect.addEventListener('change', function() {
+            if (isAdmin) { // Solo cargar si es admin
+                // Resetear y deshabilitar selector de cargo
+                cargoSelect.innerHTML = '<option value="">Seleccione un cargo...</option>';
+                cargoSelect.disabled = true;
+                
+                // Si hay un valor seleccionado, cargar cargos
+                if (this.value) {
+                    cargarCargos(this.value);
+                }
+            }
+        });
+    }
 
-    // Inicialización: Si hay departamento seleccionado, cargar cargos
-    <?php if (!empty($departamento)): ?>
-    // Cargar cargos al inicio si hay departamento seleccionado
-    cargarCargos('<?php echo $departamento; ?>');
-    <?php endif; ?>
+    // Carga inicial de datos dependientes si existen valores preseleccionados (Siempre aplica)
+    const provinciaInicial = '<?php echo $provincia; ?>';
+    const distritoInicial = '<?php echo $distrito; ?>';
+    const corregimientoInicial = '<?php echo $corregimiento; ?>';
+    const departamentoInicial = '<?php echo $departamento; ?>';
+    const cargoInicial = '<?php echo $cargo; ?>';
 
-    // Modal de confirmación para guardar empleado
+    if (provinciaInicial && provinciaSelect) {
+        cargarDistritos(provinciaInicial, distritoInicial);
+    }
+    if (departamentoInicial && departamentoSelect) {
+        cargarCargos(departamentoInicial, cargoInicial);
+    }
+
+    // --- Modal de Confirmación (Siempre aplica) ---
     const formulario = document.getElementById('formularioEmpleado');
     const btnPreGuardar = document.getElementById('btnPreGuardar');
     const btnConfirmarGuardado = document.getElementById('btnConfirmarGuardado');
     const modalConfirmacion = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
-    
-    // Manejar el clic en el botón de pre-guardar
-    btnPreGuardar.addEventListener('click', function() {
-        // Validar formulario antes de mostrar modal
-        if (formulario.checkValidity()) {
-            // Mostrar resumen de datos en el modal
-            const prefijo = document.getElementById('prefijo').value;
-            const tomo = document.getElementById('tomo').value;
-            const asiento = document.getElementById('asiento').value;
-            const cedula = `${prefijo}-${tomo}-${asiento}`;
-            
-            const nombre1 = document.getElementById('nombre1').value;
-            const apellido1 = document.getElementById('apellido1').value;
-            
-            document.getElementById('confirmCedula').textContent = cedula;
-            document.getElementById('confirmNombre').textContent = `${nombre1} ${apellido1}`;
-            
-            // Mostrar el modal
-            modalConfirmacion.show();
-        } else {
-            // Si no es válido, activar las validaciones visuales
-            formulario.classList.add('was-validated');
-        }
-    });
-    
-    // Manejar el clic en el botón de confirmación
-    btnConfirmarGuardado.addEventListener('click', function() {
-        // Ocultar el modal y enviar el formulario
-        modalConfirmacion.hide();
-        formulario.submit();
-    });
+
+    if(btnPreGuardar && formulario && modalConfirmacion && btnConfirmarGuardado) {
+        btnPreGuardar.addEventListener('click', function() {
+            // Validar formulario antes de mostrar modal
+            if (formulario.checkValidity()) {
+                // Preparar el resumen para el modal (si lo necesitas)
+                if (document.getElementById('confirmCedula') && document.getElementById('confirmNombre')) {
+                    const prefijo = document.getElementById('prefijo').value;
+                    const tomo = document.getElementById('tomo').value;
+                    const asiento = document.getElementById('asiento').value;
+                    const cedula = `${prefijo}-${tomo}-${asiento}`;
+                    
+                    const nombre1 = document.getElementById('nombre1').value;
+                    const apellido1 = document.getElementById('apellido1').value;
+                    
+                    document.getElementById('confirmCedula').textContent = cedula;
+                    document.getElementById('confirmNombre').textContent = `${nombre1} ${apellido1}`;
+                }
+                
+                modalConfirmacion.show();
+            } else {
+                // Si no es válido, activar las validaciones visuales
+                formulario.classList.add('was-validated');
+            }
+        });
+
+        btnConfirmarGuardado.addEventListener('click', function() {
+            modalConfirmacion.hide();
+            // Re-enable fields before submit ONLY IF backend doesn't handle disabled fields
+            // if (!isAdmin) {
+            //     document.getElementById('correo').disabled = false;
+            //     document.getElementById('f_contra').disabled = false;
+            //     // etc. for other disabled fields
+            // }
+            formulario.submit();
+        });
+    }
+
+    // Inicializar visualización de apellido de casada (Siempre aplica)
+    mostrarApellidoCasada();
+
+    // Inicializar bandera de nacionalidad (Siempre aplica)
+    const selectNacionalidad = document.getElementById('nacionalidad');
+    if (selectNacionalidad) {
+        mostrarBanderaNacionalidad(selectNacionalidad); // Llama a la función del nacionalidades.js
+        selectNacionalidad.addEventListener('change', function() {
+            mostrarBanderaNacionalidad(this);
+        });
+    }
+
+    // Validar fecha de nacimiento (Siempre aplica)
+    const inputFechaNacimiento = document.getElementById('f_nacimiento');
+    if (inputFechaNacimiento) {
+        inputFechaNacimiento.addEventListener('input', function() {
+            const fechaNacimiento = new Date(this.value);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+            const m = hoy.getMonth() - fechaNacimiento.getMonth();
+
+            if (m < 0 || (m === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+                edad--;
+            }
+
+            if (edad < 18) {
+                this.setCustomValidity('Debe ser mayor de edad (18 años mínimo)');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+        // Trigger validation on load in case date is pre-filled
+        inputFechaNacimiento.dispatchEvent(new Event('input'));
+    }
 });
+
+// Función para mostrar bandera (de nacionalidades.js, asegúrate que esté incluida)
+function mostrarBanderaNacionalidad(select) {
+    // Obtener el contenedor de la bandera
+    const flagContainer = document.getElementById('flag-container-nacionalidad');
+    
+    // Si no hay contenedor o no hay valor seleccionado, salir
+    if (!flagContainer || !select.value) {
+        return;
+    }
+    
+    // Obtener el código de país seleccionado
+    const countryCode = select.value.toLowerCase();
+    
+    
+    // Actualizar el contenedor con la imagen de la bandera
+    flagContainer.innerHTML = `<img src="${flagUrl}" alt="Bandera" class="img-fluid" style="max-height: 24px;">`;
+}
 </script>
 
-<?php 
+<?php
 // Cerrar conexión
 mysqli_close($conn);
 // Incluir footer
-include "../../includes/footer.php"; 
+include "../../includes/footer.php";
 ?>

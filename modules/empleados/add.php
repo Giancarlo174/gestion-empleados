@@ -22,8 +22,10 @@ require_once "load_nacionalidades.php";
 $prefijo = $tomo = $asiento = $cedula = $nombre1 = $nombre2 = $apellido1 = $apellido2 = $apellidoc = "";
 $genero = $estado_civil = $tipo_sangre = $usa_ac = $f_nacimiento = $celular = $telefono = $correo = "";
 $provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $f_contra = $cargo = $departamento = $estado = "";
+$contraseña = $confirmar_contraseña = ""; // Nuevas variables para contraseña
 $error = "";
 $success = "";
+$contraseña_err = ""; // Nuevo error para contraseña
 
 // Establecer nacionalidad de Panamá por defecto (código "PAN")
 $nacionalidad = "PAN";
@@ -119,6 +121,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cargo = trim($_POST["cargo"]);
     $departamento = trim($_POST["departamento"]);
     $estado = $_POST["estado"];
+
+    // Validar contraseña
+    $contraseña = trim($_POST["contraseña"]);
+    $confirmar_contraseña = trim($_POST["confirmar_contraseña"]);
+
+    if (empty($contraseña)) {
+        $contraseña_err = "Por favor ingrese una contraseña.";
+    } elseif (strlen($contraseña) < 6) {
+        $contraseña_err = "La contraseña debe tener al menos 6 caracteres.";
+    }
+
+    // Validar confirmación de contraseña
+    if (empty($confirmar_contraseña)) {
+        $contraseña_err = empty($contraseña_err) ? "Por favor confirme la contraseña." : $contraseña_err;
+    } elseif (empty($contraseña_err) && ($contraseña != $confirmar_contraseña)) {
+        $contraseña_err = "Las contraseñas no coinciden.";
+    }
     
     // Verificar si la cédula ya existe
     $sql_check = "SELECT cedula FROM empleados WHERE cedula = ?";
@@ -134,20 +153,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     // Si no hay errores, insertar el nuevo empleado
-    if (empty($error)) {
+    if (empty($error) && empty($contraseña_err)) { // Añadir chequeo de error de contraseña
+        // Hash de la contraseña
+        $hashed_password = password_hash($contraseña, PASSWORD_DEFAULT);
+
         $sql = "INSERT INTO empleados (cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, apellidoc, 
                 genero, estado_civil, tipo_sangre, usa_ac, f_nacimiento, celular, telefono, correo, 
                 provincia, distrito, corregimiento, calle, casa, comunidad, nacionalidad, 
-                f_contra, cargo, departamento, estado) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+                f_contra, cargo, departamento, estado, contraseña) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         if ($stmt = mysqli_prepare($conn, $sql)) {
-            mysqli_stmt_bind_param($stmt, "sssssssssiisissssssssssssssi", 
+            mysqli_stmt_bind_param($stmt, "sssssssssiisissssssssssssssis", 
                 $cedula, $prefijo, $tomo, $asiento, $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc, 
                 $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento, $celular, $telefono, $correo, 
                 $provincia, $distrito, $corregimiento, $calle, $casa, $comunidad, $nacionalidad, 
-                $f_contra, $cargo, $departamento, $estado);
-            
+                $f_contra, $cargo, $departamento, $estado, $hashed_password); // Añadir hashed_password
+
             if (mysqli_stmt_execute($stmt)) {
                 $success = "Empleado agregado correctamente.";
                 
@@ -155,6 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $prefijo = $tomo = $asiento = $cedula = $nombre1 = $nombre2 = $apellido1 = $apellido2 = $apellidoc = "";
                 $genero = $estado_civil = $tipo_sangre = $usa_ac = $f_nacimiento = $celular = $telefono = $correo = "";
                 $provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $nacionalidad = $f_contra = $cargo = $departamento = $estado = "";
+                $contraseña = $confirmar_contraseña = ""; // Limpiar contraseñas
             } else {
                 $error = "Error al registrar el empleado: " . mysqli_error($conn);
             }
@@ -180,6 +203,12 @@ include "../../includes/header.php";
 <?php if (!empty($error)): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+<?php if (!empty($contraseña_err)): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> <?php echo $contraseña_err; ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 <?php endif; ?>
@@ -462,6 +491,27 @@ include "../../includes/header.php";
                     </select>
                     <div class="invalid-feedback">
                         Este campo es requerido.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Credenciales -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h4 class="mb-3">Credenciales de Acceso</h4>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="contraseña" class="form-label">Contraseña *</label>
+                    <input type="password" class="form-control <?php echo (!empty($contraseña_err)) ? 'is-invalid' : ''; ?>" id="contraseña" name="contraseña" required minlength="6">
+                    <div class="invalid-feedback">
+                        <?php echo !empty($contraseña_err) ? $contraseña_err : 'La contraseña debe tener al menos 6 caracteres.'; ?>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="confirmar_contraseña" class="form-label">Confirmar Contraseña *</label>
+                    <input type="password" class="form-control <?php echo (!empty($contraseña_err)) ? 'is-invalid' : ''; ?>" id="confirmar_contraseña" name="confirmar_contraseña" required minlength="6">
+                    <div class="invalid-feedback">
+                        <?php echo !empty($contraseña_err) ? $contraseña_err : 'Por favor confirme la contraseña.'; ?>
                     </div>
                 </div>
             </div>
