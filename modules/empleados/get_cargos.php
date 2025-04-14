@@ -16,6 +16,9 @@ require_once "../../config/db.php";
 if (isset($_GET['departamento']) && !empty($_GET['departamento'])) {
     $departamento = $_GET['departamento'];
     
+    // Asegurarse de que el código del departamento tenga ceros a la izquierda
+    $departamento = str_pad($departamento, 2, '0', STR_PAD_LEFT);
+    
     // Consultar cargos
     $sql = "SELECT codigo, nombre FROM cargo WHERE dep_codigo = ? ORDER BY nombre";
     

@@ -29,55 +29,84 @@ $genero = $estado_civil = $tipo_sangre = $usa_ac = $f_nacimiento = $celular = $t
 $provincia = $distrito = $corregimiento = $calle = $casa = $comunidad = $nacionalidad = $f_contra = $cargo = $departamento = $estado = "";
 $error = "";
 $success = "";
+$original_prefijo = $original_tomo = $original_asiento = $original_nombre1 = $original_nombre2 = $original_apellido1 = $original_apellido2 = $original_apellidoc = "";
+$original_genero = $original_estado_civil = $original_tipo_sangre = $original_usa_ac = $original_f_nacimiento = $original_celular = $original_telefono = $original_correo = "";
+$original_provincia = $original_distrito = $original_corregimiento = $original_calle = $original_casa = $original_comunidad = $original_nacionalidad = $original_f_contra = $original_cargo = $original_departamento = $original_estado = "";
+$cedula_original_get = "";
 
 // Verificar si existe el parámetro cedula en la URL
 if (isset($_GET["cedula"]) && !empty(trim($_GET["cedula"]))) {
     // Obtener el parámetro de cedula
-    $cedula = trim($_GET["cedula"]);
-    
+    $cedula_original_get = trim($_GET["cedula"]);
+
     // Preparar la consulta para obtener los datos del empleado
     $sql = "SELECT * FROM empleados WHERE cedula = ?";
-    
+
     if ($stmt = mysqli_prepare($conn, $sql)) {
-        // Vincular la cedula como parámetro
-        mysqli_stmt_bind_param($stmt, "s", $cedula);
-        
-        // Ejecutar la consulta
+        mysqli_stmt_bind_param($stmt, "s", $cedula_original_get);
         if (mysqli_stmt_execute($stmt)) {
             $result = mysqli_stmt_get_result($stmt);
-            
             if (mysqli_num_rows($result) == 1) {
-                // Obtener los datos del empleado
                 $row = mysqli_fetch_assoc($result);
-                
-                // Asignar los valores a las variables
-                $prefijo = $row["prefijo"];
-                $tomo = $row["tomo"];
-                $asiento = $row["asiento"];
-                $nombre1 = $row["nombre1"];
-                $nombre2 = $row["nombre2"];
-                $apellido1 = $row["apellido1"];
-                $apellido2 = $row["apellido2"];
-                $apellidoc = $row["apellidoc"];
-                $genero = $row["genero"];
-                $estado_civil = $row["estado_civil"];
-                $tipo_sangre = $row["tipo_sangre"];
-                $usa_ac = $row["usa_ac"];
-                $f_nacimiento = $row["f_nacimiento"];
-                $celular = $row["celular"];
-                $telefono = $row["telefono"];
-                $correo = $row["correo"];
-                $provincia = $row["provincia"];
-                $distrito = $row["distrito"];
-                $corregimiento = $row["corregimiento"];
-                $calle = $row["calle"];
-                $casa = $row["casa"];
-                $comunidad = $row["comunidad"];
-                $nacionalidad = $row["nacionalidad"];
-                $f_contra = $row["f_contra"];
-                $cargo = $row["cargo"];
-                $departamento = $row["departamento"];
-                $estado = $row["estado"];
+                // Asignar valores originales a variables $original_...
+                $original_prefijo = $row["prefijo"];
+                $original_tomo = $row["tomo"];
+                $original_asiento = $row["asiento"];
+                $original_nombre1 = $row["nombre1"];
+                $original_nombre2 = $row["nombre2"];
+                $original_apellido1 = $row["apellido1"];
+                $original_apellido2 = $row["apellido2"];
+                $original_apellidoc = $row["apellidoc"];
+                $original_genero = $row["genero"];
+                $original_estado_civil = $row["estado_civil"];
+                $original_tipo_sangre = $row["tipo_sangre"];
+                $original_usa_ac = $row["usa_ac"];
+                $original_f_nacimiento = $row["f_nacimiento"];
+                $original_celular = $row["celular"];
+                $original_telefono = $row["telefono"];
+                $original_correo = $row["correo"];
+                $original_provincia = $row["provincia"];
+                $original_distrito = $row["distrito"];
+                $original_corregimiento = $row["corregimiento"];
+                $original_calle = $row["calle"];
+                $original_casa = $row["casa"];
+                $original_comunidad = $row["comunidad"];
+                $original_nacionalidad = $row["nacionalidad"];
+                $original_f_contra = $row["f_contra"];
+                $original_cargo = $row["cargo"];
+                $original_departamento = $row["departamento"];
+                $original_estado = $row["estado"];
+
+                // Asignar también a las variables principales para mostrar en el form la primera vez
+                $prefijo = $original_prefijo;
+                $tomo = $original_tomo;
+                $asiento = $original_asiento;
+                $nombre1 = $original_nombre1;
+                $nombre2 = $original_nombre2;
+                $apellido1 = $original_apellido1;
+                $apellido2 = $original_apellido2;
+                $apellidoc = $original_apellidoc;
+                $genero = $original_genero;
+                $estado_civil = $original_estado_civil;
+                $tipo_sangre = $original_tipo_sangre;
+                $usa_ac = $original_usa_ac;
+                $f_nacimiento = $original_f_nacimiento;
+                $celular = $original_celular;
+                $telefono = $original_telefono;
+                $correo = $original_correo;
+                $provincia = $original_provincia;
+                $distrito = $original_distrito;
+                $corregimiento = $original_corregimiento;
+                $calle = $original_calle;
+                $casa = $original_casa;
+                $comunidad = $original_comunidad;
+                $nacionalidad = $original_nacionalidad;
+                $f_contra = $original_f_contra;
+                $cargo = $original_cargo;
+                $departamento = $original_departamento;
+                $estado = $original_estado;
+                $cedula = $cedula_original_get;
+
             } else {
                 // No se encontró el empleado
                 header("location: list.php");
@@ -87,7 +116,6 @@ if (isset($_GET["cedula"]) && !empty(trim($_GET["cedula"]))) {
             echo "Error al ejecutar la consulta: " . mysqli_error($conn);
             exit();
         }
-        
         mysqli_stmt_close($stmt);
     }
 } else {
@@ -123,136 +151,170 @@ if (!$result_departamentos) {
 
 // Procesar datos del formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validar datos del formulario
-    
-    // 1. Recuperar la cédula original (guardada en hidden)
-    $cedula_original = $_POST['cedula_original'];
 
-   // 2. Construir la nueva cédula con los campos de prefijo, tomo y asiento
-    $prefijo = trim($_POST['prefijo']);
-    $tomo    = trim($_POST['tomo']);
-    $asiento = trim($_POST['asiento']);
+    // 1. Recuperar la cédula original (guardada en hidden)
+    $cedula_original_post = $_POST['cedula_original'];
+
+    // --- RECAPTURA DE DATOS CON FALLBACK A ORIGINALES ---
+
+    // Construir la nueva cédula (si cambió)
+    $prefijo = isset($_POST['prefijo']) && trim($_POST['prefijo']) !== '' ? trim($_POST['prefijo']) : $original_prefijo;
+    $tomo    = isset($_POST['tomo']) && trim($_POST['tomo']) !== '' ? trim($_POST['tomo']) : $original_tomo;
+    $asiento = isset($_POST['asiento']) && trim($_POST['asiento']) !== '' ? trim($_POST['asiento']) : $original_asiento;
     $cedula_nueva = $prefijo . "-" . $tomo . "-" . $asiento;
-    
+
     // Datos básicos
-    $nombre1 = trim($_POST["nombre1"]);
-    $nombre2 = trim($_POST["nombre2"]);
-    $apellido1 = trim($_POST["apellido1"]);
-    $apellido2 = trim($_POST["apellido2"]);
-    $apellidoc = isset($_POST["apellidoc"]) ? trim($_POST["apellidoc"]) : "";
-    $genero = $_POST["genero"];
-    $estado_civil = $_POST["estado_civil"];
-    $tipo_sangre = trim($_POST["tipo_sangre"]);
+    $nombre1 = isset($_POST["nombre1"]) && trim($_POST["nombre1"]) !== '' ? trim($_POST["nombre1"]) : $original_nombre1;
+    $nombre2 = isset($_POST["nombre2"]) ? trim($_POST["nombre2"]) : $original_nombre2;
+    $apellido1 = isset($_POST["apellido1"]) && trim($_POST["apellido1"]) !== '' ? trim($_POST["apellido1"]) : $original_apellido1;
+    $apellido2 = isset($_POST["apellido2"]) ? trim($_POST["apellido2"]) : $original_apellido2;
+
+    // Campos que influyen en lógica condicional
+    $genero = isset($_POST["genero"]) && $_POST["genero"] !== '' ? (int)$_POST["genero"] : $original_genero;
+    $estado_civil = isset($_POST["estado_civil"]) && $_POST["estado_civil"] !== '' ? (int)$_POST["estado_civil"] : $original_estado_civil;
+    $usa_ac = isset($_POST["usa_ac"]) ? 1 : 0;
+
+    // tipo_sangre: Usar POST si se envió y no está vacío, si no, el original.
+    $tipo_sangre = isset($_POST['tipo_sangre']) && $_POST['tipo_sangre'] !== '' ? trim($_POST['tipo_sangre']) : $original_tipo_sangre;
     if (empty($tipo_sangre)) {
         $error = "Por favor seleccione un tipo de sangre.";
     }
-    $usa_ac = isset($_POST["usa_ac"]) ? 1 : 0;
-    $f_nacimiento = trim($_POST["f_nacimiento"]);
-    
-    // Validar mayoría de edad
-    $birthDate = new DateTime($f_nacimiento);
-    $today = new DateTime();
-    $age = $today->diff($birthDate)->y;
-    
-    if ($age < 18) {
-        $error = "El empleado debe ser mayor de edad (al menos 18 años).";
-    }
-    
-    // Contacto - Validar formatos
-    $celular = trim($_POST["celular"]);
-    if (!empty($celular) && (!is_numeric($celular) || strlen($celular) > 8)) {
-        $error = "El celular debe ser un número de máximo 8 dígitos.";
-    }
-    
-    $telefono = trim($_POST["telefono"]);
-    if (!empty($telefono) && (!is_numeric($telefono) || strlen($telefono) > 7)) {
-        $error = "El teléfono debe ser un número de máximo 7 dígitos.";
-    }
-    
-    $correo = trim($_POST["correo"]);
-    if (!empty($correo)) {
-        if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-            $error = "Por favor ingrese un correo electrónico válido.";
-        } else {
-            // Verificar si el correo ya existe para otro empleado
-            $sql_check_email = "SELECT cedula FROM empleados WHERE correo = ? AND cedula != ?";
-            $stmt_check = mysqli_prepare($conn, $sql_check_email);
-            mysqli_stmt_bind_param($stmt_check, "ss", $correo, $cedula_original);
-            mysqli_stmt_execute($stmt_check);
-            mysqli_stmt_store_result($stmt_check);
-            
-            if (mysqli_stmt_num_rows($stmt_check) > 0) {
-                $error = "El correo electrónico ya está siendo utilizado por otro empleado.";
-            }
-            mysqli_stmt_close($stmt_check);
-        }
-    }
-    
-    // Ubicación
-    $provincia = trim($_POST["provincia"]);
-    $distrito = trim($_POST["distrito"]);
-    $corregimiento = trim($_POST["corregimiento"]);
-    $calle = trim($_POST["calle"]);
-    $casa = trim($_POST["casa"]);
-    $comunidad = trim($_POST["comunidad"]);
-    $nacionalidad = trim($_POST["nacionalidad"]);
-    
-    // Información laboral
-    $f_contra = trim($_POST["f_contra"]);
-    $cargo = trim($_POST["cargo"]);
-    $departamento = trim($_POST["departamento"]);
-    $estado = $_POST["estado"];
 
-    // 3. Solo si la nueva cédula es diferente, verificar duplicados
-    if ($cedula_nueva !== $cedula_original) {
-        // Verificar si $cedula_nueva ya existe en la tabla
-        $sql_check = "SELECT cedula FROM empleados WHERE cedula = ?";
-        if ($stmt_check = mysqli_prepare($conn, $sql_check)) {
-            mysqli_stmt_bind_param($stmt_check, "s", $cedula_nueva);
-            mysqli_stmt_execute($stmt_check);
-            mysqli_stmt_store_result($stmt_check);
-            
-            if (mysqli_stmt_num_rows($stmt_check) > 0) {
-                $error = "La cédula '{$cedula_nueva}' ya está registrada en otro empleado.";
+    // f_nacimiento: Usar POST si se envió y no está vacío, si no, el original.
+    $f_nacimiento_input = isset($_POST['f_nacimiento']) ? trim($_POST['f_nacimiento']) : '';
+    if (!empty($f_nacimiento_input)) {
+        if (strtotime($f_nacimiento_input)) {
+            $f_nacimiento = date('Y-m-d', strtotime($f_nacimiento_input));
+            $birthDate = new DateTime($f_nacimiento);
+            $today = new DateTime();
+            $age = $today->diff($birthDate)->y;
+            if ($age < 18) {
+                $error = empty($error) ? "El empleado debe ser mayor de edad." : $error . " El empleado debe ser mayor de edad.";
+                $f_nacimiento = $original_f_nacimiento;
             }
-            mysqli_stmt_close($stmt_check);
+        } else {
+            $error = empty($error) ? "Fecha de nacimiento inválida." : $error . " Fecha de nacimiento inválida.";
+            $f_nacimiento = $original_f_nacimiento;
+        }
+    } else {
+        $f_nacimiento = $original_f_nacimiento;
+    }
+
+    // departamento: Usar POST si se envió y no está vacío, aplicar padding. Si no, el original.
+    $departamento = isset($_POST['departamento']) && $_POST['departamento'] !== '' ? str_pad(trim($_POST['departamento']), 2, '0', STR_PAD_LEFT) : $original_departamento;
+    if (empty($departamento)) {
+         $error = empty($error) ? "Seleccione un departamento." : $error . " Seleccione un departamento.";
+    }
+
+    // cargo: Lógica similar a departamento
+    $cargo = isset($_POST['cargo']) && $_POST['cargo'] !== '' ? str_pad(trim($_POST['cargo']), 2, '0', STR_PAD_LEFT) : $original_cargo;
+     if (empty($cargo)) {
+         $error = empty($error) ? "Seleccione un cargo." : $error . " Seleccione un cargo.";
+    }
+
+    // apellidoc: Determinar valor base (POST o original) y luego aplicar condición.
+    $temp_apellidoc = $original_apellidoc;
+    if (isset($_POST['apellidoc'])) {
+        $temp_apellidoc = trim($_POST['apellidoc']);
+    }
+    if ($genero == 0 && $estado_civil == 1 && $usa_ac == 1) {
+        $apellidoc = $temp_apellidoc;
+    } else {
+        $apellidoc = "";
+    }
+
+    // Otros campos (asegurar fallback similar)
+    $celular = isset($_POST["celular"]) && trim($_POST["celular"]) !== '' ? trim($_POST["celular"]) : $original_celular;
+    $telefono = isset($_POST["telefono"]) ? trim($_POST["telefono"]) : $original_telefono;
+    $correo = isset($_POST["correo"]) && trim($_POST["correo"]) !== '' ? trim($_POST["correo"]) : $original_correo;
+    $provincia = isset($_POST["provincia"]) && $_POST["provincia"] !== '' ? trim($_POST["provincia"]) : $original_provincia;
+    $distrito = isset($_POST["distrito"]) && $_POST["distrito"] !== '' ? trim($_POST["distrito"]) : $original_distrito;
+    $corregimiento = isset($_POST["corregimiento"]) && $_POST["corregimiento"] !== '' ? trim($_POST["corregimiento"]) : $original_corregimiento;
+    $calle = isset($_POST["calle"]) ? trim($_POST["calle"]) : $original_calle;
+    $casa = isset($_POST["casa"]) ? trim($_POST["casa"]) : $original_casa;
+    $comunidad = isset($_POST["comunidad"]) ? trim($_POST["comunidad"]) : $original_comunidad;
+    $nacionalidad = isset($_POST["nacionalidad"]) && $_POST["nacionalidad"] !== '' ? trim($_POST["nacionalidad"]) : $original_nacionalidad;
+    $f_contra = isset($_POST["f_contra"]) && trim($_POST["f_contra"]) !== '' ? trim($_POST["f_contra"]) : $original_f_contra;
+    $estado = isset($_POST["estado"]) && $_POST["estado"] !== '' ? $_POST["estado"] : $original_estado;
+
+    // Verificar si la cédula nueva ya existe (solo si cambió)
+    if ($cedula_nueva !== $cedula_original_post) {
+        $sql_check_cedula = "SELECT cedula FROM empleados WHERE cedula = ?";
+        if ($stmt_check_ced = mysqli_prepare($conn, $sql_check_cedula)) {
+            mysqli_stmt_bind_param($stmt_check_ced, "s", $cedula_nueva);
+            mysqli_stmt_execute($stmt_check_ced);
+            mysqli_stmt_store_result($stmt_check_ced);
+            if (mysqli_stmt_num_rows($stmt_check_ced) > 0) {
+                $error = empty($error) ? "La nueva cédula ya existe." : $error . " La nueva cédula ya existe.";
+            }
+            mysqli_stmt_close($stmt_check_ced);
         }
     }
-    
-    // 4. Si no hay error, procedemos con el UPDATE
+
+    // Si no hay error, procedemos con el UPDATE
     if (empty($error)) {
-        // IMPORTANTE: actualizamos la cédula también
-        $sql = "UPDATE empleados 
-                SET cedula=?, 
-                    prefijo=?, tomo=?, asiento=?, 
-                    nombre1=?, nombre2=?, apellido1=?, apellido2=?, apellidoc=?, 
-                    genero=?, estado_civil=?, tipo_sangre=?, usa_ac=?, f_nacimiento=?, 
-                    celular=?, telefono=?, correo=?, provincia=?, distrito=?, corregimiento=?, 
-                    calle=?, casa=?, comunidad=?, nacionalidad=?, f_contra=?, cargo=?, 
-                    departamento=?, estado=? 
+        $sql = "UPDATE empleados
+                SET cedula=?,
+                    prefijo=?, tomo=?, asiento=?,
+                    nombre1=?, nombre2=?, apellido1=?, apellido2=?, apellidoc=?,
+                    genero=?, estado_civil=?, tipo_sangre=?, usa_ac=?, f_nacimiento=?,
+                    celular=?, telefono=?, correo=?, provincia=?, distrito=?, corregimiento=?,
+                    calle=?, casa=?, comunidad=?, nacionalidad=?, f_contra=?, cargo=?,
+                    departamento=?, estado=?
                 WHERE cedula=?";
-        
+
         if ($stmt = mysqli_prepare($conn, $sql)) {
             mysqli_stmt_bind_param(
-                $stmt, 
-                "ssssssssiisisiiissssssssssiss", 
-                $cedula_nueva,  // OJO: Ahora actualizas también el valor de la cédula
-                $prefijo, $tomo, $asiento, 
-                $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc, 
-                $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento, 
-                $celular, $telefono, $correo, $provincia, $distrito, $corregimiento, 
-                $calle, $casa, $comunidad, $nacionalidad, 
+                $stmt,
+                "sssssssssiisisissssssssssssss",
+                $cedula_nueva,
+                $prefijo, $tomo, $asiento,
+                $nombre1, $nombre2, $apellido1, $apellido2, $apellidoc,
+                $genero, $estado_civil, $tipo_sangre, $usa_ac, $f_nacimiento,
+                $celular, $telefono, $correo, $provincia, $distrito, $corregimiento,
+                $calle, $casa, $comunidad, $nacionalidad,
                 $f_contra, $cargo, $departamento, $estado,
-                $cedula_original  // la condición del WHERE
+                $cedula_original_post
             );
-            
+
             if (mysqli_stmt_execute($stmt)) {
-                $success = "Empleado actualizado correctamente (cédula modificada de $cedula_original a $cedula_nueva).";
+                $success = "Empleado actualizado correctamente.";
+                $cedula = $cedula_nueva;
+                $original_prefijo = $prefijo;
+                $original_tomo = $tomo;
+                $original_asiento = $asiento;
+                $original_nombre1 = $nombre1;
+                $original_nombre2 = $nombre2;
+                $original_apellido1 = $apellido1;
+                $original_apellido2 = $apellido2;
+                $original_apellidoc = $apellidoc;
+                $original_genero = $genero;
+                $original_estado_civil = $estado_civil;
+                $original_tipo_sangre = $tipo_sangre;
+                $original_usa_ac = $usa_ac;
+                $original_f_nacimiento = $f_nacimiento;
+                $original_celular = $celular;
+                $original_telefono = $telefono;
+                $original_correo = $correo;
+                $original_provincia = $provincia;
+                $original_distrito = $distrito;
+                $original_corregimiento = $corregimiento;
+                $original_calle = $calle;
+                $original_casa = $casa;
+                $original_comunidad = $comunidad;
+                $original_nacionalidad = $nacionalidad;
+                $original_f_contra = $f_contra;
+                $original_cargo = $cargo;
+                $original_departamento = $departamento;
+                $original_estado = $estado;
+                $cedula_original_get = $cedula_nueva;
+
             } else {
                 $error = "Error al actualizar el empleado: " . mysqli_error($conn);
             }
-            
             mysqli_stmt_close($stmt);
+        } else {
+             $error = "Error al preparar la consulta UPDATE: " . mysqli_error($conn);
         }
     }
 }
@@ -338,14 +400,9 @@ include "../../includes/header.php";
                     </div>
                 </div>
                 
-                <div class="col-md-4 mb-3">
+                <div class="col-md-6 mb-3">
                     <label for="apellido2" class="form-label">Segundo Apellido</label>
                     <input type="text" class="form-control" id="apellido2" name="apellido2" value="<?php echo $apellido2; ?>" maxlength="25">
-                </div>
-                
-                <div class="col-md-4 mb-3">
-                    <label for="apellidoc" class="form-label">Apellido de Casada</label>
-                    <input type="text" class="form-control" id="apellidoc" name="apellidoc" value="<?php echo $apellidoc; ?>" maxlength="25">
                 </div>
                 
                 <div class="col-md-3 mb-3">
@@ -604,17 +661,18 @@ include "../../includes/header.php";
                     <label for="cargo" class="form-label">Cargo *</label>
                     <select class="form-select" id="cargo" name="cargo" required>
                         <option value="">Seleccione un cargo...</option>
-                        <?php if (!empty($cargo) && !empty($departamento)): 
-                            // Cargar los cargos si ya hay uno seleccionado
+                        <?php if (!empty($departamento)): 
+                            // Cargar los cargos si hay un departamento seleccionado
                             $sql_cargo = "SELECT codigo, nombre FROM cargo WHERE dep_codigo = ? ORDER BY nombre";
                             $stmt_cargo = mysqli_prepare($conn, $sql_cargo);
                             mysqli_stmt_bind_param($stmt_cargo, "s", $departamento);
                             mysqli_stmt_execute($stmt_cargo);
                             $result_cargo = mysqli_stmt_get_result($stmt_cargo);
                             while ($row_cargo = mysqli_fetch_assoc($result_cargo)) {
-                                $selected_cargo = ($cargo == $row_cargo['codigo']) ? 'selected' : '';
-                                echo "<option value='" . $row_cargo['codigo'] . "' $selected_cargo>" . $row_cargo['nombre'] . "</option>";
+                                $selected = ($cargo == $row_cargo['codigo']) ? 'selected' : '';
+                                echo "<option value='" . $row_cargo['codigo'] . "' $selected>" . htmlspecialchars($row_cargo['nombre']) . "</option>";
                             }
+                            mysqli_stmt_close($stmt_cargo);
                         endif; ?>
                     </select>
                     <div class="invalid-feedback">
@@ -1105,6 +1163,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function cargarDistritos(provinciaId) {
         // Mostrar indicador de carga
         distritoSelect.innerHTML = '<option value="">Cargando distritos...</option>';
+        corregimientoSelect.innerHTML = '<option value="">Seleccione un corregimiento...</option>';
+        corregimientoSelect.disabled = true;
         
         // Hacer la petición AJAX
         fetch('get_distritos.php?provincia=' + provinciaId)
@@ -1129,12 +1189,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Habilitar el selector
                     distritoSelect.disabled = false;
-                    
-                    // Si hay un valor previamente seleccionado
-                    <?php if (!empty($distrito)): ?>
-                    distritoSelect.value = '<?php echo $distrito; ?>';
-                    cargarCorregimientos('<?php echo $provincia; ?>', '<?php echo $distrito; ?>');
-                    <?php endif; ?>
                 } else {
                     console.log('No se encontraron distritos');
                 }
@@ -1173,11 +1227,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Habilitar el selector
                     corregimientoSelect.disabled = false;
-                    
-                    // Si hay un valor previamente seleccionado
-                    <?php if (!empty($corregimiento)): ?>
-                    corregimientoSelect.value = '<?php echo $corregimiento; ?>';
-                    <?php endif; ?>
                 } else {
                     console.log('No se encontraron corregimientos');
                 }
@@ -1214,10 +1263,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Inicialización: Si hay provincia seleccionada, cargar distritos
-    <?php if (!empty($provincia)): ?>
-    // Cargar distritos al inicio si hay provincia seleccionada
+    // Inicialización: Si hay provincia seleccionada, cargar distritos y corregimientos
+    <?php if (!empty($provincia) && !empty($distrito) && !empty($corregimiento)): ?>
+    // Cargar distritos y corregimientos al inicio si hay valores seleccionados
     cargarDistritos('<?php echo $provincia; ?>');
+    setTimeout(function() {
+        distritoSelect.value = '<?php echo $distrito; ?>';
+        cargarCorregimientos('<?php echo $provincia; ?>', '<?php echo $distrito; ?>');
+        setTimeout(function() {
+            corregimientoSelect.value = '<?php echo $corregimiento; ?>';
+        }, 500); // Esperar a que se carguen los corregimientos
+    }, 500); // Esperar a que se carguen los distritos
     <?php endif; ?>
 
     // Cargar cargos cuando se selecciona un departamento
