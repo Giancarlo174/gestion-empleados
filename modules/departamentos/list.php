@@ -39,7 +39,7 @@ $total_registros = $row_total['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consultar datos de departamentos
-$sql = "SELECT * FROM departamento $where ORDER BY nombre ASC LIMIT $inicio, $registros_por_pagina";
+$sql = "SELECT * FROM departamento $where ORDER BY codigo ASC LIMIT $inicio, $registros_por_pagina";
 $result = mysqli_query($conn, $sql);
 
 // Incluir header

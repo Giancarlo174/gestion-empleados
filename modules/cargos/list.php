@@ -67,7 +67,7 @@ $sql = "SELECT c.*, d.nombre as nombre_departamento
         FROM cargo c 
         LEFT JOIN departamento d ON c.dep_codigo = d.codigo 
         $where 
-        ORDER BY d.nombre, c.nombre ASC 
+        ORDER BY c.codigo ASC 
         LIMIT ?, ?";
 
 $tipos .= "ii";
