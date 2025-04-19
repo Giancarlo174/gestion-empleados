@@ -1,0 +1,52 @@
+/**
+ * Estilos para las banderas de nacionalidad
+ */
+
+/* Contenedor de banderas */
+.flag-container {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.65rem;
+  background-color: var(--light-bg);
+  border-radius: 0.25rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+/* Imagen de la bandera */
+.flag-icon {
+  width: 24px;
+  height: auto;
+  margin-right: 0.75rem;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.1);
+  vertical-align: middle;
+}
+
+/* Dropdown con banderas */
+.nacionalidad-select {
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive para banderas en dispositivos móviles */
+@media (max-width: 576px) {
+  .flag-container {
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .flag-icon {
+    width: 20px;
+    margin-right: 0.5rem;
+  }
+}
+
+/* Animación suave al cambiar banderas */
+.flag-container {
+  transition: all 0.2s ease-in-out;
+}
+
+.flag-container:hover {
+  background-color: rgba(84, 105, 212, 0.05);
+  border-color: var(--primary-color);
+}

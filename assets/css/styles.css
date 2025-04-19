@@ -1,0 +1,513 @@
+/* Estilos generales del sistema - Diseño minimalista y responsive */
+:root {
+  /* Esquema de colores minimalista */
+  --primary-color: #5469d4;
+  --secondary-color: #2d3748;
+  --light-bg: #f7fafc;
+  --border-color: #e2e8f0;
+  --text-color: #1a202c;
+  --text-muted: #718096;
+  --success-color: #48bb78;
+  --danger-color: #e53e3e;
+  --warning-color: #ed8936;
+  --info-color: #4299e1;
+  --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --transition: all 0.2s ease-in-out;
+  --radius: 0.375rem;
+}
+
+/* Reset y estilos base */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-color);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+/* Contenedor principal */
+.container-fluid {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 0.75rem);
+  padding-left: var(--bs-gutter-x, 0.75rem);
+}
+
+/* Header y navbar */
+header.navbar {
+  padding: 0.75rem 1rem;
+  box-shadow: var(--box-shadow);
+  z-index: 1030;
+  height: 56px;
+}
+
+.navbar-brand {
+  padding: 0 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.navbar-brand i {
+  margin-right: 0.5rem;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  background-color: #fff;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-sticky {
+  position: relative;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  border-radius: 0;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(84, 105, 212, 0.05);
+  border-left: 3px solid rgba(84, 105, 212, 0.3);
+}
+
+.sidebar .nav-link.active {
+  color: var(--primary-color);
+  background-color: rgba(84, 105, 212, 0.1);
+  border-left: 3px solid var(--primary-color);
+}
+
+.sidebar .nav-link i {
+  margin-right: 0.75rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.sidebar .sidebar-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+}
+
+/* Contenido principal */
+main {
+  padding: 1.5rem;
+  padding-top: calc(56px + 1.5rem);
+}
+
+/* Formularios */
+.form-control, .form-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(84, 105, 212, 0.15);
+}
+
+.form-label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.input-group {
+  border-radius: var(--radius);
+}
+
+.input-group-text {
+  background-color: var(--light-bg);
+  border: 1px solid var(--border-color);
+}
+
+/* Botones */
+.btn {
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: var(--transition);
+  text-transform: capitalize;
+  letter-spacing: 0.01em;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background-color: #1a202c;
+  border-color: #1a202c;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.btn i {
+  margin-right: 0.3rem;
+  font-size: 0.85em;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: calc(var(--radius) - 0.1rem);
+}
+
+/* Para botones con solo iconos, centrar el icono */
+.btn.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem 0.5rem;
+}
+
+.btn.btn-icon i {
+  margin-right: 0;
+}
+
+/* Tarjetas */
+.card {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  margin-bottom: 1.5rem;
+  background-color: #fff;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem;
+  font-weight: 500;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Tablas */
+.table-responsive {
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+  background-color: #fff;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Para scroll suave en iOS */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  display: block;
+}
+
+.table {
+  margin-bottom: 0;
+  width: 100%;
+  min-width: 650px; /* Ancho mínimo para garantizar scroll en móvil */
+}
+
+.table thead th {
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap; /* Evitar que los títulos se rompan */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table tbody td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Indicador visual de scroll horizontal en tablas */
+.table-scroll-indicator {
+  display: none;
+}
+
+/* Estilos para login */
+.login-container {
+  max-width: 400px;
+  margin: 5vh auto;
+}
+
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo h2 {
+  margin-bottom: 0.5rem;
+}
+
+.login-logo p {
+  color: var(--text-muted);
+}
+
+/* Badges y alertas */
+.badge {
+  padding: 0.35rem 0.65rem;
+  font-weight: 500;
+  border-radius: 50rem;
+}
+
+.alert {
+  border: none;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.alert i {
+  margin-right: 0.75rem;
+}
+
+/* Flag container */
+.flag-container {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.flag-icon {
+  width: 24px;
+  height: auto;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+/* Dropdown en navbar */
+.dropdown-menu {
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  padding: 0.5rem 0;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-item i {
+  margin-right: 0.5rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: fixed;
+    top: 56px;
+    width: 100%;
+    z-index: 1030;
+    height: auto;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    padding-top: 0;
+    overflow-y: auto;
+    max-height: 80vh;
+  }
+  
+  .sidebar-sticky {
+    height: auto;
+    padding-bottom: 1rem;
+    overflow-y: auto;
+  }
+  
+  .sidebar .nav-link {
+    padding: 0.5rem 1rem;
+  }
+  
+  main {
+    padding-top: calc(56px + 1rem);
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .login-container {
+    margin: 2vh auto;
+    max-width: 90%;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .navbar-brand {
+    width: auto !important;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .table-responsive {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .form-control, .form-select {
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+  
+  .input-group .form-control,
+  .input-group .btn {
+    height: 38px;
+  }
+
+  /* Mejora en botones para móviles */
+  .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    touch-action: manipulation;
+  }
+  
+  /* Evitar que los botones se amontonen en móviles */
+  .text-center .btn + .btn {
+    margin-top: 0.5rem;
+  }
+  
+  /* Hacemos los modales más adaptados a móvil */
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  /* Mejor tamaño para dropdown en móvil */
+  .dropdown-menu {
+    width: auto;
+    min-width: 200px;
+    right: 0;
+    left: auto !important;
+  }
+  
+  /* Ajuste para formularios responsivos */
+  .mb-3 [class*="col-"] {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .text-center .btn + .btn {
+    margin-top: 0;
+    margin-left: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  main {
+    padding-top: 2rem;
+  }
+  
+  /* Mejora de animaciones solo en desktop */
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+  }
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    padding-top: 56px;
+  }
+}
+
+@media print {
+  .sidebar, header, .no-print {
+    display: none !important;
+  }
+  
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .card {
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+  }
+}
