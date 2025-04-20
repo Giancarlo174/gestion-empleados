@@ -114,7 +114,7 @@ include "../../includes/header.php";
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="mb-3">
                 <label for="codigo" class="form-label">Código de Departamento *</label>
-                <input type="text" class="form-control <?php echo (!empty($codigo_err)) ? 'is-invalid' : ''; ?>" id="codigo" name="codigo" value="<?php echo $codigo; ?>" maxlength="3">
+                <input type="text" class="form-control <?php echo (!empty($codigo_err)) ? 'is-invalid' : ''; ?>" id="codigo" name="codigo" value="<?php echo $codigo; ?>" maxlength="2">
                 <div class="invalid-feedback"><?php echo $codigo_err; ?></div>
                 <small class="form-text text-muted">Ingrese un código único de hasta 3 caracteres.</small>
             </div>
