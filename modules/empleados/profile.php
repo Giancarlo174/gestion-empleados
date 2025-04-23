@@ -27,16 +27,16 @@ $sql = "SELECT e.*,
                p.nombre_provincia,
                d.nombre_distrito,
                c.nombre_corregimiento,
+               n.pais as nombre_nacionalidad,
                dep.nombre as nombre_departamento,
-               car.nombre as nombre_cargo,
-               n.pais as nombre_nacionalidad
+               car.nombre as nombre_cargo
         FROM empleados e
         LEFT JOIN provincia p ON e.provincia = p.codigo_provincia
-        LEFT JOIN distrito d ON e.distrito = d.codigo_distrito
-        LEFT JOIN corregimiento c ON e.corregimiento = c.codigo_corregimiento
-        LEFT JOIN departamento dep ON e.departamento = dep.codigo
-        LEFT JOIN cargo car ON e.cargo = car.codigo AND e.departamento = car.departamento
+        LEFT JOIN distrito d ON e.distrito = d.codigo_distrito AND e.provincia = d.codigo_provincia -- Corrected: d.codigo_provincia
+        LEFT JOIN corregimiento c ON e.corregimiento = c.codigo_corregimiento AND e.distrito = c.codigo_distrito AND e.provincia = c.codigo_provincia -- Corrected: c.codigo_distrito and c.codigo_provincia
         LEFT JOIN nacionalidad n ON e.nacionalidad = n.codigo
+        LEFT JOIN departamento dep ON e.departamento = dep.codigo
+        LEFT JOIN cargo car ON e.cargo = car.codigo AND e.departamento = car.dep_codigo
         WHERE e.cedula = ?";
 
 if ($stmt = mysqli_prepare($conn, $sql)) {

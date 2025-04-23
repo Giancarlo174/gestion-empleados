@@ -51,7 +51,7 @@ if ($loggedIn) {
     <?php if ($loggedIn): ?>
     <header class="navbar navbar-dark sticky-top flex-md-nowrap shadow" style="background-color: var(--secondary-color);">
         <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="<?php echo $isAdmin ? '/ds6/dashboard.php' : '/ds6/modules/empleados/profile.php'; ?>">
-            <i class="fas fa-building me-2"></i>Sistema de Gestión
+            <i class="fas me-2"></i>Dashboard
         </a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
