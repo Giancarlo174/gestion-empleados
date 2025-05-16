@@ -1,0 +1,29 @@
+Tabla: cargo
+Columnas: dep_codigo, codigo, nombre
+
+Tabla: departamento
+Columnas: codigo, nombre
+
+Tabla: empleados
+Columnas: cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, apellidoc, genero (0 = femenino, 1 = masculino), estado_civil (0 = Soltero/a, 1 = Casado/a, 2 = Viudo/a, 3 = Divorciado/a), tipo_sangre, usa_ac (0 = No, 1 = Sí), f_nacimiento, celular, telefono, correo, provincia, distrito, corregimiento, calle, casa, comunidad, nacionalidad, f_contra, cargo, departamento, estado (0 = inactivo, 1 = activo), contraseña
+
+Tabla: nacionalidad
+Columnas: codigo, pais
+
+Tabla: provincia
+Columnas: codigo_provincia, nombre_provincia
+
+Tabla: distrito
+Columnas: codigo_provincia, codigo_distrito, codigo, nombre_distrito
+
+Tabla: corregimiento
+Columnas: codigo_provincia, codigo_distrito, codigo, codigo_corregimiento, nombre_corregimiento
+
+Tabla: usuarios
+Columnas: id, cedula, contraseña, correo_institucional
+
+Tabla: u_eliminados
+Columnas: id, cedula, contraseña, correo_institucional, f_eliminacion
+
+Tabla: e_eliminados
+Columnas: cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, apellidoc, genero, estado_civil, tipo_sangre, usa_ac, f_nacimiento, celular, telefono, correo, provincia, distrito, corregimiento, calle, casa, comunidad, nacionalidad, f_contra, cargo, departamento, estado, f_eliminacion, 

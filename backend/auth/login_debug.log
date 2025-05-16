@@ -1,0 +1,468 @@
+2025-05-13 07:16:57 - Request: {"email":"testing@gmail.com","password":"12345678"}
+2025-05-13 07:16:57 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:16:59 - Request: {"email":"testing@gmail.com","password":"123456789"}
+2025-05-13 07:16:59 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:00 - Request: {"email":"testing@gmail.com","password":"123456789"}
+2025-05-13 07:17:00 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:01 - Request: {"email":"testing@gmail.com","password":"123456789"}
+2025-05-13 07:17:01 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:05 - Request: {"email":"testing@gmail.com","password":"ola123"}
+2025-05-13 07:17:05 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:07 - Request: {"email":"testing@gmail.com","password":"ola1234"}
+2025-05-13 07:17:07 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:10 - Request: {"email":"testing@gmail.com","password":"123"}
+2025-05-13 07:17:10 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:12 - Request: {"email":"testing@gmail.com","password":"1234"}
+2025-05-13 07:17:12 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:13 - Request: {"email":"testing@gmail.com","password":"12345"}
+2025-05-13 07:17:13 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-13 07:17:14 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-13 07:17:14 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"103efa066080b9848caf98e8d9a07c7d"}}
+2025-05-13 07:30:16 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-13 07:30:16 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2ad34ff290b46e3828b187f21a0ad80c"}}
+2025-05-13 07:36:24 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-13 07:36:24 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"aea335772b5c74314d33ea8267f5542b"}}
+2025-05-13 07:44:28 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-13 07:44:28 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"a65cca20b0e4c4cbed99785d57fcfe3f"}}
+2025-05-13 07:49:40 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-13 07:49:40 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bf66fd8de47b29ca7a1567796ee5bf96"}}
+2025-05-14 09:25:01 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 09:25:01 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7b33403c98480ba29782b54c52ff712f"}}
+2025-05-14 09:30:09 - Request: {"email":"testing@gmail.com","password":"123"}
+2025-05-14 09:30:09 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 09:30:11 - Request: {"email":"testing@gmail.com","password":"1234"}
+2025-05-14 09:30:12 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 09:30:13 - Request: {"email":"testing@gmail.com","password":"1234"}
+2025-05-14 09:30:13 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 09:30:17 - Request: {"email":"testing@gmail.com","password":"12345"}
+2025-05-14 09:30:17 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 09:30:19 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 09:30:19 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"3152909adf3fc55dfc9ce4888ca72bee"}}
+2025-05-14 09:33:56 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 09:33:57 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"333d415c16532a963afc38082cc369ab"}}
+2025-05-14 09:34:31 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 09:34:31 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"60ed1c924f3838427bc164cfa44001d8"}}
+2025-05-14 10:09:25 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 10:09:25 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"86903a4cdf51407d8b8fec801b390017"}}
+2025-05-14 10:22:08 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 10:22:08 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bdbd6dd1de1172fae4da346d3aa81bac"}}
+2025-05-14 10:27:16 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 10:27:16 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"41804451d447dda5a6a6c01df498d586"}}
+2025-05-14 10:48:40 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 10:48:40 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"4ea00567a9f0b2b93ea4a600faa92683"}}
+2025-05-14 11:13:16 - Request: {"email":"test@utp.ac.pa","password":"ola1"}
+2025-05-14 11:13:16 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:13:18 - Request: {"email":"test@utp.ac.pa","password":"ola12"}
+2025-05-14 11:13:18 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:13:20 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 11:13:20 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"a782705bdb8af6981c4f8f7f2f256917"}}
+2025-05-14 11:14:38 - Request: {"email":"testing@gmail.com","password":"12345"}
+2025-05-14 11:14:38 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:14:39 - Request: {"email":"testing@gmail.com","password":"12345"}
+2025-05-14 11:14:39 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:14:40 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:14:40 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"78641291ff08d7cb67d7fdfe9539d4fb"}}
+2025-05-14 11:28:22 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:28:22 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"d4ad898aba524bd7ff785db7d6099a6f"}}
+2025-05-14 11:29:24 - Request: {"email":"testing@gmail.com","password":"1234567"}
+2025-05-14 11:29:24 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:29:27 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:29:27 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"32de8d0426bfa86fc43b46c587bc9853"}}
+2025-05-14 11:32:57 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:32:57 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"2cc7bc309fa721f98227e21addf08481"}}
+2025-05-14 11:37:21 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:37:21 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"8cd9b45c49df0e48c995e187166581c4"}}
+2025-05-14 11:42:12 - Request: {"email":"testing@gmail-com","password":"123456"}
+2025-05-14 11:42:12 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-14 11:42:17 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:42:17 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"71afb350d5350cf20be861dc512a8626"}}
+2025-05-14 11:42:43 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:42:43 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"40621dfd5d3b24789139b9fddd9bde96"}}
+2025-05-14 11:49:13 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:49:13 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"ab238b7b78c08a6678ef643740aead50"}}
+2025-05-14 11:52:39 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:52:39 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"8750bcc0b73d9c88d22b4d46ef0a60ab"}}
+2025-05-14 11:59:00 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:00 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333"}}
+2025-05-14 11:59:04 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:04 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333"}}
+2025-05-14 11:59:05 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:05 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333"}}
+2025-05-14 11:59:10 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:10 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"973ed69d6d5ff1c873d3024290badebf"}}
+2025-05-14 11:59:11 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:11 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"e386c35806374ebc77819d9701409630"}}
+2025-05-14 11:59:11 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:11 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"5433af37b38667575bc31f4d5b5e1d49"}}
+2025-05-14 11:59:12 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:12 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"b9c346d86938bb356884801f46b40229"}}
+2025-05-14 11:59:12 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:12 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"25c134300459212b0ca685fd4a67c251"}}
+2025-05-14 11:59:18 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:18 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"0ea13bd1779886280c054cd34c11f2cb"}}
+2025-05-14 11:59:26 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:26 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"e3ee9636b1b62140e6b08a0a29a81b33"}}
+2025-05-14 11:59:28 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:28 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"23738f0a34038e314aafbbe9e8fedcdd"}}
+2025-05-14 11:59:29 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:29 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"1313f7f12580cc03efa665b9d4a06b60"}}
+2025-05-14 11:59:58 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 11:59:58 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"b36edee4880fa40bde807c4085b0d4b1"}}
+2025-05-14 12:02:01 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 12:02:01 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"abd54f7cfc88e8e3bb2c346281d782e3"}}
+2025-05-14 12:02:02 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 12:02:02 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"4a7dbc500c43ccfa217f6f098dfe9df9"}}
+2025-05-14 12:02:58 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 12:02:58 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"da99f8b01210c1cc85bb18dfcdd37447"}}
+2025-05-14 16:15:42 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-14 16:15:43 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"1a77ccdcb097a3cfcdc19f6c800f92a4"}}
+2025-05-14 17:21:41 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:21:41 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"4b05add170b0cf4f6989cd1b21022ea1"}}
+2025-05-14 17:26:28 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:26:28 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f4f260b0784b2183cc4b5d6a64b0532d"}}
+2025-05-14 17:27:07 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:27:07 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"141be14b5fb5fdc95d059d51a215e0a4"}}
+2025-05-14 17:33:52 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:33:52 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d0ef05a362bae74d2e7154dbe8691809"}}
+2025-05-14 17:41:32 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:41:32 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2e9e6b9463ec57cc7db6ce481a10a0e1"}}
+2025-05-14 17:50:42 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:50:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8ffd6c7799515b3f5bd33782b2a2a827"}}
+2025-05-14 17:55:35 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 17:55:35 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0e09b37194ae81ccd0cb79682b298457"}}
+2025-05-14 18:02:54 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:02:54 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"ec11d34057138ecca425b0bfcf96d5ab"}}
+2025-05-14 18:10:08 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:10:08 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cac3a196448e19d2387ca790b02db602"}}
+2025-05-14 18:33:43 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:33:43 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"500ffa9f3c46fda4828931c91e3ce8e6"}}
+2025-05-14 18:45:05 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:45:05 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f970d640c460dad0e0826dc413b55c16"}}
+2025-05-14 18:47:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:47:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"db674e3857e403ffa9930eb692c2f2fd"}}
+2025-05-14 18:51:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:51:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"555e81f27ba2d98132c49dec29e8357b"}}
+2025-05-14 18:54:23 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:54:23 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e57f54a0a43bd122cc3c9bb9c0ae9f3f"}}
+2025-05-14 18:56:08 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:56:09 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f7250c05d580e33f01f21afc53890efe"}}
+2025-05-14 18:58:26 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 18:58:26 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7847e66fea5ae4e97efeb742e39d12c3"}}
+2025-05-14 19:26:42 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 19:26:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"728af960e05c7e3db8bf947ab6f6aa54"}}
+2025-05-14 19:28:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 19:28:19 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"65fe34da81822b52e7c39f91fc5922dc"}}
+2025-05-14 19:42:10 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 19:42:10 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f8818ff8cc17b5faacd40219ee2e6761"}}
+2025-05-14 19:46:27 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 19:46:27 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"a90e9f5a78e90f1170d3e98425f97ae4"}}
+2025-05-14 19:49:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-14 19:49:19 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e9adf11e1a6e83900f95e4c1e6d64d9b"}}
+2025-05-15 03:14:59 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 03:14:59 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"a9032377247e2f6db1e5d80f43c0ad9c"}}
+2025-05-15 03:22:02 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 03:22:02 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"02dcb8a38f501539b66d6d99e7cbaeb0"}}
+2025-05-15 03:41:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 03:41:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"56375b0e88d6777f0ff413369840fe2a"}}
+2025-05-15 04:16:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 04:16:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f2cc4813c18b37b931855b98e9dfd046"}}
+2025-05-15 06:34:35 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:34:35 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0ae52e77ea2cda78221a750e88cded75"}}
+2025-05-15 06:52:04 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:52:04 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"af6a0e2eee6c2e8577ca5f4ad18432d7"}}
+2025-05-15 06:59:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"082ab46c70daa9b3e27a0ff5a03927c8"}}
+2025-05-15 06:59:39 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:39 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"ffdaf5de57e18515db11da0becc2653f"}}
+2025-05-15 06:59:47 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:47 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"51f5884611944a3a7c0f91adb9f8bcea"}}
+2025-05-15 06:59:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"fd1535779c7aa48bea62135e48ab6d13"}}
+2025-05-15 06:59:49 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:49 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"261cd83990e809b54c840c6118d42728"}}
+2025-05-15 06:59:50 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:50 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"06e4c0132de25b78302e7618f1d2c74a"}}
+2025-05-15 06:59:50 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:50 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2d7a559ed27c2818830a487fd8f49c8d"}}
+2025-05-15 06:59:51 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 06:59:51 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"92fed493d485b8d3a3f987ef9e635f50"}}
+2025-05-15 07:00:18 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:00:18 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8e0d0a3307531d1afd2cd52a518643a3"}}
+2025-05-15 07:04:05 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:04:05 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"942569ae53d2342561bcb8fb0d462090"}}
+2025-05-15 07:05:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:05:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e64b9181fef9d392a59c991f4f5aaa3b"}}
+2025-05-15 07:09:59 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:09:59 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"b4739a1af5d3d8b78465369c674b3362"}}
+2025-05-15 07:13:06 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:13:06 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"3921c16f27672543d792cb3dfa50f226"}}
+2025-05-15 07:17:16 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:17:16 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cad8865455f457ceda9e4dd31c82f788"}}
+2025-05-15 07:36:29 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:36:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"47813703286cf442c22a11ddc5d1897d"}}
+2025-05-15 07:42:13 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:42:13 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e16fafc7528bdcbd6b068fe01c0279b5"}}
+2025-05-15 07:45:36 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:45:36 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"1ea0990f491b9721342cf648959ca872"}}
+2025-05-15 07:49:13 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:49:13 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6b5f48d0f78b566c3bf6c9131d40e872"}}
+2025-05-15 07:53:22 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:53:22 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f9fd1bdb968d5727f833416e509faae2"}}
+2025-05-15 07:53:51 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 07:53:51 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7f1608d66113b57ffa3396fabdace299"}}
+2025-05-15 08:05:23 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:05:23 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0b22fa506dcdac405dc31477544ee55b"}}
+2025-05-15 08:05:57 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:05:57 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bc57fece0c5beaac0c9dc844e4ddb74b"}}
+2025-05-15 08:06:33 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:06:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"54a826132edea27b6e5a144a3f7faf0a"}}
+2025-05-15 08:09:47 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:09:47 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cd92f66f6f11ba65c9d4305290a4da3b"}}
+2025-05-15 08:13:06 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:13:06 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2da4861a3e67f44b1fccfe0fcfb090cc"}}
+2025-05-15 08:24:41 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:24:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"11364103111fa9c859e1c95afcced197"}}
+2025-05-15 08:31:28 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:31:28 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"42b513643cd580b65d0e97baca121077"}}
+2025-05-15 08:45:40 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:45:40 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cfaa12595fd1968ca0f7775cff6c20d3"}}
+2025-05-15 08:45:56 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:45:56 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6a2f8ecbed53e5368af527053de81712"}}
+2025-05-15 08:46:33 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:46:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f6705128091bde00d3b4165b0aba2c13"}}
+2025-05-15 08:54:33 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 08:54:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cfc4f3fecfcf2f8816a1bbbf1635c967"}}
+2025-05-15 09:05:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:05:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"9fc356fcf25ecf6d1ff4e2b1df407085"}}
+2025-05-15 09:11:33 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:11:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cfeefb692fc2bcd7dc7fad6b92ba6679"}}
+2025-05-15 09:11:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:11:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7f203807f4d42b955bb65283b28e3ad9"}}
+2025-05-15 09:18:14 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:18:14 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"aac90b01ce7d8798a5a2235bd445d523"}}
+2025-05-15 09:23:45 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:23:45 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"18da37d3c51f90aa83408ece3f078ce3"}}
+2025-05-15 09:26:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:26:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"97ad4aa002229c113f6a1c64314abe65"}}
+2025-05-15 09:38:35 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:38:35 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"43196d4dde9cbe0600c51c508e6a0495"}}
+2025-05-15 09:45:27 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:45:27 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cbb3e070790ad47913c2ca6689fac9a8"}}
+2025-05-15 09:52:36 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:52:36 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"5045fa915e8b7dedacc4a04858e26d5a"}}
+2025-05-15 09:55:05 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:55:05 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8a0da1778a10c1ad046ef13255f01752"}}
+2025-05-15 09:55:25 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:55:25 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"59dc51659584b897790369975ececbdc"}}
+2025-05-15 09:57:04 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 09:57:04 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"03be0669eb2566b4186c2725deb01af8"}}
+2025-05-15 18:15:00 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:15:00 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2e579c56455017351c948d2b173ff14d"}}
+2025-05-15 18:16:59 - Request: {"email":"testing@gmail.com","password":"123456"}
+2025-05-15 18:16:59 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"E-1234-12333","api_key":"3a45aa3ae4b2ef8c04ae70584328ea08"}}
+2025-05-15 18:17:57 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:17:57 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"37a0691cce3671e14d9adc48a819f94e"}}
+2025-05-15 18:35:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:35:19 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"68b5233a09c33be3e033be9210898d44"}}
+2025-05-15 18:35:58 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:35:58 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"fc896af6041bc14e6abde4b5e389847b"}}
+2025-05-15 18:39:50 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:39:50 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0a3debd0e70d0aec8d02bd0ce7542c10"}}
+2025-05-15 18:44:06 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:44:06 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"65fb5227931c9f73fbe056fc76a68e14"}}
+2025-05-15 18:44:32 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:44:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d63f2a3a059e6989eb05fc50ce8af4c1"}}
+2025-05-15 18:54:33 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 18:54:33 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"84544492f55b0b200dc8c3fa6926d112"}}
+2025-05-15 19:00:52 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 19:00:52 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"5ba240458679308d50505a33e534ea22"}}
+2025-05-15 19:02:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 19:02:49 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"1176099489e10be00ee66deb2f8248c9"}}
+2025-05-15 20:22:22 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:22:23 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bbe229073d4fd4bd0567fa7b0c4445b1"}}
+2025-05-15 20:23:01 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:23:01 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e45e93872f64dedbe42133baa94aa9c1"}}
+2025-05-15 20:27:24 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:27:24 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f43ca836cb4441497ceb237c778b070f"}}
+2025-05-15 20:28:57 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:28:57 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"5dc938a5d11920e4b2d5f99130b0e319"}}
+2025-05-15 20:33:16 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:33:16 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"3be689f75074adb20cd5bc1fd6d048e9"}}
+2025-05-15 20:33:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:33:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"92c75383f259a516aa66605674c3d5cd"}}
+2025-05-15 20:34:46 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:34:46 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"48bbed79c0e64b56e72f2cfa28268442"}}
+2025-05-15 20:54:39 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 20:54:39 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"fef66cb4b1fa410464e8d3114e6b520d"}}
+2025-05-15 21:00:59 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:00:59 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2508da915e966ef30db0df8095f9fcfc"}}
+2025-05-15 21:06:58 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:06:58 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"ef4bc5c33cd958c53617ff3bd3b88816"}}
+2025-05-15 21:08:06 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:08:06 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bae5e075e70b8a762cbc8799a91b9928"}}
+2025-05-15 21:08:32 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:08:32 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7c650da7b7c8b21ee59a74c8a4e5e533"}}
+2025-05-15 21:11:04 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:11:04 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d76d42ecb228605ef0e950f3c1a4a2d3"}}
+2025-05-15 21:12:34 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:12:34 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"ce76e6d4e24e5fc232aa4d7e7e379514"}}
+2025-05-15 21:16:24 - Request: {"email":"test@utp.ac.pa","password":"ol123"}
+2025-05-15 21:16:24 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-15 21:16:29 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:16:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8da69d884e8fbcd2e1d62f965b4a0add"}}
+2025-05-15 21:19:35 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:19:35 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7d472a86246c509ef704fcadd43dc28e"}}
+2025-05-15 21:37:53 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:37:53 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"dff5eafa463fcff7e67cdfa3cea65f46"}}
+2025-05-15 21:42:18 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:42:18 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2fd41fc6e01f7d6432f3593d949c37f1"}}
+2025-05-15 21:44:42 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:44:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6fa7358b4de975fe9cd80374074a9a5a"}}
+2025-05-15 21:47:17 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:47:17 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d92a413098ec06ac3149d129ef1f14f3"}}
+2025-05-15 21:51:34 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:51:34 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"46597c83d59f8370fb9ab75d994f1810"}}
+2025-05-15 21:52:41 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 21:52:41 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"004981b8aaaf1f69ff3897a31395e628"}}
+2025-05-15 22:02:29 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:02:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7452f172a53f81c6627c7cd556477216"}}
+2025-05-15 22:31:40 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:31:40 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"19852a0c5a47894db059c09e6aa31ddb"}}
+2025-05-15 22:32:49 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:32:49 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7c61198427f7b5be747cdc580eca4f9f"}}
+2025-05-15 22:34:42 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:34:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"1c2051fd14d89aca7c75d9c5c9a62c8d"}}
+2025-05-15 22:38:03 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:38:03 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"fe157d2245d6c04d89df2c24e96763f8"}}
+2025-05-15 22:44:09 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 22:44:09 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"1d7391236a4d5d8aea7f961641f8d479"}}
+2025-05-15 23:35:17 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 23:35:17 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"337e56bc80948d33b6e68fac478fec7a"}}
+2025-05-15 23:48:37 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 23:48:37 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"10fa14e287182c514781b0d829342885"}}
+2025-05-15 23:49:20 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 23:49:20 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"074298f5d3e3070ae803fc7a5cfa5688"}}
+2025-05-15 23:55:38 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-15 23:55:38 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"95025eaeb54846ec90b49a58428f1e79"}}
+2025-05-16 00:02:53 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 00:02:53 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d2899f7fd50aaf29a990664526ed2707"}}
+2025-05-16 01:20:34 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 01:20:34 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e8b5c15644d0f7326c823c350b86f1db"}}
+2025-05-16 01:52:10 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 01:52:10 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2caa5358f29398b2b5cb4d08dcde38ea"}}
+2025-05-16 01:55:22 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 01:55:22 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"3f1a97bd9f9afefff3e82775fb50ebc9"}}
+2025-05-16 02:22:34 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 02:22:34 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"1bd61876af2a38b11376ad7298f38947"}}
+2025-05-16 02:30:32 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 02:30:32 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"93ebcdf2672d9dcb07399375e1fd6b32"}}
+2025-05-16 02:36:54 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 02:36:54 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"63a8984a748b3c2330cc5a3fd80f5474"}}
+2025-05-16 02:46:39 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 02:46:39 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"a46b8747f1d247145c71fbcda33c07dd"}}
+2025-05-16 02:58:46 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 02:58:46 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"da32b161dad4dcf5b52d5fc6ea21c6c0"}}
+2025-05-16 03:01:18 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 03:01:18 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"418b9851a0d2b5cd6a14f3913f88229d"}}
+2025-05-16 03:18:09 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 03:18:09 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"b8301a9ce2c31ecb32d02812f6797f1b"}}
+2025-05-16 04:08:28 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 04:08:28 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"c90f959d75ba315800298e81828a18be"}}
+2025-05-16 04:12:42 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 04:12:42 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"9dc5999a80a6f7192fa23ee27dadda73"}}
+2025-05-16 04:16:24 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 04:16:24 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"d07bc7aa13b4c62e038ca166c0ad5463"}}
+2025-05-16 04:36:59 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 04:36:59 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0b2c8569bd6cf18ffa5513822e31e7fb"}}
+2025-05-16 04:49:12 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 04:49:12 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"99409223b8dcb0cfadddd306efc932fb"}}
+2025-05-16 05:10:22 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:10:22 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"4487fa8583e9f32c65309a2e9a2da37a"}}
+2025-05-16 05:17:00 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:17:01 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6b48fc68ce374187e34db037e8b72b20"}}
+2025-05-16 05:34:08 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:34:08 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"bd57f4bfd0d162c5e68d1d250c67649d"}}
+2025-05-16 05:34:49 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:34:49 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"926aea8f8cbfff1970e92de4c03f5463"}}
+2025-05-16 05:53:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:53:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"15762ff5d36ca99294484074cd766eb6"}}
+2025-05-16 05:55:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 05:55:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e0b3e6f68cb6ccd9e6741f1644343acb"}}
+2025-05-16 15:40:29 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 15:40:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"12f9b5755519e44b040d78a7dc40b9f4"}}
+2025-05-16 15:41:05 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 15:41:05 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6dab0695ed1a57bdd3ee089271cd9962"}}
+2025-05-16 16:08:30 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:08:30 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7f04715e45ea2b892cbf8470f54f07c8"}}
+2025-05-16 16:09:51 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:09:52 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f4c85668e8fa2a09c08a27372863e47f"}}
+2025-05-16 16:13:53 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:13:53 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"3671f0a637784222e9104bb49130910f"}}
+2025-05-16 16:15:39 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:15:39 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0714791f0587063fabf17b0cb094e3a5"}}
+2025-05-16 16:16:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:16:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"62a30cfa8373f51c808974d0ce969849"}}
+2025-05-16 16:27:57 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:27:57 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8b26d812acc71ecd3f6fe8dd0dd1cc92"}}
+2025-05-16 16:29:04 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:29:05 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"c4e21cdd1f01ac3a6da9cd0a1545e36f"}}
+2025-05-16 16:50:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:50:19 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0bdc6af8f1bc1e2d1b009dd02bbc0757"}}
+2025-05-16 16:50:52 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:50:53 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"7b0529c697d52cd5a9cbedcadb65c5dd"}}
+2025-05-16 16:52:20 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:52:20 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"f32969a35fc8e23789dc357cef4a2668"}}
+2025-05-16 16:54:20 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:54:20 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"4f1be7dc75e5d726763560ee794ace47"}}
+2025-05-16 16:56:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:56:19 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"abd45634cd2a3c635021c487149d496d"}}
+2025-05-16 16:56:41 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:56:41 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"35afa052e5b5a7627df7758ba4031033"}}
+2025-05-16 16:58:40 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 16:58:40 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"fe41d89a5041b2758bf2d649801065d4"}}
+2025-05-16 17:29:03 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:29:03 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"25f7e01d861d8f82a77813ac551c29ba"}}
+2025-05-16 17:36:19 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:36:20 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2f91cbdb42b1dce577b8da140dc59857"}}
+2025-05-16 17:38:06 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:38:06 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0663d2ecfb0139445bad43189f6c30a0"}}
+2025-05-16 17:39:37 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:39:37 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"6268f9ef019c6234c9cf54f2434ee4a6"}}
+2025-05-16 17:42:27 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:42:27 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"860dac9f6ff2d9c12f5a0f002396b5cd"}}
+2025-05-16 17:43:44 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:43:44 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"cf53fbc116650e2541e2b156cfc22bc3"}}
+2025-05-16 17:45:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:45:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"c725f0ccb49719ccf909564e2387fee0"}}
+2025-05-16 17:46:53 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:46:53 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"943510fa9cf8a051bf468306eba4c9d0"}}
+2025-05-16 17:49:12 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:49:12 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"550a516528d48701d367d0c41e55fe26"}}
+2025-05-16 17:49:28 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:49:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"47065d4919d2d1c351a1a00142a6a15d"}}
+2025-05-16 17:50:39 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:50:39 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"40216fa2056cb90574975f362cee70ba"}}
+2025-05-16 17:51:48 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:51:48 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"4570a5b8efa1ca0ba901328303de8c42"}}
+2025-05-16 17:52:52 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:52:52 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"411a6802d4d33359d9e1a49d27c75f9b"}}
+2025-05-16 17:57:04 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 17:57:04 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e78d848515006837fc9032793d64b938"}}
+2025-05-16 18:21:36 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:21:36 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"8a1f5812ed7ba4907086f228e70f50c2"}}
+2025-05-16 18:23:31 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:23:31 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"01febc12b594b2768441ec92a0f3caa4"}}
+2025-05-16 18:30:16 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:30:16 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"b867fb9c7d74fbc966741dd53375ccec"}}
+2025-05-16 18:41:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:41:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"702a70b89e67ba3e39bcb368178db999"}}
+2025-05-16 18:44:38 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:44:38 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"65074fa8a9ee7487be8907b19fc7f88b"}}
+2025-05-16 18:50:29 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 18:50:29 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"0e77740c2ff9562deb76ca19485dce70"}}
+2025-05-16 19:01:55 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 19:01:55 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"2e6294e769c0b40a0cf28c2bbe380e24"}}
+2025-05-16 19:56:52 - Request: {"email":"asd","password":"asd"}
+2025-05-16 19:56:52 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-16 19:56:59 - Request: {"email":"test@utp.ac.pa","password":"ola123"}
+2025-05-16 19:56:59 - Admin success: {"success":true,"message":"Login exitoso como administrador","data":{"user_type":"admin","cedula":"8-1010-1010","api_key":"e829ee9256dce47fa7883e294ae90715"}}
