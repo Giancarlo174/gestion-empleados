@@ -9,8 +9,10 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.Alignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +36,19 @@ fun AdminCreateScreen(
                 onDismissRequest = { viewModel.resetState(); onVolverLista() },
                 title = { Text("¡Éxito!") },
                 text = { Text((state as AdminCreateState.Success).message) },
-                confirmButton = { TextButton(onClick = { viewModel.resetState(); onVolverLista() }) { Text("OK") } }
+                confirmButton = { 
+                    TextButton(
+                        onClick = { viewModel.resetState(); onVolverLista() },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                        modifier = Modifier.height(32.dp)
+                    ) { 
+                        Text(
+                            "Aceptar",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        ) 
+                    } 
+                }
             )
         }
         is AdminCreateState.Error -> {
@@ -53,7 +67,23 @@ fun AdminCreateScreen(
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        Text("Agregar Nuevo Administrador", style = MaterialTheme.typography.headlineSmall)
+        // Encabezado con flecha de regreso
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onVolverLista,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Regresar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text("Agregar Nuevo Administrador", style = MaterialTheme.typography.headlineSmall)
+        }
         Spacer(Modifier.height(18.dp))
 
         OutlinedTextField(

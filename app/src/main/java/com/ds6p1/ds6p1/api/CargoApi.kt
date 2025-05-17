@@ -2,6 +2,8 @@ package com.ds6p1.ds6p1.api
 
 import retrofit2.http.GET
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 data class CargoNuevo(
@@ -21,4 +23,11 @@ interface CargoApi {
 
     @GET("admin/departamento_list.php")
     suspend fun getDepartamentos(): List<Department>
+
+    @POST("admin/delete_cargo.php")
+    @FormUrlEncoded
+    suspend fun deleteCargo(
+        @Field("codigo") codigo: String
+    ): ApiResponse
+
 }

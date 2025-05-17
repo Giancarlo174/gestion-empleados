@@ -4,6 +4,8 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Field
 
 data class Department(
     val codigo: String,
@@ -26,4 +28,12 @@ interface DepartmentApi {
     suspend fun getDepartments(
         @Query("search") search: String? = null
     ): List<Department>
+
+
+    @POST("admin/delete_departamento.php")
+    @FormUrlEncoded
+    suspend fun deleteDepartamento(
+        @Field("codigo") codigo: String
+    ): DepartamentoResponse
+
 }

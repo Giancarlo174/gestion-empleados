@@ -10,6 +10,8 @@ define('DB_NAME', 'ds6');   // Database name
  * @return mysqli A new database connection
  * @throws Exception if connection fails
  */
+    $conn = getConnection();
+
 function getConnection() {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     
@@ -20,7 +22,7 @@ function getConnection() {
     
     // Set character set
     $conn->set_charset("utf8");
-    
+
     return $conn;
 }
 

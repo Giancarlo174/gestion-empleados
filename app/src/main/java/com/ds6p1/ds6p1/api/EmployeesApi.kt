@@ -4,6 +4,8 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Field
 
 // Modelo de empleado existente (para listar)
 data class Employee(
@@ -44,8 +46,7 @@ data class NuevoEmpleado(
     val f_contra: String,
     val cargo: String,
     val departamento: String,
-    val estado: Int,
-    val contrasena: String
+    val estado: Int
 )
 
 // Modelo para la respuesta de la API
@@ -63,4 +64,26 @@ interface EmployeesApi {
 
     @POST("admin/empleados_create.php")
     suspend fun createEmployee(@Body empleado: NuevoEmpleado): ApiResponse
+
+    @POST("admin/delete_employee.php")
+    @FormUrlEncoded
+    suspend fun deleteEmployee(
+        @Field("cedula") cedula: String
+    ): ApiResponse
+
+    @GET("admin/empleado_detail.php")
+    suspend fun getEmpleadoDetalle(@Query("cedula") cedula: String): EmpleadoDetalleResponse
+
+    @POST("admin/empleado_update.php")
+    suspend fun updateEmployee(@Body empleado: NuevoEmpleado): ApiResponse
+
 }
+
+data class EmpleadoDetalleResponse(
+    val success: Boolean,
+    val empleado: EmpleadoDetalle?
+)
+
+
+
+

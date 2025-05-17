@@ -13,7 +13,4 @@ object RetrofitInstance {
             .build()
             .create(EmployeesApi::class.java)
     }
-
-    // Aquí puedes agregar más APIs (si tienes más endpoints)
-    // val dashboardApi: DashboardApi by lazy { ... }
 }

@@ -1,11 +1,10 @@
 package com.ds6p1.ds6p1.modules.admin.sections.empleados
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ds6p1.ds6p1.api.EmpleadoDetalle
 import com.ds6p1.ds6p1.api.NuevoEmpleado
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,48 +22,53 @@ import androidx.compose.material3.rememberDatePickerState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmpleadoCreateScreen(
-    onVolverLista: () -> Unit,
-    viewModel: EmpleadoCreateViewModel = viewModel()
+fun EmpleadoEditScreen(
+    empleado: EmpleadoDetalle,
+    onBack: () -> Unit,
+    onSuccess: () -> Unit,
+    viewModel: EmpleadoEditScreenModel = viewModel()
 ) {
     val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
+    val scrollState = rememberScrollState()
 
-    // ---------- Estados ----------
-    var prefijo by remember { mutableStateOf("") }
-    var tomo by remember { mutableStateOf("") }
-    var asiento by remember { mutableStateOf("") }
+    var prefijo by remember { mutableStateOf(empleado.prefijo ?: "") }
+    var tomo by remember { mutableStateOf(empleado.tomo ?: "") }
+    var asiento by remember { mutableStateOf(empleado.asiento ?: "") }
     val cedula = listOf(prefijo, tomo, asiento).filter { it.isNotBlank() }.joinToString("-")
 
-    var nombre1 by remember { mutableStateOf("") }
-    var nombre2 by remember { mutableStateOf("") }
-    var apellido1 by remember { mutableStateOf("") }
-    var apellido2 by remember { mutableStateOf("") }
-    var apellidoc by remember { mutableStateOf("") }
-    var genero by remember { mutableStateOf(-1) }
-    var estadoCivil by remember { mutableStateOf(-1) }
-    var tipoSangre by remember { mutableStateOf("") }
-    var usaAc by remember { mutableStateOf(0) }
+    var nombre1 by remember { mutableStateOf(empleado.nombre1) }
+    var nombre2 by remember { mutableStateOf(empleado.nombre2 ?: "") }
+    var apellido1 by remember { mutableStateOf(empleado.apellido1) }
+    var apellido2 by remember { mutableStateOf(empleado.apellido2 ?: "") }
+    var apellidoc by remember { mutableStateOf(empleado.apellidoc ?: "") }
+    var genero by remember { mutableStateOf(empleado.genero) }
+    var estadoCivil by remember { mutableStateOf(empleado.estado_civil) }
+    var tipoSangre by remember { mutableStateOf(empleado.tipo_sangre ?: "") }
+    var usaAc by remember { mutableStateOf(empleado.usa_ac) }
 
-    // FECHA DE NACIMIENTO usando DatePickerDialog de Material3
-    var fNacimiento by remember { mutableStateOf("") }
+    var fNacimiento by remember { mutableStateOf(empleado.f_nacimiento ?: "") }
     var showDatePickerNacimiento by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = try {
+            dateFormat.parse(empleado.f_nacimiento ?: "")?.time
+        } catch (e: Exception) {
+            null
+        }
+    )
 
-    var nacionalidad by remember { mutableStateOf("") }
-    var celular by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var correo by remember { mutableStateOf("") }
-    var provinciaSel by remember { mutableStateOf("") }
-    var distritoSel by remember { mutableStateOf("") }
-    var corregimientoSel by remember { mutableStateOf("") }
-    var calle by remember { mutableStateOf("") }
-    var casa by remember { mutableStateOf("") }
-    var comunidad by remember { mutableStateOf("") }
-    var departamentoSel by remember { mutableStateOf("") }
-    var cargoSel by remember { mutableStateOf("") }
-    var estado by remember { mutableStateOf(1) }
-    var contrasena by remember { mutableStateOf("") }
-    var contrasena2 by remember { mutableStateOf("") }
+    var nacionalidad by remember { mutableStateOf(empleado.nacionalidad ?: "") }
+    var celular by remember { mutableStateOf(empleado.celular ?: "") }
+    var telefono by remember { mutableStateOf(empleado.telefono ?: "") }
+    var correo by remember { mutableStateOf(empleado.correo ?: "") }
+    var provinciaSel by remember { mutableStateOf(empleado.provincia ?: "") }
+    var distritoSel by remember { mutableStateOf(empleado.distrito ?: "") }
+    var corregimientoSel by remember { mutableStateOf(empleado.corregimiento ?: "") }
+    var calle by remember { mutableStateOf(empleado.calle ?: "") }
+    var casa by remember { mutableStateOf(empleado.casa ?: "") }
+    var comunidad by remember { mutableStateOf(empleado.comunidad ?: "") }
+    var departamentoSel by remember { mutableStateOf(empleado.departamento ?: "") }
+    var cargoSel by remember { mutableStateOf(empleado.cargo ?: "") }
+    var estado by remember { mutableStateOf(empleado.estado) }
 
     val provincias by viewModel.provincias.collectAsState()
     val distritos by viewModel.distritos.collectAsState()
@@ -88,109 +93,73 @@ fun EmpleadoCreateScreen(
     val sangres = listOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
     val estadosEmpleado = listOf("Inactivo", "Activo")
 
-    // -------- Selects anidados ----------
     LaunchedEffect(provinciaSel) {
         if (provinciaSel.isNotEmpty()) {
             viewModel.loadDistritos(provinciaSel)
-            distritoSel = ""
-            corregimientoSel = ""
+            distritoSel = distritoSel
+            corregimientoSel = corregimientoSel
         }
     }
     LaunchedEffect(distritoSel) {
         if (provinciaSel.isNotEmpty() && distritoSel.isNotEmpty()) {
             viewModel.loadCorregimientos(provinciaSel, distritoSel)
-            corregimientoSel = ""
+            corregimientoSel = corregimientoSel
         }
     }
     LaunchedEffect(departamentoSel) {
         if (departamentoSel.isNotEmpty()) {
             viewModel.loadCargos(departamentoSel)
-            cargoSel = ""
+            cargoSel = cargoSel
         }
     }
-    LaunchedEffect(Unit) { viewModel.loadNacionalidades() }
 
-    // ---------- Estado envío (modales) ----------
-    val envioState by viewModel.state.collectAsState()
-    when (envioState) {
-        is EmpleadoCreateState.Loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
-        is EmpleadoCreateState.Success -> {
+    val uiState by viewModel.state.collectAsState()
+
+    when (uiState) {
+        is EmpleadoEditState.Loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
+        is EmpleadoEditState.Success -> {
             AlertDialog(
-                onDismissRequest = { viewModel.resetState(); onVolverLista() },
-                title = { Text("¡Éxito!") },
-                text = { Text((envioState as EmpleadoCreateState.Success).message) },
-                confirmButton = { 
-                    TextButton(
-                        onClick = { viewModel.resetState(); onVolverLista() },
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
-                        modifier = Modifier.height(32.dp)
-                    ) { 
-                        Text(
-                            "Aceptar",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        ) 
-                    } 
+                onDismissRequest = { viewModel.resetState(); onSuccess() },
+                title = { Text("¡Actualización Exitosa!") },
+                text = { Text((uiState as EmpleadoEditState.Success).message) },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.resetState(); onSuccess() }) { Text("Aceptar") }
                 }
             )
         }
-        is EmpleadoCreateState.Error -> {
+        is EmpleadoEditState.Error -> {
             AlertDialog(
                 onDismissRequest = { viewModel.resetState() },
                 title = { Text("Error") },
-                text = { Text((envioState as EmpleadoCreateState.Error).message) },
+                text = { Text((uiState as EmpleadoEditState.Error).message) },
                 confirmButton = { TextButton(onClick = { viewModel.resetState() }) { Text("OK") } }
             )
         }
         else -> Unit
     }
 
-    // ---------- UI PRINCIPAL ----------
     Column(
         Modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        // Encabezado con flecha de regreso
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onVolverLista,
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                Icon(
-                    Icons.Default.ArrowBack,
-                    contentDescription = "Regresar",
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            IconButton(onClick = onBack, modifier = Modifier.padding(end = 8.dp)) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Regresar", tint = MaterialTheme.colorScheme.primary)
             }
-            Text("Agregar Nuevo Empleado", style = MaterialTheme.typography.headlineSmall)
+            Text("Editar Empleado", style = MaterialTheme.typography.headlineSmall)
         }
         Spacer(Modifier.height(18.dp))
         Text("Información Personal", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = prefijo,
-            onValueChange = { prefijo = it },
-            label = { Text("Prefijo") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = tomo,
-            onValueChange = { tomo = it },
-            label = { Text("Tomo") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = asiento,
-            onValueChange = { asiento = it },
-            label = { Text("Asiento") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        OutlinedTextField(value = prefijo, onValueChange = { prefijo = it }, label = { Text("Prefijo") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = tomo, onValueChange = { tomo = it }, label = { Text("Tomo") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = asiento, onValueChange = { asiento = it }, label = { Text("Asiento") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = nombre1, onValueChange = { nombre1 = it }, label = { Text("Primer Nombre *") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = nombre2, onValueChange = { nombre2 = it }, label = { Text("Segundo Nombre") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = apellido1, onValueChange = { apellido1 = it }, label = { Text("Primer Apellido *") }, modifier = Modifier.fillMaxWidth())
@@ -207,20 +176,12 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedGenero, onDismissRequest = { expandedGenero = false }) {
                 generos.forEachIndexed { index, gen ->
-                    DropdownMenuItem(
-                        text = { Text(gen) },
-                        onClick = { genero = index; expandedGenero = false }
-                    )
+                    DropdownMenuItem(text = { Text(gen) }, onClick = { genero = index; expandedGenero = false })
                 }
             }
         }
         if (genero == 0) {
-            OutlinedTextField(
-                value = apellidoc,
-                onValueChange = { apellidoc = it },
-                label = { Text("Apellido Casada") },
-                modifier = Modifier.fillMaxWidth()
-            )
+            OutlinedTextField(value = apellidoc, onValueChange = { apellidoc = it }, label = { Text("Apellido Casada") }, modifier = Modifier.fillMaxWidth())
         }
 
         ExposedDropdownMenuBox(expanded = expandedEstadoCivil, onExpandedChange = { expandedEstadoCivil = !expandedEstadoCivil }) {
@@ -234,13 +195,11 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedEstadoCivil, onDismissRequest = { expandedEstadoCivil = false }) {
                 estadosCiviles.forEachIndexed { index, ec ->
-                    DropdownMenuItem(
-                        text = { Text(ec) },
-                        onClick = { estadoCivil = index; expandedEstadoCivil = false }
-                    )
+                    DropdownMenuItem(text = { Text(ec) }, onClick = { estadoCivil = index; expandedEstadoCivil = false })
                 }
             }
         }
+
         ExposedDropdownMenuBox(expanded = expandedTipoSangre, onExpandedChange = { expandedTipoSangre = !expandedTipoSangre }) {
             OutlinedTextField(
                 value = tipoSangre,
@@ -252,15 +211,11 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedTipoSangre, onDismissRequest = { expandedTipoSangre = false }) {
                 sangres.forEach { sang ->
-                    DropdownMenuItem(
-                        text = { Text(sang) },
-                        onClick = { tipoSangre = sang; expandedTipoSangre = false }
-                    )
+                    DropdownMenuItem(text = { Text(sang) }, onClick = { tipoSangre = sang; expandedTipoSangre = false })
                 }
             }
         }
 
-        // ----------- FECHA DE NACIMIENTO (DatePickerDialog Material3) -----------
         OutlinedTextField(
             value = fNacimiento,
             onValueChange = {},
@@ -273,6 +228,7 @@ fun EmpleadoCreateScreen(
             },
             modifier = Modifier.fillMaxWidth()
         )
+
         if (showDatePickerNacimiento) {
             DatePickerDialog(
                 onDismissRequest = { showDatePickerNacimiento = false },
@@ -283,17 +239,20 @@ fun EmpleadoCreateScreen(
                             fNacimiento = dateFormat.format(Date(millis))
                         }
                         showDatePickerNacimiento = false
-                    }) { Text("OK") }
+                    }) {
+                        Text("OK")
+                    }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showDatePickerNacimiento = false }) { Text("Cancelar") }
+                    TextButton(onClick = { showDatePickerNacimiento = false }) {
+                        Text("Cancelar")
+                    }
                 }
             ) {
                 DatePicker(state = datePickerState)
             }
         }
 
-        // Nacionalidad (desde la base de datos)
         ExposedDropdownMenuBox(expanded = expandedNacionalidad, onExpandedChange = { expandedNacionalidad = !expandedNacionalidad }) {
             OutlinedTextField(
                 value = nacionalidades.find { it.codigo == nacionalidad }?.pais ?: "",
@@ -305,10 +264,7 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedNacionalidad, onDismissRequest = { expandedNacionalidad = false }) {
                 nacionalidades.forEach { nac ->
-                    DropdownMenuItem(
-                        text = { Text(nac.pais) },
-                        onClick = { nacionalidad = nac.codigo; expandedNacionalidad = false }
-                    )
+                    DropdownMenuItem(text = { Text(nac.pais) }, onClick = { nacionalidad = nac.codigo; expandedNacionalidad = false })
                 }
             }
         }
@@ -318,11 +274,12 @@ fun EmpleadoCreateScreen(
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(value = celular, onValueChange = { celular = it }, label = { Text("Celular *") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = telefono, onValueChange = { telefono = it }, label = { Text("Teléfono Fijo") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = correo, onValueChange = { correo = it }, label = { Text("Correo Electrónico *") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = correo, onValueChange = {}, label = { Text("Correo Electrónico *") }, modifier = Modifier.fillMaxWidth(), readOnly = true, enabled = false)
 
         Spacer(Modifier.height(16.dp))
         Text("Información de Ubicación", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
+
         ExposedDropdownMenuBox(expanded = expandedProvincia, onExpandedChange = { expandedProvincia = !expandedProvincia }) {
             OutlinedTextField(
                 value = provincias.find { it.codigo == provinciaSel }?.nombre ?: "",
@@ -334,18 +291,14 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedProvincia, onDismissRequest = { expandedProvincia = false }) {
                 provincias.forEach { provincia ->
-                    DropdownMenuItem(
-                        text = { Text(provincia.nombre) },
-                        onClick = {
-                            provinciaSel = provincia.codigo
-                            expandedProvincia = false
-                            distritoSel = ""
-                            corregimientoSel = ""
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(provincia.nombre) }, onClick = {
+                        provinciaSel = provincia.codigo
+                        expandedProvincia = false
+                    })
                 }
             }
         }
+
         ExposedDropdownMenuBox(expanded = expandedDistrito, onExpandedChange = { expandedDistrito = !expandedDistrito }) {
             OutlinedTextField(
                 value = distritos.find { it.codigo == distritoSel }?.nombre ?: "",
@@ -357,17 +310,14 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedDistrito, onDismissRequest = { expandedDistrito = false }) {
                 distritos.forEach { distrito ->
-                    DropdownMenuItem(
-                        text = { Text(distrito.nombre) },
-                        onClick = {
-                            distritoSel = distrito.codigo
-                            expandedDistrito = false
-                            corregimientoSel = ""
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(distrito.nombre) }, onClick = {
+                        distritoSel = distrito.codigo
+                        expandedDistrito = false
+                    })
                 }
             }
         }
+
         ExposedDropdownMenuBox(expanded = expandedCorregimiento, onExpandedChange = { expandedCorregimiento = !expandedCorregimiento }) {
             OutlinedTextField(
                 value = corregimientos.find { it.codigo == corregimientoSel }?.nombre ?: "",
@@ -379,16 +329,14 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedCorregimiento, onDismissRequest = { expandedCorregimiento = false }) {
                 corregimientos.forEach { corregimiento ->
-                    DropdownMenuItem(
-                        text = { Text(corregimiento.nombre) },
-                        onClick = {
-                            corregimientoSel = corregimiento.codigo
-                            expandedCorregimiento = false
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(corregimiento.nombre) }, onClick = {
+                        corregimientoSel = corregimiento.codigo
+                        expandedCorregimiento = false
+                    })
                 }
             }
         }
+
         OutlinedTextField(value = calle, onValueChange = { calle = it }, label = { Text("Calle") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = casa, onValueChange = { casa = it }, label = { Text("Casa/Apto") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = comunidad, onValueChange = { comunidad = it }, label = { Text("Comunidad/Urbanización") }, modifier = Modifier.fillMaxWidth())
@@ -396,6 +344,7 @@ fun EmpleadoCreateScreen(
         Spacer(Modifier.height(16.dp))
         Text("Información Laboral", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
+
         ExposedDropdownMenuBox(expanded = expandedDepto, onExpandedChange = { expandedDepto = !expandedDepto }) {
             OutlinedTextField(
                 value = departamentos.find { it.codigo == departamentoSel }?.nombre ?: "",
@@ -407,17 +356,14 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedDepto, onDismissRequest = { expandedDepto = false }) {
                 departamentos.forEach { dep ->
-                    DropdownMenuItem(
-                        text = { Text(dep.nombre) },
-                        onClick = {
-                            departamentoSel = dep.codigo
-                            expandedDepto = false
-                            cargoSel = ""
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(dep.nombre) }, onClick = {
+                        departamentoSel = dep.codigo
+                        expandedDepto = false
+                    })
                 }
             }
         }
+
         ExposedDropdownMenuBox(expanded = expandedCargo, onExpandedChange = { expandedCargo = !expandedCargo }) {
             OutlinedTextField(
                 value = cargos.find { it.codigo == cargoSel }?.nombre ?: "",
@@ -429,16 +375,14 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedCargo, onDismissRequest = { expandedCargo = false }) {
                 cargos.forEach { cargo ->
-                    DropdownMenuItem(
-                        text = { Text(cargo.nombre) },
-                        onClick = {
-                            cargoSel = cargo.codigo
-                            expandedCargo = false
-                        }
-                    )
+                    DropdownMenuItem(text = { Text(cargo.nombre) }, onClick = {
+                        cargoSel = cargo.codigo
+                        expandedCargo = false
+                    })
                 }
             }
         }
+
         ExposedDropdownMenuBox(expanded = expandedEstado, onExpandedChange = { expandedEstado = !expandedEstado }) {
             OutlinedTextField(
                 value = estadosEmpleado.getOrNull(estado) ?: "",
@@ -450,79 +394,66 @@ fun EmpleadoCreateScreen(
             )
             ExposedDropdownMenu(expanded = expandedEstado, onDismissRequest = { expandedEstado = false }) {
                 estadosEmpleado.forEachIndexed { idx, texto ->
-                    DropdownMenuItem(
-                        text = { Text(texto) },
-                        onClick = { estado = idx; expandedEstado = false }
-                    )
+                    DropdownMenuItem(text = { Text(texto) }, onClick = { estado = idx; expandedEstado = false })
                 }
             }
         }
-
-        Spacer(Modifier.height(16.dp))
-        Text("Credenciales de Acceso", style = MaterialTheme.typography.titleMedium)
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = contrasena,
-            onValueChange = { contrasena = it },
-            label = { Text("Contraseña *") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
-        )
-        OutlinedTextField(
-            value = contrasena2,
-            onValueChange = { contrasena2 = it },
-            label = { Text("Confirmar Contraseña *") },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
-        )
 
         Spacer(Modifier.height(24.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Button(
                 onClick = {
-                    val valido = prefijo.isNotBlank() && tomo.isNotBlank() && asiento.isNotBlank() &&
-                            nombre1.isNotBlank() && apellido1.isNotBlank() &&
-                            correo.isNotBlank() && celular.isNotBlank() && contrasena == contrasena2 &&
+                    val valido = nombre1.isNotBlank() && apellido1.isNotBlank() &&
+                            celular.isNotBlank() && correo.isNotBlank() &&
                             provinciaSel.isNotBlank() && distritoSel.isNotBlank() && corregimientoSel.isNotBlank() &&
                             departamentoSel.isNotBlank() && cargoSel.isNotBlank() &&
-                            genero >= 0 && estadoCivil >= 0 && tipoSangre.isNotBlank() && fNacimiento.isNotBlank() &&
-                            nacionalidad.isNotBlank()
+                            tipoSangre.isNotBlank() && fNacimiento.isNotBlank() &&
+                            nacionalidad.isNotBlank() && genero >= 0 && estadoCivil >= 0
+
                     if (valido) {
-                        val nuevo = NuevoEmpleado(
+                        val actualizado = NuevoEmpleado(
                             cedula = cedula,
                             prefijo = prefijo,
                             tomo = tomo,
                             asiento = asiento,
                             nombre1 = nombre1,
-                            nombre2 = nombre2,
+                            nombre2 = nombre2.ifBlank { null },
                             apellido1 = apellido1,
-                            apellido2 = apellido2,
-                            apellidoc = apellidoc,
+                            apellido2 = apellido2.ifBlank { null },
+                            apellidoc = apellidoc.ifBlank { null },
                             genero = genero,
                             estado_civil = estadoCivil,
                             tipo_sangre = tipoSangre,
                             usa_ac = usaAc,
                             f_nacimiento = fNacimiento,
                             celular = celular,
-                            telefono = telefono,
+                            telefono = telefono.ifBlank { null },
                             correo = correo,
                             provincia = provinciaSel,
                             distrito = distritoSel,
                             corregimiento = corregimientoSel,
-                            calle = calle,
-                            casa = casa,
-                            comunidad = comunidad,
+                            calle = calle.ifBlank { null },
+                            casa = casa.ifBlank { null },
+                            comunidad = comunidad.ifBlank { null },
                             nacionalidad = nacionalidad,
-                            f_contra = "", // No se envía, la pone el backend
+                            f_contra = empleado.f_contra ?: "",
                             cargo = cargoSel,
                             departamento = departamentoSel,
                             estado = estado
                         )
-                        viewModel.registrarEmpleado(nuevo)
+                        viewModel.actualizarEmpleado(actualizado)
                     }
-                }
-            ) { Text("Agregar Empleado") }
-            OutlinedButton(onClick = onVolverLista) { Text("Cancelar") }
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Guardar Cambios")
+            }
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Cancelar")
+            }
         }
     }
 }

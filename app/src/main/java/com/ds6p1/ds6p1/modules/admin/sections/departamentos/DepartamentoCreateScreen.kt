@@ -1,9 +1,13 @@
 package com.ds6p1.ds6p1.modules.admin.sections.departamentos
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -32,10 +36,20 @@ fun DepartamentoCreateScreen(
                 title = { Text("¡Departamento agregado!") },
                 text = { Text("El código asignado es: $codigo\n\n${(estado as DepartamentoCreateState.Success).message}") },
                 confirmButton = {
-                    TextButton(onClick = {
-                        viewModel.resetState()
-                        onVolverLista()
-                    }) { Text("OK") }
+                    TextButton(
+                        onClick = {
+                            viewModel.resetState()
+                            onVolverLista()
+                        },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                        modifier = Modifier.height(32.dp)
+                    ) { 
+                        Text(
+                            "Aceptar",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        ) 
+                    }
                 }
             )
         }
@@ -55,7 +69,23 @@ fun DepartamentoCreateScreen(
             .padding(20.dp)
             .fillMaxWidth()
     ) {
-        Text("Agregar Departamento", style = MaterialTheme.typography.headlineSmall)
+        // Encabezado con flecha de regreso
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onVolverLista,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Regresar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text("Agregar Departamento", style = MaterialTheme.typography.headlineSmall)
+        }
         Spacer(Modifier.height(18.dp))
         OutlinedTextField(
             value = nombre,
@@ -72,9 +102,27 @@ fun DepartamentoCreateScreen(
                     if (nombre.isNotBlank()) {
                         viewModel.crearDepartamento(nombre)
                     }
-                }
-            ) { Text("Agregar Departamento") }
-            OutlinedButton(onClick = onVolverLista) { Text("Cancelar") }
+                },
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.height(40.dp)
+            ) { 
+                Text(
+                    "Guardar",
+                    style = MaterialTheme.typography.labelLarge
+                ) 
+            }
+            OutlinedButton(
+                onClick = onVolverLista,
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.height(40.dp)
+            ) { 
+                Text(
+                    "Cancelar",
+                    style = MaterialTheme.typography.labelLarge
+                ) 
+            }
         }
     }
 }

@@ -132,7 +132,7 @@ fun LoginScreen(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.74f) // Ajusta esto para más/menos altura de la card blanca
+                .fillMaxHeight(0.80f)
                 .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp),
             color = Color.White,
@@ -185,11 +185,15 @@ fun LoginScreen(
                         Icon(Icons.Default.Lock, contentDescription = "Password", tint = secondaryColor)
                     },
                     trailingIcon = {
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        IconButton(
+                            onClick = { passwordVisible = !passwordVisible },
+                            modifier = Modifier.size(40.dp)
+                        ) {
                             Icon(
                                 if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                 contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
-                                tint = secondaryColor
+                                tint = secondaryColor,
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     },
@@ -288,7 +292,7 @@ fun LoginScreen(
             Text(
                 "Proyecto DS6",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.5f)
+                color = Color.Black.copy(alpha = 0.5f)
             )
         }
     }

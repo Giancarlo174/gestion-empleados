@@ -1,23 +1,31 @@
 package com.ds6p1.ds6p1.modules.admin.sections.empleados
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.ds6p1.ds6p1.ui.theme.DataTable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.ds6p1.ds6p1.api.EmpleadoDetalle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmpleadosScreen() {
+fun EmpleadosScreen(
+    navController: NavController
+) {
     var mostrarCrearEmpleados by remember { mutableStateOf(false) }
 
     if (mostrarCrearEmpleados) {
@@ -27,9 +35,10 @@ fun EmpleadosScreen() {
     } else {
         EmployeesContent(
             onCreate = { mostrarCrearEmpleados = true },
-            onView = { }
+            onView = { cedula -> navController.navigate("empleado_detalle/$cedula") }
         )
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +53,12 @@ fun EmployeesContent(
     val uiState by viewModel.uiState.collectAsState()
     var search by remember { mutableStateOf("") }
     var filter by remember { mutableStateOf("all") }
-
+    var cedulaAEliminar by remember { mutableStateOf<String?>(null) }
+    var mostrarDialogoEliminar by remember { mutableStateOf(false) }
+    var mensajeEliminacion by remember { mutableStateOf<String?>(null) }
+    var empleadoAEditar by remember { mutableStateOf<EmpleadoDetalle?>(null) }
+    var errorMsg by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,12 +79,25 @@ fun EmployeesContent(
             )
             Button(
                 onClick = onCreate,
-                shape = MaterialTheme.shapes.medium,
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                ),
+                modifier = Modifier.height(36.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Añadir")
-                Spacer(Modifier.width(4.dp))
-                Text("Añadir Empleado")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Añadir",
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "Nuevo",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    )
+                )
             }
         }
 
@@ -83,7 +110,27 @@ fun EmployeesContent(
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Buscar...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Buscar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            trailingIcon = {
+                if (search.isNotEmpty()) {
+                    IconButton(onClick = {
+                        search = ""
+                        viewModel.loadEmployees("", filter)
+                    }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Limpiar",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -150,26 +197,60 @@ fun EmployeesContent(
                                     it.nombre,
                                     it.apellido,
                                     it.departamento,
-                                    // Aquí usamos un emoji para estado: ✅ o ❌
                                     if (it.estado == 1) "Activo" else "Inactivo"
                                 )
                             },
                             actions = { rowIdx ->
                                 val emp = list[rowIdx]
-                                IconButton(onClick = { onView(emp.cedula) }) {
-                                    Icon(Icons.Default.Visibility, contentDescription = "Ver")
-                                }
-                                IconButton(onClick = { onEdit(emp.cedula) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar")
-                                }
-                                IconButton(onClick = { onDelete(emp.cedula) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                                Row {
+                                    IconButton(onClick = { onView(emp.cedula) }) {
+                                        Icon(Icons.Default.Visibility, contentDescription = "Ver")
+                                    }
+
+                                    IconButton(onClick = { onEdit(emp.cedula) }) {
+                                        Icon(Icons.Default.Edit, contentDescription = "Editar")
+                                    }
+                                    IconButton(onClick = {
+                                        cedulaAEliminar = emp.cedula
+                                        mostrarDialogoEliminar = true
+                                    }) {
+                                        Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
+                                    }
                                 }
                             }
                         )
                     }
                 }
             }
+        }
+
+        if (mostrarDialogoEliminar && cedulaAEliminar != null) {
+            AlertDialog(
+                onDismissRequest = { mostrarDialogoEliminar = false },
+                title = { Text("¿Eliminar empleado?") },
+                text = { Text("¿Seguro que quieres eliminar a este empleado?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        mostrarDialogoEliminar = false
+                        viewModel.deleteEmployee(cedulaAEliminar!!) { exito, mensaje ->
+                            mensajeEliminacion = mensaje
+                        }
+                    }) { Text("Eliminar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { mostrarDialogoEliminar = false }) { Text("Cancelar") }
+                }
+            )
+        }
+        if (mensajeEliminacion != null) {
+            AlertDialog(
+                onDismissRequest = { mensajeEliminacion = null },
+                title = { Text("Resultado") },
+                text = { Text(mensajeEliminacion!!) },
+                confirmButton = {
+                    TextButton(onClick = { mensajeEliminacion = null }) { Text("OK") }
+                }
+            )
         }
     }
 }

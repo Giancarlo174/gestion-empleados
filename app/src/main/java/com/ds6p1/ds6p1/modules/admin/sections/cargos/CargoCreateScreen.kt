@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,7 +33,19 @@ fun CargoCreateScreen(
                 onDismissRequest = { viewModel.resetState(); onVolverLista() },
                 title = { Text("¡Éxito!") },
                 text = { Text((envioState as CargoCreateState.Success).message) },
-                confirmButton = { TextButton(onClick = { viewModel.resetState(); onVolverLista() }) { Text("OK") } }
+                confirmButton = { 
+                    TextButton(
+                        onClick = { viewModel.resetState(); onVolverLista() },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                        modifier = Modifier.height(32.dp)
+                    ) { 
+                        Text(
+                            "Aceptar",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        ) 
+                    } 
+                }
             )
         }
         is CargoCreateState.Error -> {
@@ -50,7 +65,23 @@ fun CargoCreateScreen(
             .padding(16.dp)
             .fillMaxWidth()
     ) {
-        Text("Agregar Cargo", style = MaterialTheme.typography.headlineSmall)
+        // Encabezado con flecha de regreso
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onVolverLista,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = "Regresar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            Text("Agregar Cargo", style = MaterialTheme.typography.headlineSmall)
+        }
         Spacer(Modifier.height(18.dp))
 
         OutlinedTextField(

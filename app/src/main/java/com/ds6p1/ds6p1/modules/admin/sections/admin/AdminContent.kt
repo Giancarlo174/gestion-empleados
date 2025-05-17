@@ -9,8 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -69,37 +71,64 @@ fun AdminContent(
             )
             Button(
                 onClick = onCreate,
-                shape = MaterialTheme.shapes.medium
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                ),
+                modifier = Modifier.height(36.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Añadir")
+                Icon(
+                    Icons.Default.Add, 
+                    contentDescription = "Añadir",
+                    modifier = Modifier.size(16.dp)
+                )
                 Spacer(Modifier.width(6.dp))
-                Text("Añadir")
+                Text(
+                    "Nuevo", 
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    )
+                )
             }
         }
 
         // Buscador
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            OutlinedTextField(
-                value = search,
-                onValueChange = {
-                    search = it
-                    viewModel.loadAdmins(search)
-                },
-                modifier = Modifier.weight(1f),
-                placeholder = { Text("Buscar por cédula o correo") },
-                singleLine = true
+        OutlinedTextField(
+            value = search,
+            onValueChange = {
+                search = it
+                viewModel.loadAdmins(search)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Buscar por cédula o correo") },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Buscar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            trailingIcon = {
+                if (search.isNotEmpty()) {
+                    IconButton(onClick = {
+                        search = ""
+                        viewModel.loadAdmins("")
+                    }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Limpiar",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent
             )
-            Button(
-                onClick = { viewModel.loadAdmins(search) },
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text("Buscar")
-            }
-        }
+        )
 
         // Tabla de administradores
         Box(

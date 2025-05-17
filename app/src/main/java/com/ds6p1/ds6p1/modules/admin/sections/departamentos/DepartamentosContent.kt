@@ -1,13 +1,23 @@
 package com.ds6p1.ds6p1.modules.admin.sections.departamentos
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ds6p1.ds6p1.ui.theme.DataTable
@@ -33,11 +43,14 @@ fun DepartamentosScreen() {
 fun DepartmentContent(
     viewModel: DepartmentViewModel = viewModel(),
     onEdit: (String) -> Unit = {},
-    onDelete: (String) -> Unit = {},
     onCreate: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var search by remember { mutableStateOf("") }
+    var codigoAEliminar by remember { mutableStateOf<String?>(null) }
+    var mostrarDialogoEliminar by remember { mutableStateOf(false) }
+    var mensajeEliminacion by remember { mutableStateOf<String?>(null) }
+    var exitoEliminacion by remember { mutableStateOf<Boolean?>(null) }
 
     Column(
         Modifier
@@ -58,34 +71,66 @@ fun DepartmentContent(
             )
             Button(
                 onClick = onCreate,
-                shape = MaterialTheme.shapes.medium
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
+                ),
+                modifier = Modifier.height(36.dp)
             ) {
-                Text("+ Nuevo Departamento")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "Nuevo",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    )
+                )
             }
         }
 
         // Buscador
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            OutlinedTextField(
-                value = search,
-                onValueChange = {
-                    search = it
-                    viewModel.loadDepartments(search)
-                },
-                modifier = Modifier.weight(1f),
-                placeholder = { Text("Buscar por nombre o código") },
-                singleLine = true
+        OutlinedTextField(
+            value = search,
+            onValueChange = {
+                search = it
+                viewModel.loadDepartments(search)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Buscar por nombre o código") },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Buscar",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            trailingIcon = {
+                if (search.isNotEmpty()) {
+                    IconButton(onClick = {
+                        search = ""
+                        viewModel.loadDepartments("")
+                    }) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "Limpiar",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent
             )
-            Button(onClick = { viewModel.loadDepartments(search) }) {
-                Text("Buscar")
-            }
-        }
+        )
 
-        // Tabla
+        // Tabla y diálogos
         Box(
             Modifier
                 .fillMaxWidth()
@@ -115,7 +160,10 @@ fun DepartmentContent(
                                 IconButton(onClick = { onEdit(list[rowIdx].codigo) }) {
                                     Icon(Icons.Default.Edit, contentDescription = "Editar")
                                 }
-                                IconButton(onClick = { onDelete(list[rowIdx].codigo) }) {
+                                IconButton(onClick = {
+                                    codigoAEliminar = list[rowIdx].codigo
+                                    mostrarDialogoEliminar = true
+                                }) {
                                     Icon(
                                         Icons.Default.Delete,
                                         contentDescription = "Eliminar",
@@ -124,6 +172,52 @@ fun DepartmentContent(
                                 }
                             }
                         )
+
+                        // Diálogo de confirmación para eliminar
+                        if (mostrarDialogoEliminar && codigoAEliminar != null) {
+                            AlertDialog(
+                                onDismissRequest = { mostrarDialogoEliminar = false },
+                                title = { Text("¿Eliminar departamento?") },
+                                text = { Text("¿Seguro que quieres eliminar este departamento?") },
+                                confirmButton = {
+                                    TextButton(onClick = {
+                                        mostrarDialogoEliminar = false
+                                        viewModel.deleteDepartamento(codigoAEliminar!!) { exito, mensaje ->
+                                            mensajeEliminacion = mensaje
+                                            exitoEliminacion = exito
+                                        }
+                                    }) { Text("Eliminar") }
+                                },
+                                dismissButton = {
+                                    TextButton(onClick = { mostrarDialogoEliminar = false }) { Text("Cancelar") }
+                                }
+                            )
+                        }
+
+                        // Diálogo de resultado (éxito o error)
+                        if (mensajeEliminacion != null && exitoEliminacion != null) {
+                            val isError = exitoEliminacion == false
+                            AlertDialog(
+                                onDismissRequest = {
+                                    mensajeEliminacion = null
+                                    exitoEliminacion = null
+                                },
+                                title = { Text(if (isError) "No se pudo eliminar" else "Eliminado", color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary) },
+                                icon = {
+                                    if (isError)
+                                        Icon(Icons.Default.Error, contentDescription = "Error", tint = MaterialTheme.colorScheme.error)
+                                    else
+                                        Icon(Icons.Default.Check, contentDescription = "Éxito", tint = MaterialTheme.colorScheme.primary)
+                                },
+                                text = { Text(mensajeEliminacion!!) },
+                                confirmButton = {
+                                    TextButton(onClick = {
+                                        mensajeEliminacion = null
+                                        exitoEliminacion = null
+                                    }) { Text("OK") }
+                                }
+                            )
+                        }
                     }
                 }
             }

@@ -34,10 +34,30 @@ class EmployeesViewModel : ViewModel() {
         }
     }
 
-    fun deleteEmployee(cedula: String) {
+    fun deleteEmployee(cedula: String, onResult: (Boolean, String) -> Unit = { _, _ -> }) {
         viewModelScope.launch {
-            // TODO: llamada real a API para eliminar el empleado
-            loadEmployees("", "all")
+            try {
+                val response = RetrofitInstance.employeesApi.deleteEmployee(cedula)
+                if (response.success) {
+                    onResult(true, response.message)
+                    loadEmployees("", "all")
+                } else {
+                    onResult(false, response.message)
+                }
+            } catch (e: Exception) {
+                // Manejo especial de errores HTTP para ver la respuesta cruda
+                if (e is retrofit2.HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    // Logueá la respuesta cruda pa' que pillés si es HTML, warning, etc.
+                    android.util.Log.e("deleteEmployee", "ErrorBody: $errorBody")
+                    // Le mandás el mensaje real al usuario pa' que sepa qué fue lo que pasó
+                    onResult(false, "Respuesta inválida del servidor: $errorBody")
+                } else {
+                    onResult(false, "Error eliminando empleado: ${e.localizedMessage}")
+                }
+            }
         }
     }
+
+
 }

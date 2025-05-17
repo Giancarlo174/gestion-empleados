@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ds6p1.ds6p1.api.ApiClient
 import com.ds6p1.ds6p1.api.Cargo
+import com.ds6p1.ds6p1.api.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,15 +37,21 @@ class CargosViewModel : ViewModel() {
         }
     }
 
-    fun deleteCargo(codigo: String, onSuccess: () -> Unit = {}) {
+    fun deleteCargo(codigo: String, onComplete: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
-                ApiClient.positionsApi.deleteCargo(codigo)
-                onSuccess()
-                loadCargos("")
+                val response = ApiClient.cargoApi.deleteCargo(codigo)
+                if (response.success) {
+                    loadCargos("") // Recargar la lista de cargos
+                    onComplete(true, response.message ?: "Cargo eliminado correctamente")
+                } else {
+                    // Devuelve el mensaje de error exactamente como viene del servidor
+                    onComplete(false, response.message ?: "Error al eliminar el cargo")
+                }
             } catch (e: Exception) {
-                _uiState.value = CargosUiState.Error("Error eliminando cargo: ${e.localizedMessage}")
+                onComplete(false, "Error de conexión: ${e.localizedMessage}")
             }
         }
     }
 }
+

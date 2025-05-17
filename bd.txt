@@ -26,4 +26,4 @@ Tabla: u_eliminados
 Columnas: id, cedula, contraseña, correo_institucional, f_eliminacion
 
 Tabla: e_eliminados
-Columnas: cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, apellidoc, genero, estado_civil, tipo_sangre, usa_ac, f_nacimiento, celular, telefono, correo, provincia, distrito, corregimiento, calle, casa, comunidad, nacionalidad, f_contra, cargo, departamento, estado, f_eliminacion, 
+Columnas: cedula, prefijo, tomo, asiento, nombre1, nombre2, apellido1, apellido2, apellidoc, genero, estado_civil, tipo_sangre, usa_ac, f_nacimiento, celular, telefono, correo, provincia, distrito, corregimiento, calle, casa, comunidad, nacionalidad, f_contra, cargo, departamento, estado, f_eliminacion

@@ -35,4 +35,25 @@ class DepartmentViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteDepartamento(codigo: String, onResult: (Boolean, String) -> Unit = { _, _ -> }) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.departmentApi.deleteDepartamento(codigo)
+                onResult(response.success, response.message)
+                if (response.success) {
+                    loadDepartments("")
+                }
+            } catch (e: Exception) {
+                val errorMsg = if (e is retrofit2.HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    errorBody ?: "Error desconocido"
+                } else {
+                    "Error eliminando departamento: ${e.localizedMessage}"
+                }
+                onResult(false, errorMsg)
+            }
+        }
+    }
+
 }

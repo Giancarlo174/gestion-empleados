@@ -9,19 +9,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-// Modelos de datos simplificados
 data class DashboardStats(
     val totalEmpleados: Int = 0,
     val empleadosActivos: Int = 0,
@@ -48,13 +40,18 @@ data class DepartamentoStat(
 )
 
 @Composable
-fun DashboardContent(viewModel: DashboardViewModel = viewModel()) {
+fun DashboardContent(
+    showLogout: Boolean = false,
+    onLogout: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    viewModel: DashboardViewModel = viewModel()
+) {
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
 
     Surface(
         color = MaterialTheme.colorScheme.background,
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -62,11 +59,31 @@ fun DashboardContent(viewModel: DashboardViewModel = viewModel()) {
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(
-                text = "Panel de Control",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
+            // Header con Logout solo si es el principal
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Panel de Control",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                if (showLogout && onLogout != null) {
+                    IconButton(
+                        onClick = onLogout,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "Cerrar sesión",
+                            tint = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+            }
 
             when (val currentState = state) {
                 is DashboardState.Loading -> {
@@ -156,7 +173,6 @@ fun DashboardContent(viewModel: DashboardViewModel = viewModel()) {
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                         ) {
-                            // Aquí envolvemos la tabla en un scroll horizontal
                             Box(
                                 modifier = Modifier
                                     .horizontalScroll(rememberScrollState())
