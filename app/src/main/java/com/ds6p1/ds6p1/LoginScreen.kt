@@ -220,7 +220,15 @@ fun LoginScreen(
                     exit = fadeOut()
                 ) {
                     val errorMessage = when (val result = authResult) {
-                        is AuthResult.Error -> result.message
+                        is AuthResult.Error -> {
+                            when {
+                                result.message.contains("401", ignoreCase = true) -> "Correo o contraseña incorrectos."
+                                result.message.contains("timeout", ignoreCase = true) -> "No se pudo conectar al servidor. Intenta más tarde."
+                                result.message.contains("network", ignoreCase = true) -> "Sin conexión a internet."
+                                result.message.contains("empty", ignoreCase = true) -> "Por favor ingresa tus credenciales."
+                                else -> result.message
+                            }
+                        }
                         else -> "Error desconocido"
                     }
                     Text(
@@ -228,6 +236,20 @@ fun LoginScreen(
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 8.dp, start = 4.dp)
+                    )
+                }
+
+                // Mensaje de éxito opcional
+                AnimatedVisibility(
+                    visible = showSuccessCheck,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Text(
+                        text = "¡Bienvenido!",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
 

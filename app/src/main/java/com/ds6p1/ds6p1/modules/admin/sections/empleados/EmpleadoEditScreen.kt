@@ -157,9 +157,40 @@ fun EmpleadoEditScreen(
         Text("Información Personal", style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(value = prefijo, onValueChange = { prefijo = it }, label = { Text("Prefijo") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = tomo, onValueChange = { tomo = it }, label = { Text("Tomo") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = asiento, onValueChange = { asiento = it }, label = { Text("Asiento") }, modifier = Modifier.fillMaxWidth())
+        // Cédula en tres campos alineados horizontalmente
+        Text("Cédula *", style = MaterialTheme.typography.bodyMedium)
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = prefijo,
+                onValueChange = { prefijo = it },
+                label = { Text("") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.width(4.dp))
+            Text("-", modifier = Modifier.padding(bottom = 16.dp))
+            Spacer(Modifier.width(4.dp))
+            OutlinedTextField(
+                value = tomo,
+                onValueChange = { tomo = it },
+                label = { Text("") },
+                modifier = Modifier.weight(2f)
+            )
+            Spacer(Modifier.width(4.dp))
+            Text("-", modifier = Modifier.padding(bottom = 16.dp))
+            Spacer(Modifier.width(4.dp))
+            OutlinedTextField(
+                value = asiento,
+                onValueChange = { asiento = it },
+                label = { Text("") },
+                modifier = Modifier.weight(3f)
+            )
+        }
+
         OutlinedTextField(value = nombre1, onValueChange = { nombre1 = it }, label = { Text("Primer Nombre *") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = nombre2, onValueChange = { nombre2 = it }, label = { Text("Segundo Nombre") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = apellido1, onValueChange = { apellido1 = it }, label = { Text("Primer Apellido *") }, modifier = Modifier.fillMaxWidth())

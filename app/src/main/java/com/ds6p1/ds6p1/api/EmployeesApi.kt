@@ -7,17 +7,15 @@ import retrofit2.http.POST
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Field
 
-// Modelo de empleado existente (para listar)
 data class Employee(
     val cedula: String,
     val nombre: String,
     val apellido: String,
     val departamento: String,
     val estado: Int,
-    val estadoTexto: String
+    val estadoTexto: String,
 )
 
-// Modelo para crear empleado
 data class NuevoEmpleado(
     val cedula: String,
     val prefijo: String,
@@ -49,10 +47,21 @@ data class NuevoEmpleado(
     val estado: Int
 )
 
-// Modelo para la respuesta de la API
 data class ApiResponse(
     val success: Boolean,
     val message: String
+)
+
+data class EmpleadoLoginRequest(
+    val cedula: String,
+    val password: String
+)
+
+data class EmpleadoLoginResponse(
+    val success: Boolean,
+    val message: String? = null,
+    val token: String = "",
+    val empleado: EmpleadoDetalle? = null
 )
 
 interface EmployeesApi {
@@ -77,11 +86,19 @@ interface EmployeesApi {
     @POST("admin/empleado_update.php")
     suspend fun updateEmployee(@Body empleado: NuevoEmpleado): ApiResponse
 
+    @POST("employee/login.php")
+    suspend fun login(@Body request: EmpleadoLoginRequest): EmpleadoLoginResponse
+
+    @POST("employee/logout.php")
+    suspend fun logout(): ApiResponse
+
 }
 
 data class EmpleadoDetalleResponse(
     val success: Boolean,
-    val empleado: EmpleadoDetalle?
+    val empleado: EmpleadoDetalle?,
+    val message: String? = null
+
 )
 
 

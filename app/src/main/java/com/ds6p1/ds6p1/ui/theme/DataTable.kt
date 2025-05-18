@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DataTable(
@@ -36,9 +37,9 @@ fun DataTable(
 ) {
     val horizontalScroll = rememberScrollState()
     val verticalScroll = rememberScrollState()
-    val defaultWidth = 150.dp
+    val defaultWidth = 120.dp
     val widths = columnWidths ?: List(columns.size) { defaultWidth }
-    val totalWidth = widths.fold(0.dp) { acc, w -> acc + w } + if (actions != null) 140.dp else 0.dp
+    val totalWidth = widths.fold(0.dp) { acc, w -> acc + w } + if (actions != null) 100.dp else 0.dp
 
     Box(
         modifier = modifier
@@ -52,53 +53,58 @@ fun DataTable(
         ) {
             Column(
                 Modifier
-                    .shadow(elevation = 1.dp, shape = RoundedCornerShape(12.dp))
+                    .shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.surface)
             ) {
-                // Header fijo horizontalmente
+                // Header
                 Row(
                     Modifier
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
-                        .padding(vertical = 14.dp, horizontal = 16.dp)
+                        .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f))
+                        .padding(vertical = 10.dp, horizontal = 10.dp)
                 ) {
                     columns.forEachIndexed { i, col ->
                         Text(
                             text = col,
                             modifier = Modifier
                                 .width(widths[i])
-                                .padding(horizontal = 4.dp),
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.SemiBold
+                                .padding(horizontal = 2.dp),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         )
                     }
                     actions?.let {
-                        Box(Modifier.width(140.dp)) {
-                            Text("Acciones")
+                        Box(Modifier.width(100.dp)) {
+                            Text("Acciones", style = MaterialTheme.typography.bodySmall)
                         }
                     }
                 }
 
-                // Filas con scroll vertical independiente
+                // Filas
                 Column {
                     rows.forEachIndexed { idx, row ->
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 54.dp)
-                                .background(if (idx % 2 == 0) MaterialTheme.colorScheme.surface
-                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+                                .heightIn(min = 40.dp)
+                                .background(if (idx % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondary.copy(alpha = 0.08f))
+                                .border(
+                                    width = 0.5.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                                )
                         ) {
                             row.forEachIndexed { i, cell ->
                                 Box(
                                     Modifier
                                         .width(widths[i])
-                                        .padding(16.dp)
+                                        .padding(10.dp)
                                 ) {
                                     Text(
                                         text = cell,
                                         maxLines = 2,
-                                        overflow = TextOverflow.Visible
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = MaterialTheme.typography.bodySmall,
                                     )
                                 }
                             }

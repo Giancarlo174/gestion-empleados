@@ -24,19 +24,14 @@ import com.ds6p1.ds6p1.ui.theme.DataTable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DepartamentosScreen() {
-    var mostrarCrearDepartamento by remember { mutableStateOf(false) }
-
-    if (mostrarCrearDepartamento) {
-        DepartamentoCreateScreen(
-            onVolverLista = { mostrarCrearDepartamento = false }
-        )
-    } else {
-        DepartmentContent(
-            onCreate = { mostrarCrearDepartamento = true }
-        )
-    }
+fun DepartamentosScreen(
+    onNuevo: () -> Unit = {}
+) {
+    DepartmentContent(
+        onCreate = onNuevo
+    )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

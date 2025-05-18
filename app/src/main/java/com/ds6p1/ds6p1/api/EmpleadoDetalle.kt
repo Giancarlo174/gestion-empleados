@@ -36,7 +36,6 @@ data class EmpleadoDetalle(
     val nombre_departamento: String?,
     val estado: Int
 ) {
-    // Función de extensión para obtener la dirección formateada
     fun getDireccionFormateada(): String {
         return listOfNotNull(
             provincia_nombre?.takeIf { it.isNotBlank() },

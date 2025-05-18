@@ -13,19 +13,15 @@ import com.ds6p1.ds6p1.api.AuthResult
 import com.ds6p1.ds6p1.LoginScreen
 import com.ds6p1.ds6p1.modules.admin.AdminDashboardScreen
 import com.ds6p1.ds6p1.modules.admin.AdminInfo
+import com.ds6p1.ds6p1.modules.employee.EmpleadoPerfilScreen
+import com.ds6p1.ds6p1.modules.employee.EmpleadoPerfilEditableScreen
 
-/**
- * Rutas de navegación de la aplicación
- */
 object NavigationDestinations {
     const val LOGIN = "login"
     const val ADMIN_DASHBOARD = "admin_dashboard"
     const val EMPLOYEE_DASHBOARD = "employee_dashboard"
 }
 
-/**
- * Componente principal de navegación que gestiona todas las pantallas de la app
- */
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
@@ -37,40 +33,32 @@ fun AppNavigation(
         startDestination = NavigationDestinations.LOGIN,
         modifier = modifier
     ) {
-        // Pantalla de Login
+        // LOGIN
         composable(NavigationDestinations.LOGIN) {
             LoginScreen(
                 onLoginAttempt = { email, password ->
                     val result = authenticateUser(email, password)
-                    
-                    // Navegar según el tipo de usuario
                     when (result) {
                         is AuthResult.Admin -> {
-                            // Navegar al dashboard de administrador con la información del admin
                             navController.navigate(
                                 "${NavigationDestinations.ADMIN_DASHBOARD}/${result.cedula}/${result.apiKey}"
                             ) {
-                                // Eliminar la pantalla de login del backstack
                                 popUpTo(NavigationDestinations.LOGIN) { inclusive = true }
                             }
                         }
                         is AuthResult.Employee -> {
-                            // Navegar al dashboard de empleado con parámetros
-                            navController.navigate(
-                                "${NavigationDestinations.EMPLOYEE_DASHBOARD}/${result.cedula}/${result.apiKey}"
-                            ) {
+                            navController.navigate("empleado_perfil/${result.cedula}") {
                                 popUpTo(NavigationDestinations.LOGIN) { inclusive = true }
                             }
                         }
-                        else -> { /* No hacer nada, se queda en login */ }
+                        else -> {}
                     }
-                    
                     result
                 }
             )
         }
-        
-        // Pantalla de Dashboard de Administrador
+
+        // DASHBOARD ADMIN
         composable(
             route = "${NavigationDestinations.ADMIN_DASHBOARD}/{cedula}/{apiKey}",
             arguments = listOf(
@@ -78,38 +66,56 @@ fun AppNavigation(
                 navArgument("apiKey") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            // Obtener parámetros de la ruta
             val cedula = backStackEntry.arguments?.getString("cedula") ?: ""
             val apiKey = backStackEntry.arguments?.getString("apiKey") ?: ""
-            
-            // Crear objeto AdminInfo
-            val adminInfo = remember {
-                AdminInfo(cedula = cedula, apiKey = apiKey)
-            }
-            
-            // Mostrar pantalla de administrador
+            val adminInfo = remember { AdminInfo(cedula = cedula, apiKey = apiKey) }
+
             AdminDashboardScreen(
                 adminInfo = adminInfo,
                 onLogout = {
-                    // Navegar de vuelta al login
                     navController.navigate(NavigationDestinations.LOGIN) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
             )
         }
-        
-        // Pantalla de Dashboard de Empleado
+
+        // PERFIL DEL EMPLEADO (solo vista)
         composable(
-            route = "${NavigationDestinations.EMPLOYEE_DASHBOARD}/{cedula}/{apiKey}",
-            arguments = listOf(
-                navArgument("cedula") { type = NavType.StringType },
-                navArgument("apiKey") { type = NavType.StringType }
-            )
+            route = "empleado_perfil/{cedula}",
+            arguments = listOf(navArgument("cedula") { type = NavType.StringType })
         ) { backStackEntry ->
-            // Obtener parámetros de la ruta
             val cedula = backStackEntry.arguments?.getString("cedula") ?: ""
-            val apiKey = backStackEntry.arguments?.getString("apiKey") ?: ""
+            EmpleadoPerfilScreen(
+                cedula = cedula,
+                onBack = {
+                    navController.navigate(NavigationDestinations.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onLogout = {
+                    navController.navigate(NavigationDestinations.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onEditar = {
+                    navController.navigate("empleado_perfil_edit/$cedula")
+                }
+            )
+        }
+
+        // EDICIÓN DEL PERFIL DEL EMPLEADO
+        composable(
+            route = "empleado_perfil_edit/{cedula}",
+            arguments = listOf(navArgument("cedula") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val cedula = backStackEntry.arguments?.getString("cedula") ?: ""
+            EmpleadoPerfilEditableScreen(
+                cedula = cedula,
+                onBack = {
+                    navController.popBackStack() // Vuelve a la pantalla de perfil
+                }
+            )
         }
     }
 }

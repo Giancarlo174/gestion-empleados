@@ -1,7 +1,6 @@
-// OrganizacionScreen.kt
-
 package com.ds6p1.ds6p1.modules.admin.sections.organizacion
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -14,15 +13,19 @@ import com.ds6p1.ds6p1.modules.admin.sections.departamentos.DepartmentContent
 import com.ds6p1.ds6p1.modules.admin.sections.cargos.CargosContent
 
 @Composable
-fun OrganizacionScreen(modifier: Modifier = Modifier) {
+fun OrganizacionScreen(
+    modifier: Modifier = Modifier,
+    onNuevoDepartamento: () -> Unit = {},
+    onNuevoCargo: () -> Unit = {},
+) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Departamentos", "Cargos")
 
     Column(modifier) {
         SegmentedButtonRow(selectedTab, tabs) { selectedTab = it }
         when (selectedTab) {
-            0 -> DepartmentContent()
-            1 -> CargosContent()
+            0 -> DepartmentContent(onCreate = onNuevoDepartamento)
+            1 -> CargosContent(onCreate = onNuevoCargo)
         }
     }
 }

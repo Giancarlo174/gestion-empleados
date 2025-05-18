@@ -22,18 +22,12 @@ import com.ds6p1.ds6p1.ui.theme.DataTable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CargosScreen() {
-    var mostrarCrearCargo by remember { mutableStateOf(false) }
-
-    if (mostrarCrearCargo) {
-        CargoCreateScreen(
-            onVolverLista = { mostrarCrearCargo = false }
-        )
-    } else {
-        CargosContent(
-            onCreate = { mostrarCrearCargo = true }
-        )
-    }
+fun CargosScreen(
+    onNuevo: () -> Unit = {}
+) {
+    CargosContent(
+        onCreate = onNuevo
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,12 +43,12 @@ fun CargosContent(
 
     var idCargoAEliminar by remember { mutableStateOf<String?>(null) }
     var mostrarDialogoEliminar by remember { mutableStateOf(false) }
-    
+
     // Variables para el Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
     var mensajeSnackbar by remember { mutableStateOf<String?>(null) }
     var esError by remember { mutableStateOf(false) }
-    
+
     // Efecto para mostrar el Snackbar cuando hay un mensaje
     LaunchedEffect(mensajeSnackbar) {
         mensajeSnackbar?.let { mensaje ->
@@ -94,13 +88,13 @@ fun CargosContent(
                 modifier = Modifier.height(36.dp)
             ) {
                 Icon(
-                    Icons.Default.Add, 
+                    Icons.Default.Add,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Nuevo", 
+                    "Nuevo",
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Medium
                     )
@@ -206,7 +200,7 @@ fun CargosContent(
                     }
                 }
             }
-            
+
             // Snackbar para mostrar mensajes (éxito o error)
             SnackbarHost(
                 hostState = snackbarHostState,

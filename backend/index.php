@@ -1,37 +1,24 @@
 <?php
-// Include configuration file
-require_once 'config.php';
+require_once __DIR__ . '/../config.php';
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Determine if request is from browser or Android app
-// Check for common Android client identifiers or specific header
-$isAndroidApp = (
-    isset($_SERVER['HTTP_USER_AGENT']) && 
-    (strpos($_SERVER['HTTP_USER_AGENT'], 'Android') !== false || 
-    strpos($_SERVER['HTTP_USER_AGENT'], 'okhttp') !== false)
-) || isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
-$isBrowser = !$isAndroidApp && isset($_SERVER['HTTP_USER_AGENT']);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+    exit;
+}
 
-// Test connection and prepare response
 try {
-    $conn = getConnection();
-    
-    // Connection successful
-    $response = [
-        'success' => true,
-        'message' => 'Conexión Exitosa',
-        'server_info' => $conn->server_info,
-        'host_info' => $conn->host_info,
-        'db_name' => DB_NAME,
-        'client_type' => $isAndroidApp ? 'android' : 'browser'
-    ];
-    
-    // Close connection
     $conn->close();
     
-    // If it's a browser request, display a more user-friendly response
     if ($isBrowser) {
-        // Set content type to HTML for browsers
         header('Content-Type: text/html; charset=UTF-8');
         echo '<!DOCTYPE html>
         <html>
@@ -48,25 +35,16 @@ try {
             <h1>Estado de Conexión a la Base de Datos</h1>
             <div class="success">
                 <h2>✅ Conexión Exitosa</h2>
-                <p>Se ha establecido la conexión con la base de datos correctamente.</p>
             </div>
-            <div class="details">
-                <h3>Información de la Conexión:</h3>
-                <p>Servidor: '.$response["server_info"].'</p>
-                <p>Host: '.$response["host_info"].'</p>
-                <p>Base de datos: '.$response["db_name"].'</p>
             </div>
         </body>
         </html>';
     } else {
-        // Set JSON response for API clients (including Android)
         ensureCleanOutput();
         echo json_encode($response);
     }
 } catch (Exception $e) {
-    // Handle connection error
     if ($isBrowser) {
-        // HTML error message for browsers
         header('Content-Type: text/html; charset=UTF-8');
         echo '<!DOCTYPE html>
         <html>
@@ -82,18 +60,9 @@ try {
             <h1>Estado de Conexión a la Base de Datos</h1>
             <div class="error">
                 <h2>❌ Error de Conexión</h2>
-                <p>'.$e->getMessage().'</p>
             </div>
         </body>
         </html>';
-    } else {
-        // JSON error message for API clients (including Android)
-        ensureCleanOutput();
-        echo json_encode([
-            'success' => false,
-            'message' => $e->getMessage(),
-            'client_type' => $isAndroidApp ? 'android' : 'api'
-        ]);
     }
 }
 ?>

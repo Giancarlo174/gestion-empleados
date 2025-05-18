@@ -2,10 +2,15 @@ package com.ds6p1.ds6p1.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Minimalista: azul-gris, acento verde y coral
+val PrimaryLight = Color(0xFF3A4750)      // Azul gris oscuro
+val PrimaryDark = Color(0xFF232931)       // Más oscuro para dark
+val Secondary = Color(0xFFEEEEEE)         // Gris claro casi blanco
+val Tertiary = Color(0xFF00B894)          // Verde acento
+val Error = Color(0xFFFF7675)             // Coral suave
+val Surface = Color(0xFFF7F7F7)           // Fondo tarjetas
+val OnPrimary = Color(0xFFFFFFFF)
+val OnSecondary = Color(0xFF232931)
+val OnTertiary = Color(0xFFFFFFFF)
+val OnError = Color(0xFFFFFFFF)
+val Outline = Color(0xFFB2BEC3)

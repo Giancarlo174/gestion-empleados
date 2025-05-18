@@ -3,8 +3,8 @@ package com.ds6p1.ds6p1.modules.admin
 import androidx.compose.runtime.Composable
 import com.ds6p1.ds6p1.modules.admin.sections.dashboard.DashboardContent
 import com.ds6p1.ds6p1.modules.admin.sections.empleados.EmpleadosScreen
-import com.ds6p1.ds6p1.modules.admin.sections.ajustes.SettingsScreen // Asegúrate de crear este archivo
-import com.ds6p1.ds6p1.modules.admin.sections.organizacion.OrganizacionScreen // Asegúrate de crear este archivo
+import com.ds6p1.ds6p1.modules.admin.sections.ajustes.AjustesMenuScreenModern
+import com.ds6p1.ds6p1.modules.admin.sections.organizacion.OrganizacionScreen
 
 @Composable
 fun AdminDashboardScreen(

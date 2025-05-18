@@ -16,7 +16,6 @@ if (empty($codigo)) {
 try {
     $conn = getConnection();
 
-    // 1. Verificar si el departamento tiene cargos asociados
     $stmt = $conn->prepare("SELECT COUNT(*) as total FROM cargo WHERE dep_codigo = ?");
     $stmt->bind_param('s', $codigo);
     $stmt->execute();
@@ -32,7 +31,6 @@ try {
         exit;
     }
 
-    // 2. Eliminar el departamento
     $stmt = $conn->prepare("DELETE FROM departamento WHERE codigo = ?");
     $stmt->bind_param('s', $codigo);
     $stmt->execute();

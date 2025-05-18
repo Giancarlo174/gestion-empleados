@@ -52,7 +52,6 @@ try {
                 ]
             ];
             echo json_encode($response);
-            file_put_contents('login_debug.log', date('Y-m-d H:i:s') . " - Admin success: " . json_encode($response) . PHP_EOL, FILE_APPEND);
             exit;
         }
     }
