@@ -167,9 +167,6 @@ fun CargosContent(
                             rows = cargos.map { listOf(it.codigo, it.nombre, it.departamento) },
                             actions = { rowIdx ->
                                 val cargo = cargos[rowIdx]
-                                IconButton(onClick = { onEdit(cargos[rowIdx].codigo) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar")
-                                }
                                 IconButton(onClick = {
                                     idCargoAEliminar = cargo.codigo
                                     mostrarDialogoEliminar = true

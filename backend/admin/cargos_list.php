@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-// Limpia output si lo necesitas
-// ensureCleanOutput();
 
 $conn = getConnection();
 

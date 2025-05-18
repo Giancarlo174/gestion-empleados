@@ -141,9 +141,7 @@ fun MainBottomBar(
                         onNuevoDepartamento = {
                             navController.navigate("departamento_crear")
                         },
-                        onNuevoCargo = {
-                            navController.navigate("cargo_crear")
-                        }
+
                     )
                 }
                 // DEPARTAMENTOS desde menú

@@ -21,7 +21,7 @@ fun EmployeeMainScreen(
         composable("perfil") {
             EmpleadoPerfilScreen(
                 cedula = cedula,
-                onBack = { /* No action needed as this is the root screen */ },
+                onBack = {  },
                 onLogout = onLogout,
                 onEditar = { 
                     // Navigate to the editable profile screen

@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-ensureCleanOutput(); // Limpia headers y output
+ensureCleanOutput(); 
 
-$conn = getConnection(); // ¡Así sí funciona!
+$conn = getConnection();
 
 $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : "";
 

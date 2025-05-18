@@ -12,7 +12,7 @@ if (!$data) {
     exit;
 }
 
-// Valida aquí los campos obligatorios...
+
 
 $contrasenaHash = password_hash($data['contrasena'], PASSWORD_DEFAULT);
 

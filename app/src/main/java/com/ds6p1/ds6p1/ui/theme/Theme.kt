@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color(0xFF232931),
     tertiary = Color(0xFF00B894),
     onTertiary = Color.White,
-    error = Color(0xFFFF7675),
+    error = Color(0xFFEA2F22),
     onError = Color.White,
     background = Color(0xFF232931),
     surface = Color(0xFF2D3436),
@@ -36,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color(0xFF232931),
     tertiary = Color(0xFF00B894),
     onTertiary = Color.White,
-    error = Color(0xFFFF7675),
+    error = Color(0xFFEA2F22),
     onError = Color.White,
     background = Color(0xFFF7F9FB),
     surface = Color.White,
@@ -47,7 +47,7 @@ private val LightColorScheme = lightColorScheme(
 fun Ds6p1Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false, // Fijamos a false para mantener la paleta minimalista
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme

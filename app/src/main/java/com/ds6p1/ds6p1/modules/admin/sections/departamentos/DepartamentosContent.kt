@@ -152,9 +152,7 @@ fun DepartmentContent(
                             columns = listOf("Código", "Nombre de Departamento"),
                             rows = list.map { listOf(it.codigo, it.nombre) },
                             actions = { rowIdx ->
-                                IconButton(onClick = { onEdit(list[rowIdx].codigo) }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Editar")
-                                }
+
                                 IconButton(onClick = {
                                     codigoAEliminar = list[rowIdx].codigo
                                     mostrarDialogoEliminar = true

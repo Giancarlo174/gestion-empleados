@@ -1,1 +1,66 @@
 2025-05-18 04:35:38 - Request: {"email":"test@utp.ac.pa","password":"12345678"}
+2025-05-18 04:46:29 - Request: {"email":"test@utp.ac.pa","password":"12345678"}
+2025-05-18 04:47:25 - Request: {"email":"test@utp.ac.pa","password":"12345678"}
+2025-05-18 04:49:11 - Request: {"email":"test@utp.ac.pa","password":"12345678"}
+2025-05-18 04:49:58 - Request: {"email":"test@utp.ac.pa","password":"12345678"}
+2025-05-18 05:02:05 - Request: {"email":"admin@gmail.com","password":"admin12"}
+2025-05-18 05:02:05 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 05:02:07 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:02:44 - Request: {"email":"asdasda","password":"asd"}
+2025-05-18 05:02:44 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 05:02:52 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:05:06 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:12:51 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:14:10 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:16:32 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:23:17 - Request: {"email":"admin@gmail.com","password":"admin12"}
+2025-05-18 05:23:17 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 05:23:24 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:24:49 - Request: {"email":"user@gmail.com","password":"admin123"}
+2025-05-18 05:24:49 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 05:24:57 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 05:24:57 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"c0002f0c31b0033b22a031fa8b22aa55"}}
+2025-05-18 05:27:06 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:30:27 - Request: {"email":"user@gmail.com","password":"user12"}
+2025-05-18 05:30:28 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 05:30:36 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 05:30:36 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"12608d51560ab04eb7f013714a43a7e2"}}
+2025-05-18 05:32:30 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:39:18 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:43:07 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:44:40 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:47:00 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:48:10 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:50:04 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:54:03 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:56:30 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 05:57:49 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:02:50 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:04:39 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:06:32 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:09:47 - Request: {"email":"admin@gmail.com","password":"admin12"}
+2025-05-18 06:09:47 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 06:09:52 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:12:14 - Request: {"email":"user@gmail.com","password":"user12"}
+2025-05-18 06:12:14 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 06:12:20 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 06:12:20 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"902089a1a69717a72b57596895950952"}}
+2025-05-18 06:13:28 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:16:42 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:20:29 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:21:44 - Request: {"email":"user@gmail.com","password":"user12"}
+2025-05-18 06:21:44 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 06:21:49 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 06:21:50 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"3a90638b0f564d98d8ba87c52032f2c6"}}
+2025-05-18 06:23:57 - Request: {"email":"user@gmail.com","password":"user12"}
+2025-05-18 06:23:57 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 06:23:59 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 06:23:59 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"f49e94b308895c81d6844ecc069c64f9"}}
+2025-05-18 06:24:46 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:34:21 - Request: {"email":"user@gmail.com","password":"user12"}
+2025-05-18 06:34:21 - Auth failed: {"success":false,"message":"Correo o contrase\u00f1a incorrectos"}
+2025-05-18 06:34:22 - Request: {"email":"user@gmail.com","password":"user123"}
+2025-05-18 06:34:22 - Employee success: {"success":true,"message":"Login exitoso como empleado","data":{"user_type":"employee","cedula":"8-2222-222222","api_key":"7a9ec95ac29e34738301839720b09139"}}
+2025-05-18 06:35:17 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:37:15 - Request: {"email":"admin@gmail.com","password":"admin123"}
+2025-05-18 06:38:10 - Request: {"email":"admin@gmail.com","password":"admin123"}

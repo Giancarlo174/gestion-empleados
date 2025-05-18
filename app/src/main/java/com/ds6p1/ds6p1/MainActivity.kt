@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Nueva función de autenticación usando Retrofit y ApiService
     private suspend fun authenticateUser(email: String, password: String): AuthResult {
         return try {
             val response = ApiClient.apiService.login(LoginRequest(email, password))

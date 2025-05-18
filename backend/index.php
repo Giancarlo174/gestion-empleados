@@ -1,21 +1,27 @@
 <?php
-require_once __DIR__ . '/../config.php';
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+require_once 'config.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
-    exit;
-}
+$isAndroidApp = (
+    isset($_SERVER['HTTP_USER_AGENT']) && 
+    (strpos($_SERVER['HTTP_USER_AGENT'], 'Android') !== false || 
+    strpos($_SERVER['HTTP_USER_AGENT'], 'okhttp') !== false)
+) || isset($_SERVER['HTTP_X_REQUESTED_WITH']);
+
+$isBrowser = !$isAndroidApp && isset($_SERVER['HTTP_USER_AGENT']);
 
 try {
+    $conn = getConnection();
+    
+    $response = [
+        'success' => true,
+        'message' => 'Conexión Exitosa',
+        'server_info' => $conn->server_info,
+        'host_info' => $conn->host_info,
+        'db_name' => DB_NAME,
+        'client_type' => $isAndroidApp ? 'android' : 'browser'
+    ];
+    
     $conn->close();
     
     if ($isBrowser) {
@@ -60,9 +66,17 @@ try {
             <h1>Estado de Conexión a la Base de Datos</h1>
             <div class="error">
                 <h2>❌ Error de Conexión</h2>
+                <p>'.$e->getMessage().'</p>
             </div>
         </body>
         </html>';
+    } else {
+            ensureCleanOutput();
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'client_type' => $isAndroidApp ? 'android' : 'api'
+        ]);
     }
 }
 ?>

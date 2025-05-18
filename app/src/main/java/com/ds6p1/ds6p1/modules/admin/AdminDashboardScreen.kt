@@ -11,7 +11,6 @@ fun AdminDashboardScreen(
     adminInfo: AdminInfo,
     onLogout: () -> Unit
 ) {
-    // La barra inferior controla toda la navegación principal.
     MainBottomBar(
         adminInfo = adminInfo,
         onLogout = onLogout

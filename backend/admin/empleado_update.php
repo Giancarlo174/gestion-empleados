@@ -89,6 +89,19 @@ try {
         throw new Exception("Error ejecutando actualización: " . $stmt->error, 500);
     }
 
+    // ==== GUARDAR EN TABLA DE AUDITORÍA ====
+    $editado = json_encode($input, JSON_UNESCAPED_UNICODE); // Guarda todo el input (puedes ajustar para guardar solo campos cambiados)
+    $cedula = $input['cedula'];
+    $fecha = date('Y-m-d H:i:s');
+
+    $auditStmt = $db->prepare("INSERT INTO e_auditoria (cedula, editado, fecha) VALUES (?, ?, ?)");
+    $auditStmt->bind_param("sss", $cedula, $editado, $fecha);
+
+    if (!$auditStmt->execute()) {
+        // Solo lo registramos, pero no frenamos el flujo si falla la auditoría
+        error_log("No se pudo guardar en auditoría: " . $auditStmt->error);
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Empleado actualizado correctamente',

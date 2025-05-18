@@ -133,13 +133,18 @@ fun AdminCreateScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
         Spacer(Modifier.height(24.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Button(
                 onClick = {
                     viewModel.crearAdmin(cedula, contrasena, contrasena2, correo)
                 }
             ) { Text("Guardar Administrador") }
+
             OutlinedButton(onClick = onVolverLista) { Text("Cancelar") }
         }
+
     }
 }
